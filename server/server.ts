@@ -1,6 +1,8 @@
 import app from "./src/app";
+import configMongodb from "./src/config/config.mongodb";
 
-const PORT : Number = 8000 ; 
+
+const PORT = configMongodb.app.port; 
 
 const server = app.listen(PORT,()=>{
     console.log('server listening on ',PORT)
