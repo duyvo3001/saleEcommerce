@@ -4,6 +4,7 @@ import helmet from "helmet";
 import compression from "compression";
 import connectMongodb from "./dbs/init.mongodb"
 import { checkOverload } from "./helpers/check.connect";
+import router from "./routes";
 
 export const app: Express = express();
 
@@ -23,11 +24,9 @@ try {
 checkOverload()
 //init middleware
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-    return res.status(200).json({
-        message: "hello diiii"
-    })
-})
+//init routes
+
+app.use('/', router)
 
 //handle errors
 // module.exports = app

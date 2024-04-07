@@ -10,6 +10,7 @@ const helmet_1 = __importDefault(require("helmet"));
 const compression_1 = __importDefault(require("compression"));
 const init_mongodb_1 = __importDefault(require("./dbs/init.mongodb"));
 const check_connect_1 = require("./helpers/check.connect");
+const routes_1 = __importDefault(require("./routes"));
 exports.app = (0, express_1.default)();
 //init middleware
 exports.app.use((0, morgan_1.default)('dev'));
@@ -27,11 +28,8 @@ catch (error) {
 }
 (0, check_connect_1.checkOverload)();
 //init middleware
-exports.app.get('/', (req, res, next) => {
-    return res.status(200).json({
-        message: "hello diiii"
-    });
-});
+//init routes
+exports.app.use('/', routes_1.default);
 //handle errors
 // module.exports = app
 exports.default = exports.app;
