@@ -23,43 +23,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// import { timeStamp } from "console";
-const mongoose_1 = __importStar(require("mongoose"));
+const mongoose_1 = __importStar(require("mongoose")); // Erase if already required
 const DOCUMENT_NAME = 'shop';
 const COLLECTION_NAME = 'shops';
 // Declare the Schema of the Mongo model
-var shopSchema = new mongoose_1.default.Schema({
-    name: {
-        type: String,
-        trim: true,
-        maxLength: 150
+var keyTokenSchema = new mongoose_1.default.Schema({
+    user: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Shop'
     },
-    email: {
-        type: String,
-        unique: true,
-        trim: true
-    },
-    password: {
+    publicKey: {
         type: String,
         required: true,
     },
-    status: {
-        type: String,
-        enum: ['active', 'inactive'],
-        default: 'inactive'
-    },
-    verrify: {
-        type: mongoose_1.Schema.Types.Boolean,
-        default: false
-    },
-    roles: {
+    refreshToken: {
         type: Array,
         default: []
-    },
+    }
 }, {
-    timestamps: true,
-    collection: COLLECTION_NAME
+    collection: COLLECTION_NAME,
+    timestamps: true
 });
 //Export the model
-const shopModel = mongoose_1.default.models.shop || mongoose_1.default.model(DOCUMENT_NAME, shopSchema);
-exports.default = shopModel;
+const keytokenModel = mongoose_1.default.model(DOCUMENT_NAME, keyTokenSchema);
+exports.default = keytokenModel;

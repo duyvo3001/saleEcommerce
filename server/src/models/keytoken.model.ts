@@ -10,8 +10,8 @@ var keyTokenSchema = new mongoose.Schema({
         ref: 'Shop'
     },
     publicKey: {
-        type: String,
-        required: true,
+            type: String,
+            required: true,
     },
     refreshToken: {
         type: Array,

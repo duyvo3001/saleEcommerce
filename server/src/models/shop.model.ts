@@ -41,6 +41,7 @@ var shopSchema = new mongoose.Schema({
 );
 
 //Export the model
-const shopModel = mongoose.model(DOCUMENT_NAME, shopSchema);
+const shopModel = mongoose.models.shop || mongoose.model(DOCUMENT_NAME, shopSchema)
+
 
 export default shopModel

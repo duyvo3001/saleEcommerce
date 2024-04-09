@@ -12,19 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const access_service_1 = __importDefault(require("../services/access.service"));
-class AcessController {
+const keytoken_model_1 = __importDefault(require("../models/keytoken.model"));
+class KeyTokenService {
     constructor() {
-        this.signUp = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        this.createKeyToken = (_a) => __awaiter(this, [_a], void 0, function* ({ userID, publicKey }) {
             try {
-                console.log(`[P]::signUp`, req.body);
-                const { name, email, password, roles } = req.body;
-                return res.status(201).json(yield access_service_1.default.signUp({ name, email, password, roles }));
+                const publicKeyString = publicKey.toString();
+                const tokens = yield keytoken_model_1.default.create({
+                    user: userID,
+                    publicKey: publicKeyString
+                });
+                return tokens ? publicKeyString : null;
             }
             catch (error) {
-                next(error);
+                return error;
             }
         });
     }
 }
-exports.default = new AcessController();
+exports.default = new KeyTokenService();

@@ -2,6 +2,7 @@ import shopModel from "../models/shop.model"
 import bcrypt from "bcrypt"
 import { generateKeyPairSync } from "crypto"
 import keyTokenService from "./keyToken.service";
+import createTokenPair from "../auth/authUtils";
 const RoleShop = {
     SHOP: 'SHOP',
     WRITER: 'WRITER',
@@ -17,6 +18,11 @@ interface SignUpParams {
 interface User {
     userID: string,
     publicKey: string
+}
+interface CreateToken {
+    payload: string,
+    publicKey: string,
+    privateKey: string
 }
 class AccessService {
     signUp = async ({ name, email, password, roles }: SignUpParams) => {
@@ -41,9 +47,9 @@ class AccessService {
                 });
                 console.log(privateKey, publicKey)
 
-                const publicKeyString =  await keyTokenService.createKeyToken({
-                    userID : newShop._id.toString() , 
-                    publicKey : publicKey.toString()
+                const publicKeyString = await keyTokenService.createKeyToken({
+                    userID: newShop._id.toString(),
+                    publicKey: publicKey.toString()
                 })
 
                 if (!publicKeyString) {
@@ -53,7 +59,31 @@ class AccessService {
                     }
                 }
 
-                const token  = await keyTokenService()
+                const token = await keyTokenService.createKeyToken(
+                    {
+                        userID: newShop._id.toString(),
+                        publicKey: publicKey.toString()
+                    })
+                //create token pair 
+                const tokens = await createTokenPair(
+                    {
+                        userID: newShop._id, email
+                    },
+                    publicKey.toString(),
+                    privateKey.toString()
+                )
+                console.log('create token success :', tokens)
+                return {
+                    code: 201,
+                    metadata: {
+                        shop: newShop,
+                        tokens
+                    }
+                }    
+            }
+            return {
+                code : 202,
+                metadata : null
             }
         } catch (error: any) {
             return {
