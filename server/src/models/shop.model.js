@@ -23,6 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.shopModel = void 0;
 // import { timeStamp } from "console";
 const mongoose_1 = __importStar(require("mongoose"));
 const DOCUMENT_NAME = 'shop';
@@ -61,5 +62,4 @@ var shopSchema = new mongoose_1.default.Schema({
     collection: COLLECTION_NAME
 });
 //Export the model
-const shopModel = mongoose_1.default.models.shop || mongoose_1.default.model(DOCUMENT_NAME, shopSchema);
-exports.default = shopModel;
+exports.shopModel = mongoose_1.default.model(DOCUMENT_NAME, shopSchema);

@@ -16,6 +16,8 @@ exports.app = (0, express_1.default)();
 exports.app.use((0, morgan_1.default)('dev'));
 exports.app.use((0, helmet_1.default)());
 exports.app.use((0, compression_1.default)());
+exports.app.use(express_1.default.json());
+exports.app.use(express_1.default.urlencoded({ extended: true }));
 //init db .
 try {
     init_mongodb_1.default;

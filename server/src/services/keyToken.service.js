@@ -8,17 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const keytoken_model_1 = __importDefault(require("../models/keytoken.model"));
+const keytoken_model_1 = require("../models/keytoken.model");
 class KeyTokenService {
     constructor() {
         this.createKeyToken = (_a) => __awaiter(this, [_a], void 0, function* ({ userID, publicKey }) {
             try {
                 const publicKeyString = publicKey.toString();
-                const tokens = yield keytoken_model_1.default.create({
+                console.log('publicKeyString ,userID :', publicKeyString, userID);
+                console.log('keytokenModel', keytoken_model_1.keytokenModel);
+                const tokens = yield keytoken_model_1.keytokenModel.create({
                     user: userID,
                     publicKey: publicKeyString
                 });

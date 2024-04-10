@@ -1,4 +1,4 @@
-import shopModel from "../models/shop.model"
+import { shopModel } from "../models/shop.model";
 import bcrypt from "bcrypt"
 import { generateKeyPairSync } from "crypto"
 import keyTokenService from "./keyToken.service";
@@ -14,15 +14,6 @@ interface SignUpParams {
     email: string;
     password: string;
     roles: []; // Assuming roles is an array of strings, adjust if necessary
-}
-interface User {
-    userID: string,
-    publicKey: string
-}
-interface CreateToken {
-    payload: string,
-    publicKey: string,
-    privateKey: string
 }
 class AccessService {
     signUp = async ({ name, email, password, roles }: SignUpParams) => {
@@ -40,30 +31,31 @@ class AccessService {
             const newShop = await shopModel.create({
                 name, email, password: passwordHash, roles: [RoleShop.SHOP]
             })
-
             if (newShop) {//create prikey and pubkey
                 const { privateKey, publicKey } = generateKeyPairSync('rsa', {
                     modulusLength: 2048,  // the length of your key in bits
+                    publicKeyEncoding: {
+                        type: 'spki',
+                        format: 'der'
+                    },
+                    privateKeyEncoding: {
+                        type: 'pkcs8',
+                        format: 'der'
+                    }
                 });
-                console.log(privateKey, publicKey)
 
                 const publicKeyString = await keyTokenService.createKeyToken({
                     userID: newShop._id.toString(),
-                    publicKey: publicKey.toString()
+                    publicKey: publicKey.toString('base64')
                 })
+                console.log('publicKeyString',publicKeyString)
 
-                if (!publicKeyString) {
+                if (!publicKeyString || publicKeyString == undefined) {
                     return {
                         code: 'xxxx',
                         message: 'publicKeyString error'
                     }
                 }
-
-                const token = await keyTokenService.createKeyToken(
-                    {
-                        userID: newShop._id.toString(),
-                        publicKey: publicKey.toString()
-                    })
                 //create token pair 
                 const tokens = await createTokenPair(
                     {
@@ -72,6 +64,12 @@ class AccessService {
                     publicKey.toString(),
                     privateKey.toString()
                 )
+                if (!tokens || tokens == undefined) {
+                    return {
+                        code: 'xxxx',
+                        message: 'tokens error'
+                    }
+                }
                 console.log('create token success :', tokens)
                 return {
                     code: 201,
@@ -79,11 +77,11 @@ class AccessService {
                         shop: newShop,
                         tokens
                     }
-                }    
+                }
             }
             return {
-                code : 202,
-                metadata : null
+                code: 202,
+                metadata: null
             }
         } catch (error: any) {
             return {

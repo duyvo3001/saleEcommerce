@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const shop_model_1 = __importDefault(require("../models/shop.model"));
+const shop_model_1 = require("../models/shop.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const crypto_1 = require("crypto");
 const keyToken_service_1 = __importDefault(require("./keyToken.service"));
@@ -27,7 +27,7 @@ class AccessService {
     constructor() {
         this.signUp = (_a) => __awaiter(this, [_a], void 0, function* ({ name, email, password, roles }) {
             try {
-                const holderShop = yield shop_model_1.default.findOne({ email }).lean();
+                const holderShop = yield shop_model_1.shopModel.findOne({ email }).lean();
                 if (holderShop) {
                     return {
                         code: '20002',
@@ -35,32 +35,42 @@ class AccessService {
                     };
                 }
                 const passwordHash = yield bcrypt_1.default.hash(password, 10);
-                const newShop = yield shop_model_1.default.create({
+                const newShop = yield shop_model_1.shopModel.create({
                     name, email, password: passwordHash, roles: [RoleShop.SHOP]
                 });
                 if (newShop) { //create prikey and pubkey
                     const { privateKey, publicKey } = (0, crypto_1.generateKeyPairSync)('rsa', {
                         modulusLength: 2048, // the length of your key in bits
+                        publicKeyEncoding: {
+                            type: 'spki',
+                            format: 'der'
+                        },
+                        privateKeyEncoding: {
+                            type: 'pkcs8',
+                            format: 'der'
+                        }
                     });
-                    console.log(privateKey, publicKey);
                     const publicKeyString = yield keyToken_service_1.default.createKeyToken({
                         userID: newShop._id.toString(),
-                        publicKey: publicKey.toString()
+                        publicKey: publicKey.toString('base64')
                     });
-                    if (!publicKeyString) {
+                    console.log('publicKeyString', publicKeyString);
+                    if (!publicKeyString || publicKeyString == undefined) {
                         return {
                             code: 'xxxx',
                             message: 'publicKeyString error'
                         };
                     }
-                    const token = yield keyToken_service_1.default.createKeyToken({
-                        userID: newShop._id.toString(),
-                        publicKey: publicKey.toString()
-                    });
                     //create token pair 
                     const tokens = yield (0, authUtils_1.default)({
                         userID: newShop._id, email
                     }, publicKey.toString(), privateKey.toString());
+                    if (!tokens || tokens == undefined) {
+                        return {
+                            code: 'xxxx',
+                            message: 'tokens error'
+                        };
+                    }
                     console.log('create token success :', tokens);
                     return {
                         code: 201,

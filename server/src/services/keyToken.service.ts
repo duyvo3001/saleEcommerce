@@ -1,4 +1,4 @@
-import keytokenModel from "../models/keytoken.model"
+import { keytokenModel } from "../models/keytoken.model"
 
 interface User {
     userID: string,
@@ -8,6 +8,8 @@ class KeyTokenService {
     createKeyToken = async ({ userID, publicKey }: User) => {
         try {
             const publicKeyString = publicKey.toString();
+            console.log('publicKeyString ,userID :',publicKeyString ,userID);
+            console.log('keytokenModel',keytokenModel)
             const tokens = await keytokenModel.create({
                 user: userID , 
                 publicKey: publicKeyString

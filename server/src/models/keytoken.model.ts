@@ -1,20 +1,25 @@
-import mongoose, { Schema } from 'mongoose' // Erase if already required
+import mongoose, { Schema, Document, Model } from 'mongoose' // Erase if already required
 
 const DOCUMENT_NAME = 'shop'
 const COLLECTION_NAME = 'shops'
+interface IKeyToken extends Document {
+    user: mongoose.Types.ObjectId;
+    publicKey: string;
+    refreshToken: string[];
+}
 // Declare the Schema of the Mongo model
-var keyTokenSchema = new mongoose.Schema({
+let keyTokenSchema = new Schema<IKeyToken>({
     user: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'Shop'
     },
     publicKey: {
-            type: String,
-            required: true,
+        type: String,
+        required: true,
     },
     refreshToken: {
-        type: Array,
+        type: [String],
         default: []
     }
 }, {
@@ -23,6 +28,5 @@ var keyTokenSchema = new mongoose.Schema({
 });
 
 //Export the model
-const keytokenModel = mongoose.model(DOCUMENT_NAME, keyTokenSchema);
-
-export default keytokenModel
+// export const keytokenModel: Model<IKeyToken> = mongoose.model<IKeyToken>(DOCUMENT_NAME, keyTokenSchema) || mongoose.models.test
+export const keytokenModel: Model<IKeyToken> = mongoose.models.shop
