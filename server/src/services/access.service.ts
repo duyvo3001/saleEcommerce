@@ -60,10 +60,10 @@ class AccessService {
                     {
                         userID: newShop._id, email
                     },
-                    publicKey.toString(),
+                    publicKeyString.toString(),
                     privateKey.toString()
                 )
-                console.log(`____________token` , tokens)
+
                 if (!tokens || tokens == undefined) {
                     return {
                         code: 'xxxx',

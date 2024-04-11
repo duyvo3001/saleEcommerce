@@ -19,7 +19,7 @@ class KeyTokenService {
                     user: userID,
                     publicKey: publicKeyString
                 });
-                return tokens ? publicKeyString : null;
+                return tokens ? tokens.publicKey : null;
             }
             catch (error) {
                 console.log('error publicKeyString', error);

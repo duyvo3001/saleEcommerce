@@ -16,19 +16,17 @@ exports.createTokenPair = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const createTokenPair = (payload, publicKey, privateKey) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('hell0_______', payload, `publicKey_______`, publicKey, `privateKey__________`, privateKey);
-        // accesstoken
+        // accesstoken 
         const accessToken = yield jsonwebtoken_1.default.sign(payload, privateKey, {
             algorithm: 'RS256',
             expiresIn: '1h'
         });
+        // refreshtoken 
         const refreshToken = yield jsonwebtoken_1.default.sign(payload, privateKey, {
             algorithm: 'RS256',
             expiresIn: '12h'
         });
-        console.log(`Access token: ${accessToken} --------------- refresh tokenn: ${refreshToken}`);
-        //
-        jsonwebtoken_1.default.verify(payload.toString(), publicKey, (err, decode) => {
+        jsonwebtoken_1.default.verify(accessToken, publicKey, (err, decode) => {
             if (err)
                 console.log(`error verify`, err);
             else

@@ -63,8 +63,7 @@ class AccessService {
                     //create token pair 
                     const tokens = yield (0, authUtils_1.createTokenPair)({
                         userID: newShop._id, email
-                    }, publicKey.toString(), privateKey.toString());
-                    console.log(`____________token`, tokens);
+                    }, publicKeyString.toString(), privateKey.toString());
                     if (!tokens || tokens == undefined) {
                         return {
                             code: 'xxxx',
