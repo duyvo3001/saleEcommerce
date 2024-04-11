@@ -16,7 +16,7 @@ const shop_model_1 = require("../models/shop.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const crypto_1 = require("crypto");
 const keyToken_service_1 = __importDefault(require("./keyToken.service"));
-const authUtils_1 = __importDefault(require("../auth/authUtils"));
+const authUtils_1 = require("../auth/authUtils");
 const RoleShop = {
     SHOP: 'SHOP',
     WRITER: 'WRITER',
@@ -40,21 +40,20 @@ class AccessService {
                 });
                 if (newShop) { //create prikey and pubkey
                     const { privateKey, publicKey } = (0, crypto_1.generateKeyPairSync)('rsa', {
-                        modulusLength: 2048, // the length of your key in bits
+                        modulusLength: 4096,
                         publicKeyEncoding: {
                             type: 'spki',
-                            format: 'der'
+                            format: 'pem'
                         },
                         privateKeyEncoding: {
                             type: 'pkcs8',
-                            format: 'der'
+                            format: 'pem'
                         }
                     });
                     const publicKeyString = yield keyToken_service_1.default.createKeyToken({
                         userID: newShop._id.toString(),
-                        publicKey: publicKey.toString('base64')
+                        publicKey: publicKey.toString()
                     });
-                    console.log('publicKeyString', publicKeyString);
                     if (!publicKeyString || publicKeyString == undefined) {
                         return {
                             code: 'xxxx',
@@ -62,16 +61,16 @@ class AccessService {
                         };
                     }
                     //create token pair 
-                    const tokens = yield (0, authUtils_1.default)({
+                    const tokens = yield (0, authUtils_1.createTokenPair)({
                         userID: newShop._id, email
                     }, publicKey.toString(), privateKey.toString());
+                    console.log(`____________token`, tokens);
                     if (!tokens || tokens == undefined) {
                         return {
                             code: 'xxxx',
                             message: 'tokens error'
                         };
                     }
-                    console.log('create token success :', tokens);
                     return {
                         code: 201,
                         metadata: {

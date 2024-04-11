@@ -15,8 +15,6 @@ class KeyTokenService {
         this.createKeyToken = (_a) => __awaiter(this, [_a], void 0, function* ({ userID, publicKey }) {
             try {
                 const publicKeyString = publicKey.toString();
-                console.log('publicKeyString ,userID :', publicKeyString, userID);
-                console.log('keytokenModel', keytoken_model_1.keytokenModel);
                 const tokens = yield keytoken_model_1.keytokenModel.create({
                     user: userID,
                     publicKey: publicKeyString
@@ -24,6 +22,7 @@ class KeyTokenService {
                 return tokens ? publicKeyString : null;
             }
             catch (error) {
+                console.log('error publicKeyString', error);
                 return error;
             }
         });

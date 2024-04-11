@@ -12,20 +12,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createTokenPair = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const createTokenPair = (payload, publicKey, privateKey) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log('hell0_______', payload, `publicKey_______`, publicKey, `privateKey__________`, privateKey);
         // accesstoken
         const accessToken = yield jsonwebtoken_1.default.sign(payload, privateKey, {
             algorithm: 'RS256',
-            expiresIn: "7 days"
+            expiresIn: '1h'
         });
         const refreshToken = yield jsonwebtoken_1.default.sign(payload, privateKey, {
             algorithm: 'RS256',
-            expiresIn: "7 days"
+            expiresIn: '12h'
         });
+        console.log(`Access token: ${accessToken} --------------- refresh tokenn: ${refreshToken}`);
         //
-        jsonwebtoken_1.default.verify(payload.toString(), privateKey, (err, decode) => {
+        jsonwebtoken_1.default.verify(payload.toString(), publicKey, (err, decode) => {
             if (err)
                 console.log(`error verify`, err);
             else
@@ -36,4 +39,4 @@ const createTokenPair = (payload, publicKey, privateKey) => __awaiter(void 0, vo
     catch (error) {
     }
 });
-exports.default = createTokenPair;
+exports.createTokenPair = createTokenPair;

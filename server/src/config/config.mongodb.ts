@@ -8,6 +8,7 @@ interface DBConfig {
     host: string | undefined;
     pass: string | undefined;
     name: string | undefined;
+    dbName : string | undefined;
 }
 
 interface EnvironmentConfig {
@@ -23,6 +24,7 @@ const dev: EnvironmentConfig = {
         host: process.env.DEV_DB_HOST_MONGODB,
         pass: process.env.DEV_PASSWORD_MONGODB,
         name: process.env.DEV_USERNAME_MONGODB,
+        dbName: process.env.DEV_DB_NAME,
     },
 };
 
@@ -34,6 +36,7 @@ const product: EnvironmentConfig = {
         host: process.env.PRO_DB_HOST_MONGODB,
         pass: process.env.PRO_PASSWORD_MONGODB,
         name: process.env.PRO_USERNAME_MONGODB,
+        dbName: process.env.PRO_DB_NAME,
     },
 };
 

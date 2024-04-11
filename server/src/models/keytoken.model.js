@@ -25,14 +25,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.keytokenModel = void 0;
 const mongoose_1 = __importStar(require("mongoose")); // Erase if already required
-const DOCUMENT_NAME = 'shop';
-const COLLECTION_NAME = 'shops';
+const DOCUMENT_NAME = 'Key';
+const COLLECTION_NAME = 'Keys';
 // Declare the Schema of the Mongo model
-let keyTokenSchema = new mongoose_1.Schema({
+const keyTokenSchema = new mongoose_1.Schema({
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
-        ref: 'Shop'
+        ref: 'shop'
     },
     publicKey: {
         type: String,
@@ -47,5 +47,5 @@ let keyTokenSchema = new mongoose_1.Schema({
     timestamps: true
 });
 //Export the model
-// export const keytokenModel: Model<IKeyToken> = mongoose.model<IKeyToken>(DOCUMENT_NAME, keyTokenSchema) || mongoose.models.test
-exports.keytokenModel = mongoose_1.default.models.shop;
+exports.keytokenModel = mongoose_1.default.model(DOCUMENT_NAME, keyTokenSchema);
+// export const keytokenModel: Model<IKeyToken> = mongoose.models.shop

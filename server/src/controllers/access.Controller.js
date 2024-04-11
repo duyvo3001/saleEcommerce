@@ -17,7 +17,6 @@ class AcessController {
     constructor() {
         this.signUp = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(`[P]::signUp`, req.body);
                 const { name, email, password, roles } = req.body;
                 return res.status(201).json(yield access_service_1.default.signUp({ name, email, password, roles }));
             }

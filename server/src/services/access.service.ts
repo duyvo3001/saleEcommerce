@@ -2,7 +2,7 @@ import { shopModel } from "../models/shop.model";
 import bcrypt from "bcrypt"
 import { generateKeyPairSync } from "crypto"
 import keyTokenService from "./keyToken.service";
-import createTokenPair from "../auth/authUtils";
+import { createTokenPair } from "../auth/authUtils";
 const RoleShop = {
     SHOP: 'SHOP',
     WRITER: 'WRITER',
@@ -33,22 +33,21 @@ class AccessService {
             })
             if (newShop) {//create prikey and pubkey
                 const { privateKey, publicKey } = generateKeyPairSync('rsa', {
-                    modulusLength: 2048,  // the length of your key in bits
+                    modulusLength: 4096,
                     publicKeyEncoding: {
-                        type: 'spki',
-                        format: 'der'
+                      type: 'spki',
+                      format: 'pem'
                     },
                     privateKeyEncoding: {
-                        type: 'pkcs8',
-                        format: 'der'
+                      type: 'pkcs8',
+                      format: 'pem'
                     }
                 });
 
                 const publicKeyString = await keyTokenService.createKeyToken({
                     userID: newShop._id.toString(),
-                    publicKey: publicKey.toString('base64')
+                    publicKey: publicKey.toString()
                 })
-                console.log('publicKeyString',publicKeyString)
 
                 if (!publicKeyString || publicKeyString == undefined) {
                     return {
@@ -64,13 +63,13 @@ class AccessService {
                     publicKey.toString(),
                     privateKey.toString()
                 )
+                console.log(`____________token` , tokens)
                 if (!tokens || tokens == undefined) {
                     return {
                         code: 'xxxx',
                         message: 'tokens error'
                     }
                 }
-                console.log('create token success :', tokens)
                 return {
                     code: 201,
                     metadata: {
