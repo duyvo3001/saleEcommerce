@@ -5,11 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const access_1 = __importDefault(require("./access"));
+const checkAuth_1 = require("../auth/checkAuth");
 const router = express_1.default.Router();
+//check apiKey
+router.use(checkAuth_1.apiKey);
+//check permissions
+router.use((0, checkAuth_1.permissions)('0000'));
 router.use('/v1/api', access_1.default);
-// router.get('/', (req: Request, res: Response, next: NextFunction) => {
-//     return res.status(200).json({
-//         message: "hello diiii"
-//     })
-// })
 exports.default = router;

@@ -1,14 +1,15 @@
-import express, { Router ,Request , Response ,NextFunction } from 'express';
+import express, { Router, Request, Response, NextFunction } from 'express';
 import routerShop from './access';
+import { apiKey, permissions } from '../auth/checkAuth';
 
-const router : Router = express.Router();
+const router: Router = express.Router();
 
-router.use('/v1/api', routerShop)  
+//check apiKey
+router.use(apiKey)
+//check permissions
+router.use(permissions('0000'))
 
-// router.get('/', (req: Request, res: Response, next: NextFunction) => {
-//     return res.status(200).json({
-//         message: "hello diiii"
-//     })
-// })
+router.use('/v1/api', routerShop)
+
 
 export default router
