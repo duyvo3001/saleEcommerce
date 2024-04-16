@@ -3,7 +3,8 @@ import { findById } from "../services/apikey.service"
 
 const HEADER = {
     API_KEY: 'x-api-key',
-    AUTHORIZATION: 'aithorization'
+    AUTHORIZATION: 'aithorization',
+    objKey: 'objKey'
 }
 declare global {
     namespace Express {
@@ -24,13 +25,16 @@ export const apiKey = async (req: Request, res: Response, next: NextFunction) =>
             })
         };
         //check objKey
-        const objKey = findById(key);
+        const objKey = await findById(key);
+
         if (!objKey) {
             return res.status(403).json({
                 message: 'Forbidden Error2'
             })
         };
-        req.headers['objKey'] = await objKey.toString();
+
+        req.headers[HEADER.objKey] = JSON.stringify(objKey)
+
         return next()
     } catch (error) {
 
@@ -40,17 +44,20 @@ export const apiKey = async (req: Request, res: Response, next: NextFunction) =>
 export const permissions = (permissions: string) => {
 
     return (req: Request, res: Response, next: NextFunction) => {
-        if (req.objKey?.permissions) {
+
+        const _objPermission: string = req.headers[HEADER.objKey]?.toString() || "undefined"
+        const jsonObject = JSON.parse(_objPermission);
+
+        if (!jsonObject?.permissions) {
             return res.status(403).json({
-                message: 'permissions denied'
+                message: 'permissions denied 1'
             })
         };
 
-        console.log('permissions ::', req.objKey)
-        const validPermissions = req.objKey?.permissions?.includes(permissions)
+        const validPermissions = jsonObject.permissions?.includes(permissions)
         if (!validPermissions) {
             return res.status(403).json({
-                message: 'permissions denied'
+                message: 'permissions denied 2'
             })
         };
 
@@ -58,3 +65,8 @@ export const permissions = (permissions: string) => {
     }
 }
 
+export const asyncHandler = (fn: Function) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        fn(req, res, next).catch(next)
+    }
+}

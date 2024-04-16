@@ -13,16 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const access_service_1 = __importDefault(require("../services/access.service"));
+const success_response_1 = require("../core/success.response");
 class AcessController {
     constructor() {
         this.signUp = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { name, email, password, roles } = req.body;
-                return res.status(201).json(yield access_service_1.default.signUp({ name, email, password, roles }));
-            }
-            catch (error) {
-                next(error);
-            }
+            const { name, email, password, roles } = req.body;
+            new success_response_1.CREATED({
+                message: 'Registed OK!',
+                metadata: yield access_service_1.default.signUp({ name, email, password, roles }),
+                options: {
+                    limit: 10
+                }
+            }).send(res);
         });
     }
 }

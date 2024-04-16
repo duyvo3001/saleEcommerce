@@ -5,7 +5,7 @@ import compression from "compression";
 import connectMongodb from "./dbs/init.mongodb"
 import { checkOverload } from "./helpers/check.connect";
 import router from "./routes";
-
+import { HttpError } from "./utils/errorhandling";
 export const app: Express = express();
 
 //init middleware
@@ -31,5 +31,20 @@ checkOverload()
 app.use('/', router)
 
 //handle errors
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+    const error = new HttpError('Not Found', 404)
+    next(error)
+})
+
+app.use((error : Error , req : Request, res : Response, next : NextFunction)=>{
+    const statusCode = 500
+
+    return res.status(statusCode).json({
+        status : 'error',
+        code: statusCode,
+        message :error.message || 'Internal Server Error'
+    })
+})
 // module.exports = app
 export default app

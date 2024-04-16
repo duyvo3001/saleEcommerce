@@ -9,11 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.permissions = exports.apiKey = void 0;
+exports.asyncHandler = exports.permissions = exports.apiKey = void 0;
 const apikey_service_1 = require("../services/apikey.service");
 const HEADER = {
     API_KEY: 'x-api-key',
-    AUTHORIZATION: 'aithorization'
+    AUTHORIZATION: 'aithorization',
+    objKey: 'objKey'
 };
 const apiKey = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -27,14 +28,14 @@ const apiKey = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         }
         ;
         //check objKey
-        const objKey = (0, apikey_service_1.findById)(key);
+        const objKey = yield (0, apikey_service_1.findById)(key);
         if (!objKey) {
             return res.status(403).json({
                 message: 'Forbidden Error2'
             });
         }
         ;
-        req.headers['objKey'] = yield objKey.toString();
+        req.headers[HEADER.objKey] = JSON.stringify(objKey);
         return next();
     }
     catch (error) {
@@ -43,18 +44,19 @@ const apiKey = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
 exports.apiKey = apiKey;
 const permissions = (permissions) => {
     return (req, res, next) => {
-        var _a, _b, _c;
-        if ((_a = req.objKey) === null || _a === void 0 ? void 0 : _a.permissions) {
+        var _a, _b;
+        const _objPermission = ((_a = req.headers[HEADER.objKey]) === null || _a === void 0 ? void 0 : _a.toString()) || "undefined";
+        const jsonObject = JSON.parse(_objPermission);
+        if (!(jsonObject === null || jsonObject === void 0 ? void 0 : jsonObject.permissions)) {
             return res.status(403).json({
-                message: 'permissions denied'
+                message: 'permissions denied 1'
             });
         }
         ;
-        console.log('permissions ::', req.objKey);
-        const validPermissions = (_c = (_b = req.objKey) === null || _b === void 0 ? void 0 : _b.permissions) === null || _c === void 0 ? void 0 : _c.includes(permissions);
+        const validPermissions = (_b = jsonObject.permissions) === null || _b === void 0 ? void 0 : _b.includes(permissions);
         if (!validPermissions) {
             return res.status(403).json({
-                message: 'permissions denied'
+                message: 'permissions denied 2'
             });
         }
         ;
@@ -62,3 +64,9 @@ const permissions = (permissions) => {
     };
 };
 exports.permissions = permissions;
+const asyncHandler = (fn) => {
+    return (req, res, next) => {
+        fn(req, res, next).catch(next);
+    };
+};
+exports.asyncHandler = asyncHandler;
