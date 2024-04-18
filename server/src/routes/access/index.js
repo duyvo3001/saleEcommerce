@@ -8,4 +8,5 @@ const access_Controller_1 = __importDefault(require("../../controllers/access.Co
 const checkAuth_1 = require("../../auth/checkAuth");
 const routerShop = express_1.default.Router();
 routerShop.post('/shop/signup', (0, checkAuth_1.asyncHandler)(access_Controller_1.default.signUp));
+routerShop.post('/shop/login', (0, checkAuth_1.asyncHandler)(access_Controller_1.default.login));
 exports.default = routerShop;

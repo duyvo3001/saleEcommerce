@@ -18,6 +18,7 @@ const crypto_1 = require("crypto");
 const keyToken_service_1 = __importDefault(require("./keyToken.service"));
 const authUtils_1 = require("../auth/authUtils");
 const error_response_1 = require("../core/error.response");
+const shop_service_1 = require("./shop.service");
 const RoleShop = {
     SHOP: 'SHOP',
     WRITER: 'WRITER',
@@ -26,12 +27,50 @@ const RoleShop = {
 };
 class AccessService {
     constructor() {
-        this.signUp = (_a) => __awaiter(this, [_a], void 0, function* ({ name, email, password, roles }) {
-            const holderShop = yield shop_model_1.shopModel.findOne({ email }).lean();
+        //1_ check email
+        //2_ match pass
+        //3_ create At and rt and save 
+        //4_ generate tokens
+        //5_ get data return login
+        this.login = (_a) => __awaiter(this, [_a], void 0, function* ({ email, password, refreshToken }) {
+            let select = {};
+            console.log(email, password, refreshToken);
+            const foundShop = yield (0, shop_service_1.findByEmail)({ email, select }); //1
+            if (!foundShop)
+                throw new error_response_1.BadRequestError(`shop not Registered`);
+            const match = yield bcrypt_1.default.compare(password, foundShop.password); //2
+            if (match == false || !match)
+                throw new error_response_1.AuthFailedError(`Authentication Failed`);
+            const { privateKey, publicKey } = (0, crypto_1.generateKeyPairSync)('rsa', {
+                modulusLength: 4096,
+                publicKeyEncoding: {
+                    type: 'spki',
+                    format: 'pem'
+                },
+                privateKeyEncoding: {
+                    type: 'pkcs8',
+                    format: 'pem'
+                }
+            });
+            const tokens = yield (0, authUtils_1.createTokenPair)(//4
+            {
+                userID: foundShop._id, email
+            }, privateKey, publicKey);
+            yield keyToken_service_1.default.createKeyToken({
+                userID: "",
+                refreshToken: " ",
+                privateKey, publicKey
+            });
+            return {
+                shop: foundShop, tokens
+            };
+        });
+        this.signUp = (_b) => __awaiter(this, [_b], void 0, function* ({ name, email, password, roles }) {
+            const holderShop = yield shop_model_1.shopModel.findOne({ email }).lean(); // find shop 
             if (holderShop) {
                 throw new error_response_1.BadRequestError('Error: Shop already Registered');
             }
-            const passwordHash = yield bcrypt_1.default.hash(password, 10);
+            const passwordHash = yield bcrypt_1.default.hash(password, 10); // hash pass
             const newShop = yield shop_model_1.shopModel.create({
                 name, email, password: passwordHash, roles: [RoleShop.SHOP]
             });
@@ -49,7 +88,9 @@ class AccessService {
                 });
                 const publicKeyString = yield keyToken_service_1.default.createKeyToken({
                     userID: newShop._id.toString(),
-                    publicKey: publicKey.toString()
+                    publicKey: publicKey.toString(),
+                    privateKey: privateKey.toString(),
+                    refreshToken: ""
                 });
                 if (!publicKeyString || publicKeyString == undefined) {
                     return {

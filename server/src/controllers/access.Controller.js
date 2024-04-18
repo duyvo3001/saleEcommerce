@@ -16,6 +16,12 @@ const access_service_1 = __importDefault(require("../services/access.service"));
 const success_response_1 = require("../core/success.response");
 class AcessController {
     constructor() {
+        this.login = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const { email, password, refreshToken } = req.body;
+            new success_response_1.SuccessResponse({
+                metadata: yield access_service_1.default.login({ email, password, refreshToken })
+            }).send(res);
+        });
         this.signUp = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             const { name, email, password, roles } = req.body;
             new success_response_1.CREATED({

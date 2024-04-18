@@ -12,17 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const keytoken_model_1 = require("../models/keytoken.model");
 class KeyTokenService {
     constructor() {
-        this.createKeyToken = (_a) => __awaiter(this, [_a], void 0, function* ({ userID, publicKey }) {
+        this.createKeyToken = (_a) => __awaiter(this, [_a], void 0, function* ({ userID, publicKey, privateKey, refreshToken }) {
             try {
-                const publicKeyString = publicKey.toString();
-                const tokens = yield keytoken_model_1.keytokenModel.create({
-                    user: userID,
-                    publicKey: publicKeyString
-                });
+                const filter = { user: userID }, update = {
+                    publicKey, privateKey, refreshTokenUsed: [], refreshToken
+                }, options = { upset: true, new: true };
+                const tokens = yield keytoken_model_1.keytokenModel.findOneAndUpdate(filter, update, options);
                 return tokens ? tokens.publicKey : null;
             }
             catch (error) {
-                console.log('error publicKeyString', error);
                 return error;
             }
         });

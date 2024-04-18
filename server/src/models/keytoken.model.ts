@@ -5,7 +5,8 @@ const COLLECTION_NAME = 'Keys'
 interface IKeyToken extends Document {
     user: mongoose.Types.ObjectId;
     publicKey: string;
-    refreshToken: string[];
+    refreshTokensUsed: string[];
+    refreshToken: string;
 }
 // Declare the Schema of the Mongo model
 const keyTokenSchema = new Schema<IKeyToken>({
@@ -18,9 +19,13 @@ const keyTokenSchema = new Schema<IKeyToken>({
         type: String,
         required: true,
     },
-    refreshToken: {
+    refreshTokensUsed: {
         type: [String],
         default: []
+    },
+    refreshToken: {
+        type: String,
+        required: true
     }
 }, {
     collection: COLLECTION_NAME,
@@ -28,5 +33,5 @@ const keyTokenSchema = new Schema<IKeyToken>({
 });
 
 //Export the model
-export const keytokenModel : Model<IKeyToken> = mongoose.model<IKeyToken>(DOCUMENT_NAME, keyTokenSchema)
+export const keytokenModel: Model<IKeyToken> = mongoose.model<IKeyToken>(DOCUMENT_NAME, keyTokenSchema)
 // export const keytokenModel: Model<IKeyToken> = mongoose.models.shop

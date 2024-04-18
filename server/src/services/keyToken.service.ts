@@ -2,21 +2,22 @@ import { keytokenModel } from "../models/keytoken.model"
 
 interface User {
     userID: string,
-    publicKey: string
+    publicKey: string,
+    privateKey: string,
+    refreshToken: string
 }
 class KeyTokenService {
-    createKeyToken = async ({ userID, publicKey }: User) => {
+    createKeyToken = async ({ userID, publicKey, privateKey, refreshToken }: User) => {
         try {
-            const publicKeyString = publicKey.toString();
-       
-            const tokens = await keytokenModel.create({
-                user: userID , 
-                publicKey: publicKeyString
-            })
-            
+            const filter = { user: userID }, update = {
+                publicKey, privateKey, refreshTokenUsed: [], refreshToken
+            }, options = { upset: true, new: true }
+
+            const tokens = await keytokenModel.findOneAndUpdate(filter, update, options)
+
             return tokens ? tokens.publicKey : null
+
         } catch (error) {
-            console.log('error publicKeyString' , error)
             return error
         }
     }

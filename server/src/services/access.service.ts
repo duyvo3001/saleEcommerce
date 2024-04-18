@@ -3,7 +3,7 @@ import bcrypt from "bcrypt"
 import { generateKeyPairSync } from "crypto"
 import keyTokenService from "./keyToken.service";
 import { createTokenPair } from "../auth/authUtils";
-import { BadRequestError } from "../core/error.response";
+import { AuthFailedError, BadRequestError } from "../core/error.response";
 import { findByEmail } from "./shop.service";
 
 const RoleShop = {
@@ -19,35 +19,70 @@ interface SignUpParams {
     roles: []; // Assuming roles is an array of strings, adjust if necessary
 }
 interface LoginParams {
-    name: string;
     password: string;
     refreshToken: string;
     email: string;
 }
 
 class AccessService {
-    static login = async ({ email, password, refreshToken }: LoginParams) => {
-        let select = {}
-        const foundShop = await findByEmail({ email, select })
-        if(!foundShop) throw new BadRequestError(`shop not Re ${email}`)
-        
-        const match = bcrypt.compare(password , foundShop.password)
 
-        if(!match) throw new AuthFailedError(``)
+    //1_ check email
+    //2_ match pass
+    //3_ create At and rt and save 
+    //4_ generate tokens
+    //5_ get data return login
+    login = async ({ email, password, refreshToken }: LoginParams) => {
+        let select = {}
+        console.log(email, password, refreshToken)
+        const foundShop = await findByEmail({ email, select })//1
+        if (!foundShop) throw new BadRequestError(`shop not Registered`)
+
+        const match = await bcrypt.compare(password, foundShop.password)//2
+
+        if (match == false || !match) throw new AuthFailedError(`Authentication Failed`)
+
+        const { privateKey, publicKey } = generateKeyPairSync('rsa', {//3
+            modulusLength: 4096,
+            publicKeyEncoding: {
+                type: 'spki',
+                format: 'pem'
+            },
+            privateKeyEncoding: {
+                type: 'pkcs8',
+                format: 'pem'
+            }
+        });
+
+        const tokens = await createTokenPair(//4
+            {
+                userID: foundShop._id, email
+            },
+            privateKey, publicKey
+        )
+
+        await keyTokenService.createKeyToken({
+            userID: "",
+            refreshToken: " ",
+            privateKey, publicKey
+        })
+        return {
+            shop: foundShop, tokens
+        }
     }
 
     signUp = async ({ name, email, password, roles }: SignUpParams) => {
 
-        const holderShop = await shopModel.findOne({ email }).lean()
+        const holderShop = await shopModel.findOne({ email }).lean() // find shop 
 
         if (holderShop) {
             throw new BadRequestError('Error: Shop already Registered')
         }
-        const passwordHash = await bcrypt.hash(password, 10)
+        const passwordHash = await bcrypt.hash(password, 10) // hash pass
 
         const newShop = await shopModel.create({
             name, email, password: passwordHash, roles: [RoleShop.SHOP]
         })
+
         if (newShop) {//create prikey and pubkey
             const { privateKey, publicKey } = generateKeyPairSync('rsa', {
                 modulusLength: 4096,
@@ -63,7 +98,9 @@ class AccessService {
 
             const publicKeyString = await keyTokenService.createKeyToken({
                 userID: newShop._id.toString(),
-                publicKey: publicKey.toString()
+                publicKey: publicKey.toString(),
+                privateKey: privateKey.toString(),
+                refreshToken: ""
             })
 
             if (!publicKeyString || publicKeyString == undefined) {

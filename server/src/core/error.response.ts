@@ -7,7 +7,7 @@ const StatusCode = {
 const ReasonStatusCode = {
     FORBIDDEN: 'Bad Request error',
     CONFLICT: 'conflict error',
-    UNAUTHORIZED :
+    UNAUTHORIZED :''
 }
 
 class ErrorResponse extends Error {

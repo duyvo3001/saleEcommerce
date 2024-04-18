@@ -4,5 +4,6 @@ import { asyncHandler } from '../../auth/checkAuth';
 const routerShop = express.Router();
 
 routerShop.post('/shop/signup',asyncHandler(accessController.signUp))
+routerShop.post('/shop/login',asyncHandler(accessController.login))
 
 export default routerShop
