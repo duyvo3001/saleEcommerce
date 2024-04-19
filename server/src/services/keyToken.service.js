@@ -17,7 +17,9 @@ class KeyTokenService {
                 const filter = { user: userID }, update = {
                     publicKey, privateKey, refreshTokenUsed: [], refreshToken
                 }, options = { upset: true, new: true };
+                console.log(filter, update, options);
                 const tokens = yield keytoken_model_1.keytokenModel.findOneAndUpdate(filter, update, options);
+                console.log("toekn _________________________________________________________________________________________==", tokens);
                 return tokens ? tokens.publicKey : null;
             }
             catch (error) {

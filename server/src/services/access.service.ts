@@ -57,14 +57,15 @@ class AccessService {
             {
                 userID: foundShop._id, email
             },
-            privateKey, publicKey
+            publicKey, privateKey,
         )
 
         await keyTokenService.createKeyToken({
-            userID: "",
-            refreshToken: " ",
-            privateKey, publicKey
+            userID: foundShop._id,
+            privateKey, publicKey,
+            refreshToken: tokens.refreshToken
         })
+
         return {
             shop: foundShop, tokens
         }

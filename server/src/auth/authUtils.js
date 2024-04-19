@@ -15,26 +15,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createTokenPair = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const createTokenPair = (payload, publicKey, privateKey) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        // accesstoken 
-        const accessToken = yield jsonwebtoken_1.default.sign(payload, privateKey, {
-            algorithm: 'RS256',
-            expiresIn: '1h'
-        });
-        // refreshtoken 
-        const refreshToken = yield jsonwebtoken_1.default.sign(payload, privateKey, {
-            algorithm: 'RS256',
-            expiresIn: '12h'
-        });
-        jsonwebtoken_1.default.verify(accessToken, publicKey, (err, decode) => {
-            if (err)
-                console.log(`error verify`, err);
-            else
-                console.log(`decode verify`, decode);
-        });
-        return { accessToken, refreshToken };
-    }
-    catch (error) {
-    }
+    console.log(payload, publicKey, privateKey);
+    // accesstoken 
+    const accessToken = yield jsonwebtoken_1.default.sign(payload, privateKey, {
+        algorithm: 'RS256',
+        expiresIn: '1h'
+    });
+    console.log('accessToken__________', accessToken);
+    // refreshtoken 
+    const refreshToken = yield jsonwebtoken_1.default.sign(payload, privateKey, {
+        algorithm: 'RS256',
+        expiresIn: '12h'
+    });
+    console.log('refreshToken_________', refreshToken);
+    jsonwebtoken_1.default.verify(accessToken, publicKey, (err, decode) => {
+        if (err)
+            console.log(`error verify`, err);
+        else
+            console.log(`decode verify`, decode);
+    });
+    return { accessToken, refreshToken };
 });
 exports.createTokenPair = createTokenPair;

@@ -1,16 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthFailedError = exports.BadRequestError = exports.ConflictRequestError = void 0;
-const StatusCode = {
-    FORBIDDEN: 403,
-    CONFLICT: 409,
-    UNAUTHORIZED: 401
-};
-const ReasonStatusCode = {
-    FORBIDDEN: 'Bad Request error',
-    CONFLICT: 'conflict error',
-    UNAUTHORIZED: ''
-};
+const { StatusCodes, ReasonPhrases } = require('../utils/httpStatusCode');
 class ErrorResponse extends Error {
     constructor(message, status) {
         super(message);
@@ -18,19 +9,19 @@ class ErrorResponse extends Error {
     }
 }
 class ConflictRequestError extends ErrorResponse {
-    constructor(message = ReasonStatusCode.CONFLICT, statusCode = StatusCode.FORBIDDEN) {
+    constructor(message = ReasonPhrases.CONFLICT, statusCode = StatusCodes.FORBIDDEN) {
         super(message, statusCode);
     }
 }
 exports.ConflictRequestError = ConflictRequestError;
 class BadRequestError extends ErrorResponse {
-    constructor(message = ReasonStatusCode.CONFLICT, statusCode = StatusCode.FORBIDDEN) {
+    constructor(message = ReasonPhrases.CONFLICT, statusCode = StatusCodes.FORBIDDEN) {
         super(message, statusCode);
     }
 }
 exports.BadRequestError = BadRequestError;
 class AuthFailedError extends ErrorResponse {
-    constructor(message = ReasonStatusCode.UNAUTHORIZED, statusCode = StatusCode.UNAUTHORIZED) {
+    constructor(message = ReasonPhrases.UNAUTHORIZED, statusCode = StatusCodes.UNAUTHORIZED) {
         super(message, statusCode);
     }
 }

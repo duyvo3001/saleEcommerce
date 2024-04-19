@@ -55,11 +55,11 @@ class AccessService {
             const tokens = yield (0, authUtils_1.createTokenPair)(//4
             {
                 userID: foundShop._id, email
-            }, privateKey, publicKey);
+            }, publicKey, privateKey);
             yield keyToken_service_1.default.createKeyToken({
-                userID: "",
-                refreshToken: " ",
-                privateKey, publicKey
+                userID: foundShop._id,
+                privateKey, publicKey,
+                refreshToken: tokens.refreshToken
             });
             return {
                 shop: foundShop, tokens
