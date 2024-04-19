@@ -1,11 +1,12 @@
-import mongoose, { Schema, Document, Model } from 'mongoose' // Erase if already required
+import mongoose, { Schema, Document, Model } from 'mongoose' 
 
 const DOCUMENT_NAME = 'Key'
 const COLLECTION_NAME = 'Keys'
 interface IKeyToken extends Document {
     user: mongoose.Types.ObjectId;
     publicKey: string;
-    refreshTokensUsed: string[];
+    privateKey: string;
+    refreshTokensUsed: [String];
     refreshToken: string;
 }
 // Declare the Schema of the Mongo model
@@ -16,6 +17,10 @@ const keyTokenSchema = new Schema<IKeyToken>({
         ref: 'shop'
     },
     publicKey: {
+        type: String,
+        required: true,
+    },
+    privateKey: {
         type: String,
         required: true,
     },

@@ -24,7 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.keytokenModel = void 0;
-const mongoose_1 = __importStar(require("mongoose")); // Erase if already required
+const mongoose_1 = __importStar(require("mongoose"));
 const DOCUMENT_NAME = 'Key';
 const COLLECTION_NAME = 'Keys';
 // Declare the Schema of the Mongo model
@@ -35,6 +35,10 @@ const keyTokenSchema = new mongoose_1.Schema({
         ref: 'shop'
     },
     publicKey: {
+        type: String,
+        required: true,
+    },
+    privateKey: {
         type: String,
         required: true,
     },

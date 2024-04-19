@@ -34,7 +34,6 @@ class AccessService {
         //5_ get data return login
         this.login = (_a) => __awaiter(this, [_a], void 0, function* ({ email, password, refreshToken }) {
             let select = {};
-            console.log(email, password, refreshToken);
             const foundShop = yield (0, shop_service_1.findByEmail)({ email, select }); //1
             if (!foundShop)
                 throw new error_response_1.BadRequestError(`shop not Registered`);
@@ -56,9 +55,10 @@ class AccessService {
             {
                 userID: foundShop._id, email
             }, publicKey, privateKey);
-            yield keyToken_service_1.default.createKeyToken({
+            const tesst = yield keyToken_service_1.default.createKeyToken({
                 userID: foundShop._id,
-                privateKey, publicKey,
+                privateKey,
+                publicKey,
                 refreshToken: tokens.refreshToken
             });
             return {

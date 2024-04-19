@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 
 export const createTokenPair = async (payload: {}, publicKey: string, privateKey: string) => {
-    console.log(payload, publicKey, privateKey)
+
     // accesstoken 
     const accessToken: string = await jwt.sign(payload, privateKey, {
         algorithm: 'RS256',

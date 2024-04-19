@@ -14,12 +14,13 @@ class KeyTokenService {
     constructor() {
         this.createKeyToken = (_a) => __awaiter(this, [_a], void 0, function* ({ userID, publicKey, privateKey, refreshToken }) {
             try {
-                const filter = { user: userID }, update = {
+                console.log("userID: ", typeof userID);
+                const update = {
                     publicKey, privateKey, refreshTokenUsed: [], refreshToken
-                }, options = { upset: true, new: true };
-                console.log(filter, update, options);
+                };
+                const filter = { user: userID };
+                const options = { upsert: true, new: true };
                 const tokens = yield keytoken_model_1.keytokenModel.findOneAndUpdate(filter, update, options);
-                console.log("toekn _________________________________________________________________________________________==", tokens);
                 return tokens ? tokens.publicKey : null;
             }
             catch (error) {

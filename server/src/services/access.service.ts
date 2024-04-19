@@ -33,7 +33,7 @@ class AccessService {
     //5_ get data return login
     login = async ({ email, password, refreshToken }: LoginParams) => {
         let select = {}
-        console.log(email, password, refreshToken)
+
         const foundShop = await findByEmail({ email, select })//1
         if (!foundShop) throw new BadRequestError(`shop not Registered`)
 
@@ -62,7 +62,8 @@ class AccessService {
 
         await keyTokenService.createKeyToken({
             userID: foundShop._id,
-            privateKey, publicKey,
+            privateKey,
+            publicKey,
             refreshToken: tokens.refreshToken
         })
 
