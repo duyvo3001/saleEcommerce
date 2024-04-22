@@ -25,7 +25,9 @@ interface LoginParams {
 }
 
 class AccessService {
-
+    // logout = async ({email,password,refreshToken=null}) => {
+        
+    // }
     //1_ check email
     //2_ match pass
     //3_ create At and rt and save 
@@ -66,7 +68,7 @@ class AccessService {
             publicKey,
             refreshToken: tokens.refreshToken
         })
-
+        
         return {
             shop: foundShop, tokens
         }

@@ -27,6 +27,8 @@ const RoleShop = {
 };
 class AccessService {
     constructor() {
+        // logout = async ({email,password,refreshToken=null}) => {
+        // }
         //1_ check email
         //2_ match pass
         //3_ create At and rt and save 
@@ -55,7 +57,7 @@ class AccessService {
             {
                 userID: foundShop._id, email
             }, publicKey, privateKey);
-            const tesst = yield keyToken_service_1.default.createKeyToken({
+            yield keyToken_service_1.default.createKeyToken({
                 userID: foundShop._id,
                 privateKey,
                 publicKey,

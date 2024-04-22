@@ -3,16 +3,21 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "compile": "tsc",
     "dev": "nodemon --exec npx ts-node server.ts",
     "build": "npx tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/preset-typescript": "^7.24.1",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.12.4",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
     "typescript": "^5.4.4"
   },
   "dependencies": {

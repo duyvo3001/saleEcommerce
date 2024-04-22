@@ -14,7 +14,6 @@ class KeyTokenService {
     constructor() {
         this.createKeyToken = (_a) => __awaiter(this, [_a], void 0, function* ({ userID, publicKey, privateKey, refreshToken }) {
             try {
-                console.log("userID: ", typeof userID);
                 const update = {
                     publicKey, privateKey, refreshTokenUsed: [], refreshToken
                 };
