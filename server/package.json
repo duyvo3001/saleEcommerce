@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "compile": "tsc",
     "dev": "nodemon --exec npx ts-node server.ts",
-    "build": "npx tsc",
+    "build": "tsc",
     "test": "jest"
   },
   "keywords": [],
