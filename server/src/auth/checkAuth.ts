@@ -17,7 +17,7 @@ declare global {
 }
 export const apiKey = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const headers = new Headers();
+        // const headers = new Headers();
         const key = req.headers[HEADER.API_KEY]?.toString()
         if (!key) {
             return res.status(403).json({
@@ -65,8 +65,3 @@ export const permissions = (permissions: string) => {
     }
 }
 
-export const asyncHandler = (fn: Function) => {
-    return (req: Request, res: Response, next: NextFunction) => {
-        fn(req, res, next).catch(next)
-    }
-}

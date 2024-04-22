@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthFailedError = exports.BadRequestError = exports.ConflictRequestError = void 0;
+exports.NotFoundError = exports.AuthFailedError = exports.BadRequestError = exports.ConflictRequestError = void 0;
 const { StatusCodes, ReasonPhrases } = require('../utils/httpStatusCode');
 class ErrorResponse extends Error {
     constructor(message, status) {
@@ -26,4 +26,10 @@ class AuthFailedError extends ErrorResponse {
     }
 }
 exports.AuthFailedError = AuthFailedError;
+class NotFoundError extends ErrorResponse {
+    constructor(message = ReasonPhrases.NOT_FOUND, statusCode = StatusCodes.NOT_FOUND) {
+        super(message, statusCode);
+    }
+}
+exports.NotFoundError = NotFoundError;
 //# sourceMappingURL=error.response.js.map

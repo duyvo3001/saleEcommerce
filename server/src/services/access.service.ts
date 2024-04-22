@@ -1,10 +1,11 @@
-import { shopModel } from "../models/shop.model";
 import bcrypt from "bcrypt"
-import { generateKeyPairSync } from "crypto"
 import keyTokenService from "./keyToken.service";
+import { shopModel } from "../models/shop.model";
+import { generateKeyPairSync } from "crypto"
 import { createTokenPair } from "../auth/authUtils";
 import { AuthFailedError, BadRequestError } from "../core/error.response";
 import { findByEmail } from "./shop.service";
+import { NextFunction, Request, Response } from "express"
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -25,14 +26,23 @@ interface LoginParams {
 }
 
 class AccessService {
-    // logout = async ({email,password,refreshToken=null}) => {
+
+    logout = async (keyStore: Request) => {
+        console.log(keyStore);
         
-    // }
-    //1_ check email
-    //2_ match pass
-    //3_ create At and rt and save 
-    //4_ generate tokens
-    //5_ get data return login
+        //1_ check email
+        //2_ match pass
+        //3_ create At and rt and save 
+        //4_ generate tokens
+        //5_ get data return login
+
+        // const delKey = await keyTokenService.removeKeyById(keyStore)
+        // console.log(delKey);
+
+        // return delKey
+        return "hello"
+    }
+
     login = async ({ email, password, refreshToken }: LoginParams) => {
         let select = {}
 
@@ -68,7 +78,7 @@ class AccessService {
             publicKey,
             refreshToken: tokens.refreshToken
         })
-        
+
         return {
             shop: foundShop, tokens
         }

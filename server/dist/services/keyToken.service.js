@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const keytoken_model_1 = require("../models/keytoken.model");
+const mongoose_1 = require("mongoose");
 class KeyTokenService {
     constructor() {
         this.createKeyToken = (_a) => __awaiter(this, [_a], void 0, function* ({ userID, publicKey, privateKey, refreshToken }) {
@@ -25,6 +26,12 @@ class KeyTokenService {
             catch (error) {
                 return error;
             }
+        });
+        this.findByUserID = (userId) => __awaiter(this, void 0, void 0, function* () {
+            return yield keytoken_model_1.keytokenModel.findOne({ user: new mongoose_1.Types.ObjectId(userId) }).lean();
+        });
+        this.removeKeyById = (id) => __awaiter(this, void 0, void 0, function* () {
+            return yield keytoken_model_1.keytokenModel.deleteOne({ _id: id });
         });
     }
 }

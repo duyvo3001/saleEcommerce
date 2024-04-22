@@ -1,4 +1,5 @@
 import { keytokenModel } from "../models/keytoken.model"
+import { Types } from "mongoose"
 interface User {
     userID: string,
     publicKey: string,
@@ -22,6 +23,15 @@ class KeyTokenService {
             return error
         }
     }
+
+    findByUserID = async (userId: string) => {
+        return await keytokenModel.findOne({ user: new Types.ObjectId(userId) }).lean()
+    }
+
+    removeKeyById = async (id: string) => {
+        return await keytokenModel.deleteOne({ _id: id })
+    }
+
 }
 
 export default new KeyTokenService()

@@ -16,6 +16,12 @@ const access_service_1 = __importDefault(require("../services/access.service"));
 const success_response_1 = require("../core/success.response");
 class AcessController {
     constructor() {
+        this.logout = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            new success_response_1.SuccessResponse({
+                message: "logout Success",
+                metadata: yield access_service_1.default.logout(req)
+            }).send(res);
+        });
         this.login = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             const { email, password, refreshToken } = req.body;
             new success_response_1.SuccessResponse({

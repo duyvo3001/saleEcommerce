@@ -12,10 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const shop_model_1 = require("../models/shop.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const crypto_1 = require("crypto");
 const keyToken_service_1 = __importDefault(require("./keyToken.service"));
+const shop_model_1 = require("../models/shop.model");
+const crypto_1 = require("crypto");
 const authUtils_1 = require("../auth/authUtils");
 const error_response_1 = require("../core/error.response");
 const shop_service_1 = require("./shop.service");
@@ -27,13 +27,18 @@ const RoleShop = {
 };
 class AccessService {
     constructor() {
-        // logout = async ({email,password,refreshToken=null}) => {
-        // }
-        //1_ check email
-        //2_ match pass
-        //3_ create At and rt and save 
-        //4_ generate tokens
-        //5_ get data return login
+        this.logout = (keyStore) => __awaiter(this, void 0, void 0, function* () {
+            console.log(keyStore);
+            //1_ check email
+            //2_ match pass
+            //3_ create At and rt and save 
+            //4_ generate tokens
+            //5_ get data return login
+            // const delKey = await keyTokenService.removeKeyById(keyStore)
+            // console.log(delKey);
+            // return delKey
+            return "hello";
+        });
         this.login = (_a) => __awaiter(this, [_a], void 0, function* ({ email, password, refreshToken }) {
             let select = {};
             const foundShop = yield (0, shop_service_1.findByEmail)({ email, select }); //1

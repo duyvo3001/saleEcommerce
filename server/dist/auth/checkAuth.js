@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.asyncHandler = exports.permissions = exports.apiKey = void 0;
+exports.permissions = exports.apiKey = void 0;
 const apikey_service_1 = require("../services/apikey.service");
 const HEADER = {
     API_KEY: 'x-api-key',
@@ -19,7 +19,7 @@ const HEADER = {
 const apiKey = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        const headers = new Headers();
+        // const headers = new Headers();
         const key = (_a = req.headers[HEADER.API_KEY]) === null || _a === void 0 ? void 0 : _a.toString();
         if (!key) {
             return res.status(403).json({
@@ -64,10 +64,4 @@ const permissions = (permissions) => {
     };
 };
 exports.permissions = permissions;
-const asyncHandler = (fn) => {
-    return (req, res, next) => {
-        fn(req, res, next).catch(next);
-    };
-};
-exports.asyncHandler = asyncHandler;
 //# sourceMappingURL=checkAuth.js.map

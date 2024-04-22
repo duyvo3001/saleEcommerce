@@ -3,7 +3,13 @@ import accessService from "../services/access.service";
 import { CREATED, SuccessResponse } from "../core/success.response";
 
 class AcessController {
+    logout = async (req: Request, res: Response, next: NextFunction) => {
 
+        new SuccessResponse({
+            message: "logout Success",
+            metadata: await accessService.logout(req)
+        }).send(res)
+    }
     login = async (req: Request, res: Response, next: NextFunction) => {
         const { email, password, refreshToken } = req.body
 
