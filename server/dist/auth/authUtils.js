@@ -59,7 +59,6 @@ exports.authentication = (0, asyncHandler_1.asyncHandler)((req, res, next) => __
         throw new error_response_1.AuthFailedError('invalid Request');
     //#2
     const keyStore = yield keyToken_service_1.default.findByUserID(userIdREQ);
-    console.log(`keyStore`, keyStore === null || keyStore === void 0 ? void 0 : keyStore._id);
     if (!keyStore || "")
         throw new error_response_1.NotFoundError('Not found keystore');
     //#3 
@@ -70,8 +69,7 @@ exports.authentication = (0, asyncHandler_1.asyncHandler)((req, res, next) => __
         const User = jsonwebtoken_1.default.verify(accessToken, keyStore.publicKey);
         if (userIdREQ !== User.userID)
             throw new error_response_1.AuthFailedError('invalid userId');
-        // req.keyStore = keyStore 
-        req.headers[HEADER.keyStore] = JSON.stringify(keyStore === null || keyStore === void 0 ? void 0 : keyStore._id);
+        req.headers[HEADER.keyStore] = keyStore === null || keyStore === void 0 ? void 0 : keyStore._id;
         return next();
     }
     catch (error) {

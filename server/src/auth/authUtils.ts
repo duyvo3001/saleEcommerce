@@ -54,7 +54,7 @@ export const authentication = asyncHandler(async (req: Request, res: Response, n
 
     //#2
     const keyStore = await keyTokenService.findByUserID(userIdREQ)
-    console.log(`keyStore`, keyStore?._id)
+
     if (!keyStore || "") throw new NotFoundError('Not found keystore')
 
     //#3 
@@ -62,13 +62,13 @@ export const authentication = asyncHandler(async (req: Request, res: Response, n
 
     if (!accessToken || "") throw new AuthFailedError('invalid Request')
 
-    try {
-        const User : UserIDJwtPayload  = jwt.verify(accessToken, keyStore.publicKey) as UserIDJwtPayload
+    try {//#4
+        const User: UserIDJwtPayload = jwt.verify(accessToken, keyStore.publicKey) as UserIDJwtPayload
 
-        if (userIdREQ !== User.userID) throw new AuthFailedError('invalid userId')
-        // req.keyStore = keyStore 
-        req.headers[HEADER.keyStore] = JSON.stringify(keyStore?._id)
-        return next()
+        if (userIdREQ !== User.userID) throw new AuthFailedError('invalid userId')//#5
+
+        req.headers[HEADER.keyStore] = keyStore?._id
+        return next()//#6
     } catch (error) {
         throw error
     }

@@ -36,7 +36,7 @@ class AccessService {
         this.logout = (keyStore) => __awaiter(this, void 0, void 0, function* () {
             var _a;
             const id = ((_a = keyStore.headers[HEADER.keyStore]) === null || _a === void 0 ? void 0 : _a.toString()) || "";
-            // console.log(new Types.ObjectId(id));
+            // console.log(keyStore.headers[HEADER.keyStore]);
             //1_ check email
             //2_ match pass
             //3_ create At and rt and save 

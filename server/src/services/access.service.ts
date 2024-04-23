@@ -35,20 +35,19 @@ class AccessService {
 
     logout = async (keyStore: Request) => {
         const id: string = keyStore.headers[HEADER.keyStore]?.toString() || ""
-        // console.log(new Types.ObjectId(id));
-        
+        // console.log(keyStore.headers[HEADER.keyStore]);
+
         //1_ check email
         //2_ match pass
         //3_ create At and rt and save 
         //4_ generate tokens
         //5_ get data return login
 
-        const delKey = await keyTokenService.removeKeyById(id) // remove id from key store
-        console.log(delKey);
+        await keyTokenService.removeKeyById(id) // remove id from key store
 
         // return delKey
         return {
-            message : "logout success"
+            message: "logout success"
         }
     }
 
