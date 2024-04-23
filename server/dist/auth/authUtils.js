@@ -21,7 +21,7 @@ const HEADER = {
     API_KEY: 'x-api-key',
     CLIENT_ID: 'x-client-id',
     AUTHORIZATION: 'authorization',
-    objKey: 'objKey'
+    keyStore: 'keyStore'
 };
 const createTokenPair = (payload, publicKey, privateKey) => __awaiter(void 0, void 0, void 0, function* () {
     // accesstoken 
@@ -54,23 +54,24 @@ exports.authentication = (0, asyncHandler_1.asyncHandler)((req, res, next) => __
         6 - ok all  => return next()
     */
     //#1
-    const userId = (_a = req.headers[HEADER.CLIENT_ID]) === null || _a === void 0 ? void 0 : _a.toString();
-    if (!userId || "")
+    const userIdREQ = (_a = req.headers[HEADER.CLIENT_ID]) === null || _a === void 0 ? void 0 : _a.toString();
+    if (!userIdREQ || "")
         throw new error_response_1.AuthFailedError('invalid Request');
     //#2
-    const keyStore = yield keyToken_service_1.default.findByUserID(userId);
+    const keyStore = yield keyToken_service_1.default.findByUserID(userIdREQ);
+    console.log(`keyStore`, keyStore === null || keyStore === void 0 ? void 0 : keyStore._id);
     if (!keyStore || "")
         throw new error_response_1.NotFoundError('Not found keystore');
     //#3 
     const accessToken = (_b = req.headers[HEADER.AUTHORIZATION]) === null || _b === void 0 ? void 0 : _b.toString();
-    console.log("accessToken~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", accessToken);
     if (!accessToken || "")
         throw new error_response_1.AuthFailedError('invalid Request');
     try {
-        const decodeUser = jsonwebtoken_1.default.verify(accessToken, keyStore.publicKey);
-        if (userId !== decodeUser)
+        const User = jsonwebtoken_1.default.verify(accessToken, keyStore.publicKey);
+        if (userIdREQ !== User.userID)
             throw new error_response_1.AuthFailedError('invalid userId');
         // req.keyStore = keyStore 
+        req.headers[HEADER.keyStore] = JSON.stringify(keyStore === null || keyStore === void 0 ? void 0 : keyStore._id);
         return next();
     }
     catch (error) {

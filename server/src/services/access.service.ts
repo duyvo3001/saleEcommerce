@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import bcrypt from "bcrypt"
 import keyTokenService from "./keyToken.service";
 import { shopModel } from "../models/shop.model";
@@ -24,11 +25,17 @@ interface LoginParams {
     refreshToken: string;
     email: string;
 }
-
+const HEADER = {
+    API_KEY: 'x-api-key',
+    CLIENT_ID: 'x-client-id',
+    AUTHORIZATION: 'authorization',
+    keyStore: 'keyStore'
+}
 class AccessService {
 
     logout = async (keyStore: Request) => {
-        console.log(keyStore);
+        const id: string = keyStore.headers[HEADER.keyStore]?.toString() || ""
+        // console.log(new Types.ObjectId(id));
         
         //1_ check email
         //2_ match pass
@@ -36,11 +43,13 @@ class AccessService {
         //4_ generate tokens
         //5_ get data return login
 
-        // const delKey = await keyTokenService.removeKeyById(keyStore)
-        // console.log(delKey);
+        const delKey = await keyTokenService.removeKeyById(id) // remove id from key store
+        console.log(delKey);
 
         // return delKey
-        return "hello"
+        return {
+            message : "logout success"
+        }
     }
 
     login = async ({ email, password, refreshToken }: LoginParams) => {

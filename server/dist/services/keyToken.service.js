@@ -31,7 +31,7 @@ class KeyTokenService {
             return yield keytoken_model_1.keytokenModel.findOne({ user: new mongoose_1.Types.ObjectId(userId) }).lean();
         });
         this.removeKeyById = (id) => __awaiter(this, void 0, void 0, function* () {
-            return yield keytoken_model_1.keytokenModel.deleteOne({ _id: id });
+            return yield keytoken_model_1.keytokenModel.deleteOne({ _id: new mongoose_1.Types.ObjectId(id) });
         });
     }
 }

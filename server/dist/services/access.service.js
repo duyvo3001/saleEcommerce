@@ -25,21 +25,31 @@ const RoleShop = {
     EDITOR: 'EDITOR',
     ADMIN: 'ADMIN',
 };
+const HEADER = {
+    API_KEY: 'x-api-key',
+    CLIENT_ID: 'x-client-id',
+    AUTHORIZATION: 'authorization',
+    keyStore: 'keyStore'
+};
 class AccessService {
     constructor() {
         this.logout = (keyStore) => __awaiter(this, void 0, void 0, function* () {
-            console.log(keyStore);
+            var _a;
+            const id = ((_a = keyStore.headers[HEADER.keyStore]) === null || _a === void 0 ? void 0 : _a.toString()) || "";
+            // console.log(new Types.ObjectId(id));
             //1_ check email
             //2_ match pass
             //3_ create At and rt and save 
             //4_ generate tokens
             //5_ get data return login
-            // const delKey = await keyTokenService.removeKeyById(keyStore)
-            // console.log(delKey);
+            const delKey = yield keyToken_service_1.default.removeKeyById(id); // remove id from key store
+            console.log(delKey);
             // return delKey
-            return "hello";
+            return {
+                message: "logout success"
+            };
         });
-        this.login = (_a) => __awaiter(this, [_a], void 0, function* ({ email, password, refreshToken }) {
+        this.login = (_b) => __awaiter(this, [_b], void 0, function* ({ email, password, refreshToken }) {
             let select = {};
             const foundShop = yield (0, shop_service_1.findByEmail)({ email, select }); //1
             if (!foundShop)
@@ -72,7 +82,7 @@ class AccessService {
                 shop: foundShop, tokens
             };
         });
-        this.signUp = (_b) => __awaiter(this, [_b], void 0, function* ({ name, email, password, roles }) {
+        this.signUp = (_c) => __awaiter(this, [_c], void 0, function* ({ name, email, password, roles }) {
             const holderShop = yield shop_model_1.shopModel.findOne({ email }).lean(); // find shop 
             if (holderShop) {
                 throw new error_response_1.BadRequestError('Error: Shop already Registered');
