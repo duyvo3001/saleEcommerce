@@ -13,9 +13,6 @@ const HEADER = {
 interface UserIDJwtPayload extends jwt.JwtPayload {
     userID: string
 }
-interface IUser {
-    userId: string
-}
 export const createTokenPair = async (payload: {}, publicKey: string, privateKey: string) => {
 
     // accesstoken 
@@ -75,4 +72,6 @@ export const authentication = asyncHandler(async (req: Request, res: Response, n
 
 })
 
-
+export const verifyJWT = async(token : string , keySecret : string)=>{
+    return await jwt.verify(token, keySecret)
+}

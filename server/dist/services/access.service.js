@@ -33,6 +33,56 @@ const HEADER = {
 };
 class AccessService {
     constructor() {
+        /*
+            TODO check this token used
+        */
+        this.handlerRefreshToken = (refreshToken) => __awaiter(this, void 0, void 0, function* () {
+            const foundToken = yield keyToken_service_1.default.findRefreshTokenUsed(refreshToken);
+            console.log(foundToken);
+            if (foundToken) {
+                /*
+                    TODO: who used token
+                */
+                const { userId, email } = yield (0, authUtils_1.verifyJWT)(refreshToken, foundToken.privateKey);
+                /*
+                    !delete userid in keytokens
+                    TODO in future at func handle this to email
+                */
+                yield keyToken_service_1.default.deleteKeyById(userId);
+                //
+                throw new error_response_1.ForbiddenError('Something went wrong ! Please relogin');
+            }
+            /*
+                * if dont have a token
+            */
+            const holderToken = yield keyToken_service_1.default.findRefreshToken(refreshToken);
+            if (!holderToken)
+                throw new error_response_1.AuthFailedError('Shop not Registered 1');
+            /*
+                * verify token
+            */
+            const { userId, email } = yield (0, authUtils_1.verifyJWT)(refreshToken, holderToken.privateKey);
+            /*
+                * check userId
+            */
+            let select = {};
+            const foundShop = yield (0, shop_service_1.findByEmail)({ email, select });
+            if (!foundShop)
+                throw new error_response_1.AuthFailedError('Shop not Registered 2');
+            /*
+                * create new token
+            */
+            const tokens = yield (0, authUtils_1.createTokenPair)({ userId, email }, holderToken.publicKey, holderToken.privateKey);
+            /*
+                ? update token
+            */
+            const test = yield keyToken_service_1.default.updateRefreshToken({ refreshToken: tokens.refreshToken, refreshTokensUsed: refreshToken, userId });
+            console.log(test);
+            return {
+                user: { userId, email },
+                tokens
+            };
+        });
         this.logout = (keyStore) => __awaiter(this, void 0, void 0, function* () {
             var _a;
             const id = ((_a = keyStore.headers[HEADER.keyStore]) === null || _a === void 0 ? void 0 : _a.toString()) || "";
@@ -42,8 +92,7 @@ class AccessService {
             //3_ create At and rt and save 
             //4_ generate tokens
             //5_ get data return login
-            const delKey = yield keyToken_service_1.default.removeKeyById(id); // remove id from key store
-            console.log(delKey);
+            yield keyToken_service_1.default.removeKeyById(id); // remove id from key store
             // return delKey
             return {
                 message: "logout success"

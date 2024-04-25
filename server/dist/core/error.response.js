@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NotFoundError = exports.AuthFailedError = exports.BadRequestError = exports.ConflictRequestError = void 0;
+exports.ForbiddenError = exports.NotFoundError = exports.AuthFailedError = exports.BadRequestError = exports.ConflictRequestError = void 0;
 const { StatusCodes, ReasonPhrases } = require('../utils/httpStatusCode');
 class ErrorResponse extends Error {
     constructor(message, status) {
@@ -32,4 +32,10 @@ class NotFoundError extends ErrorResponse {
     }
 }
 exports.NotFoundError = NotFoundError;
+class ForbiddenError extends ErrorResponse {
+    constructor(message = ReasonPhrases.FORBIDDEN, statusCode = StatusCodes.FORBIDDEN) {
+        super(message, statusCode);
+    }
+}
+exports.ForbiddenError = ForbiddenError;
 //# sourceMappingURL=error.response.js.map

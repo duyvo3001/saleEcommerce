@@ -1,11 +1,12 @@
-import { Types } from 'mongoose';
 import bcrypt from "bcrypt"
 import keyTokenService from "./keyToken.service";
+
 import { shopModel } from "../models/shop.model";
 import { generateKeyPairSync } from "crypto"
-import { createTokenPair } from "../auth/authUtils";
-import { AuthFailedError, BadRequestError } from "../core/error.response";
+import { createTokenPair, verifyJWT } from "../auth/authUtils";
+import { AuthFailedError, BadRequestError, ForbiddenError } from "../core/error.response";
 import { findByEmail } from "./shop.service";
+import { Types } from 'mongoose';
 import { NextFunction, Request, Response } from "express"
 
 const RoleShop = {
@@ -25,6 +26,9 @@ interface LoginParams {
     refreshToken: string;
     email: string;
 }
+type updateToken = {
+    refreshToken: string, refreshTokensUsed: string, userId: string
+}
 const HEADER = {
     API_KEY: 'x-api-key',
     CLIENT_ID: 'x-client-id',
@@ -32,6 +36,63 @@ const HEADER = {
     keyStore: 'keyStore'
 }
 class AccessService {
+    /*
+        TODO check this token used
+    */
+    handlerRefreshToken = async (refreshToken: string) => {
+        const foundToken = await keyTokenService.findRefreshTokenUsed(refreshToken)
+        console.log(foundToken);
+
+        if (foundToken) {
+            /*
+                TODO: who used token
+            */
+            const { userId, email } = await verifyJWT(refreshToken, foundToken.privateKey) as { userId: string, email: string };
+            /*
+                !delete userid in keytokens
+                TODO in future at func handle this to email
+            */
+            await keyTokenService.deleteKeyById(userId)
+            //
+            throw new ForbiddenError('Something went wrong ! Please relogin')
+
+        }
+        /* 
+            * if dont have a token
+        */
+        const holderToken = await keyTokenService.findRefreshToken(refreshToken)
+        if (!holderToken) throw new AuthFailedError('Shop not Registered 1')
+
+        /* 
+            * verify token
+        */
+        const { userId, email } = await verifyJWT(refreshToken, holderToken.privateKey) as { userId: string, email: string };
+
+        /* 
+            * check userId 
+        */
+        let select = {}
+        const foundShop = await findByEmail({ email, select })
+        if (!foundShop) throw new AuthFailedError('Shop not Registered 2')
+
+        /*
+            * create new token  
+        */
+        const tokens = await createTokenPair({ userId, email }, holderToken.publicKey, holderToken.privateKey)
+
+        /*
+            ? update token
+        */
+        const test = await keyTokenService.updateRefreshToken(
+            { refreshToken: tokens.refreshToken, refreshTokensUsed: refreshToken, userId }
+        )
+        console.log(test);
+        
+        return {
+            user: { userId, email },
+            tokens
+        }
+    }
 
     logout = async (keyStore: Request) => {
         const id: string = keyStore.headers[HEADER.keyStore]?.toString() || ""

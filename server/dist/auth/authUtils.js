@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authentication = exports.createTokenPair = void 0;
+exports.verifyJWT = exports.authentication = exports.createTokenPair = void 0;
 const asyncHandler_1 = require("../helpers/asyncHandler");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const error_response_1 = require("../core/error.response");
@@ -65,15 +65,19 @@ exports.authentication = (0, asyncHandler_1.asyncHandler)((req, res, next) => __
     const accessToken = (_b = req.headers[HEADER.AUTHORIZATION]) === null || _b === void 0 ? void 0 : _b.toString();
     if (!accessToken || "")
         throw new error_response_1.AuthFailedError('invalid Request');
-    try {
+    try { //#4
         const User = jsonwebtoken_1.default.verify(accessToken, keyStore.publicKey);
         if (userIdREQ !== User.userID)
-            throw new error_response_1.AuthFailedError('invalid userId');
+            throw new error_response_1.AuthFailedError('invalid userId'); //#5
         req.headers[HEADER.keyStore] = keyStore === null || keyStore === void 0 ? void 0 : keyStore._id;
-        return next();
+        return next(); //#6
     }
     catch (error) {
         throw error;
     }
 }));
+const verifyJWT = (token, keySecret) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield jsonwebtoken_1.default.verify(token, keySecret);
+});
+exports.verifyJWT = verifyJWT;
 //# sourceMappingURL=authUtils.js.map

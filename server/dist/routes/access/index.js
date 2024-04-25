@@ -8,10 +8,11 @@ const access_Controller_1 = __importDefault(require("../../controllers/access.Co
 const asyncHandler_1 = require("../../helpers/asyncHandler");
 const authUtils_1 = require("../../auth/authUtils");
 const routerShop = express_1.default.Router();
-// authentication //
 routerShop.post('/shop/signup', (0, asyncHandler_1.asyncHandler)(access_Controller_1.default.signUp));
 routerShop.post('/shop/login', (0, asyncHandler_1.asyncHandler)(access_Controller_1.default.login));
+// authentication //
 routerShop.use(authUtils_1.authentication);
 routerShop.post('/shop/logout', (0, asyncHandler_1.asyncHandler)(access_Controller_1.default.logout));
+routerShop.post('/shop/handlerRefreshToken', (0, asyncHandler_1.asyncHandler)(access_Controller_1.default.handlerRefreshToken));
 exports.default = routerShop;
 //# sourceMappingURL=index.js.map

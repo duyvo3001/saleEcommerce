@@ -16,6 +16,12 @@ const access_service_1 = __importDefault(require("../services/access.service"));
 const success_response_1 = require("../core/success.response");
 class AcessController {
     constructor() {
+        this.handlerRefreshToken = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            new success_response_1.SuccessResponse({
+                message: "Get token success",
+                metadata: yield access_service_1.default.handlerRefreshToken(req.body.refreshToken)
+            }).send(res);
+        });
         this.logout = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             new success_response_1.SuccessResponse({
                 message: "logout Success",

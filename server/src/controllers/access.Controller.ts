@@ -3,6 +3,14 @@ import accessService from "../services/access.service";
 import { CREATED, SuccessResponse } from "../core/success.response";
 
 class AcessController {
+
+    handlerRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: "Get token success",
+            metadata: await accessService.handlerRefreshToken(req.body.refreshToken)
+        }).send(res)
+    }
+
     logout = async (req: Request, res: Response, next: NextFunction) => {
 
         new SuccessResponse({
@@ -10,6 +18,7 @@ class AcessController {
             metadata: await accessService.logout(req)
         }).send(res)
     }
+
     login = async (req: Request, res: Response, next: NextFunction) => {
         const { email, password, refreshToken } = req.body
 
@@ -17,6 +26,7 @@ class AcessController {
             metadata: await accessService.login({ email, password, refreshToken })
         }).send(res)
     }
+
     signUp = async (req: Request, res: Response, next: NextFunction) => {
         const { name, email, password, roles } = req.body
         new CREATED({

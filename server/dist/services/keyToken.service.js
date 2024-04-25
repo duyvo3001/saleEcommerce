@@ -33,8 +33,22 @@ class KeyTokenService {
         this.removeKeyById = (id) => __awaiter(this, void 0, void 0, function* () {
             return yield keytoken_model_1.keytokenModel.deleteOne({ _id: new mongoose_1.Types.ObjectId(id) });
         });
-        this.findByIdKey = (id) => __awaiter(this, void 0, void 0, function* () {
-            return yield keytoken_model_1.keytokenModel.findOne({ user: new mongoose_1.Types.ObjectId(id) }).lean();
+        this.findRefreshTokenUsed = (refreshToken) => __awaiter(this, void 0, void 0, function* () {
+            return yield keytoken_model_1.keytokenModel.findOne({ refreshTokensUsed: refreshToken }).lean();
+        });
+        this.findRefreshToken = (refreshToken) => __awaiter(this, void 0, void 0, function* () {
+            return yield keytoken_model_1.keytokenModel.findOne({ refreshToken }).lean();
+        });
+        this.deleteKeyById = (userId) => __awaiter(this, void 0, void 0, function* () {
+            return yield keytoken_model_1.keytokenModel.deleteOne({ user: userId });
+        });
+        this.updateRefreshToken = (_b) => __awaiter(this, [_b], void 0, function* ({ refreshToken, refreshTokensUsed, userId }) {
+            const filter = { user: new mongoose_1.Types.ObjectId(userId) };
+            const update = {
+                $set: { refreshToken },
+                $addToSet: { refreshTokensUsed } // was used to get new token
+            };
+            return yield keytoken_model_1.keytokenModel.updateOne(filter, update);
         });
     }
 }

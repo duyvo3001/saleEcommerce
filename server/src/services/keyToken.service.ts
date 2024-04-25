@@ -6,6 +6,9 @@ interface User {
     privateKey: string,
     refreshToken: string
 }
+type updateToken = {
+    refreshToken: string, refreshTokensUsed: string, userId: string
+}
 class KeyTokenService {
     createKeyToken = async ({ userID, publicKey, privateKey, refreshToken }: User) => {
         try {
@@ -30,6 +33,27 @@ class KeyTokenService {
 
     removeKeyById = async (id: string) => {
         return await keytokenModel.deleteOne({ _id: new Types.ObjectId(id) })
+    }
+
+    findRefreshTokenUsed = async (refreshToken: string) => {
+        return await keytokenModel.findOne({ refreshTokensUsed: refreshToken }).lean()
+    }
+
+    findRefreshToken = async (refreshToken: string) => {
+        return await keytokenModel.findOne({ refreshToken }).lean()
+    }
+
+    deleteKeyById = async (userId: string) => {
+        return await keytokenModel.deleteOne({ user: userId })
+    }
+
+    updateRefreshToken = async ({ refreshToken, refreshTokensUsed, userId }: updateToken) => {
+        const filter = { user: new Types.ObjectId(userId) }
+        const update = {
+            $set: { refreshToken },
+            $addToSet: { refreshTokensUsed }// was used to get new token
+        }
+        return await keytokenModel.updateOne(filter, update)
     }
 
 }
