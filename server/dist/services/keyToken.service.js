@@ -42,8 +42,8 @@ class KeyTokenService {
         this.deleteKeyById = (userId) => __awaiter(this, void 0, void 0, function* () {
             return yield keytoken_model_1.keytokenModel.deleteOne({ user: userId });
         });
-        this.updateRefreshToken = (_b) => __awaiter(this, [_b], void 0, function* ({ refreshToken, refreshTokensUsed, userId }) {
-            const filter = { user: new mongoose_1.Types.ObjectId(userId) };
+        this.updateRefreshToken = (_b) => __awaiter(this, [_b], void 0, function* ({ refreshToken, refreshTokensUsed, userID }) {
+            const filter = { user: new mongoose_1.Types.ObjectId(userID) };
             const update = {
                 $set: { refreshToken },
                 $addToSet: { refreshTokensUsed } // was used to get new token

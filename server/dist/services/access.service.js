@@ -38,17 +38,16 @@ class AccessService {
         */
         this.handlerRefreshToken = (refreshToken) => __awaiter(this, void 0, void 0, function* () {
             const foundToken = yield keyToken_service_1.default.findRefreshTokenUsed(refreshToken);
-            console.log(foundToken);
             if (foundToken) {
                 /*
                     TODO: who used token
                 */
-                const { userId, email } = yield (0, authUtils_1.verifyJWT)(refreshToken, foundToken.privateKey);
+                const { userID, email } = yield (0, authUtils_1.verifyJWT)(refreshToken, foundToken.privateKey);
                 /*
                     !delete userid in keytokens
                     TODO in future at func handle this to email
                 */
-                yield keyToken_service_1.default.deleteKeyById(userId);
+                yield keyToken_service_1.default.deleteKeyById(userID);
                 //
                 throw new error_response_1.ForbiddenError('Something went wrong ! Please relogin');
             }
@@ -57,29 +56,28 @@ class AccessService {
             */
             const holderToken = yield keyToken_service_1.default.findRefreshToken(refreshToken);
             if (!holderToken)
-                throw new error_response_1.AuthFailedError('Shop not Registered 1');
+                throw new error_response_1.AuthFailedError('Shop not Registered');
             /*
                 * verify token
             */
-            const { userId, email } = yield (0, authUtils_1.verifyJWT)(refreshToken, holderToken.privateKey);
+            const { userID, email } = yield (0, authUtils_1.verifyJWT)(refreshToken, holderToken.privateKey);
             /*
                 * check userId
             */
             let select = {};
             const foundShop = yield (0, shop_service_1.findByEmail)({ email, select });
             if (!foundShop)
-                throw new error_response_1.AuthFailedError('Shop not Registered 2');
+                throw new error_response_1.AuthFailedError('Shop not Registered');
             /*
                 * create new token
             */
-            const tokens = yield (0, authUtils_1.createTokenPair)({ userId, email }, holderToken.publicKey, holderToken.privateKey);
+            const tokens = yield (0, authUtils_1.createTokenPair)({ userID, email }, holderToken.publicKey, holderToken.privateKey);
             /*
                 ? update token
             */
-            const test = yield keyToken_service_1.default.updateRefreshToken({ refreshToken: tokens.refreshToken, refreshTokensUsed: refreshToken, userId });
-            console.log(test);
+            yield keyToken_service_1.default.updateRefreshToken({ refreshToken: tokens.refreshToken, refreshTokensUsed: refreshToken, userID });
             return {
-                user: { userId, email },
+                user: { userID, email },
                 tokens
             };
         });

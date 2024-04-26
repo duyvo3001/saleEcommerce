@@ -7,7 +7,7 @@ interface User {
     refreshToken: string
 }
 type updateToken = {
-    refreshToken: string, refreshTokensUsed: string, userId: string
+    refreshToken: string, refreshTokensUsed: string, userID: string
 }
 class KeyTokenService {
     createKeyToken = async ({ userID, publicKey, privateKey, refreshToken }: User) => {
@@ -47,13 +47,13 @@ class KeyTokenService {
         return await keytokenModel.deleteOne({ user: userId })
     }
 
-    updateRefreshToken = async ({ refreshToken, refreshTokensUsed, userId }: updateToken) => {
-        const filter = { user: new Types.ObjectId(userId) }
+    updateRefreshToken = async ({ refreshToken, refreshTokensUsed, userID }: updateToken) => {
+        const filter = { user: new Types.ObjectId(userID) }
         const update = {
             $set: { refreshToken },
             $addToSet: { refreshTokensUsed }// was used to get new token
         }
-        return await keytokenModel.updateOne(filter, update)
+        return await keytokenModel.updateOne(filter,update)
     }
 
 }

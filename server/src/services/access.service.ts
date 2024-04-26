@@ -35,24 +35,31 @@ const HEADER = {
     AUTHORIZATION: 'authorization',
     keyStore: 'keyStore'
 }
+type handlerTokenParams = {
+    refreshToken: string,
+    user: {
+        userID: string,
+        email: string
+    }
+    keyStore: string
+}
 class AccessService {
     /*
         TODO check this token used
     */
-    handlerRefreshToken = async (refreshToken: string) => {
+    handlerRefreshToken = async ({ refreshToken, user, keyStore }: handlerTokenParams) => {
         const foundToken = await keyTokenService.findRefreshTokenUsed(refreshToken)
-        console.log(foundToken);
 
         if (foundToken) {
             /*
                 TODO: who used token
             */
-            const { userId, email } = await verifyJWT(refreshToken, foundToken.privateKey) as { userId: string, email: string };
+            const { userID, email } = await verifyJWT(refreshToken, foundToken.privateKey) as { userID: string, email: string };
             /*
                 !delete userid in keytokens
                 TODO in future at func handle this to email
             */
-            await keyTokenService.deleteKeyById(userId)
+            await keyTokenService.deleteKeyById(userID)
             //
             throw new ForbiddenError('Something went wrong ! Please relogin')
 
@@ -61,35 +68,35 @@ class AccessService {
             * if dont have a token
         */
         const holderToken = await keyTokenService.findRefreshToken(refreshToken)
-        if (!holderToken) throw new AuthFailedError('Shop not Registered 1')
+        if (!holderToken) throw new AuthFailedError('Shop not Registered')
 
         /* 
             * verify token
         */
-        const { userId, email } = await verifyJWT(refreshToken, holderToken.privateKey) as { userId: string, email: string };
+        const { userID, email } = await verifyJWT(refreshToken, holderToken.privateKey) as { userID: string, email: string };
 
         /* 
             * check userId 
         */
         let select = {}
         const foundShop = await findByEmail({ email, select })
-        if (!foundShop) throw new AuthFailedError('Shop not Registered 2')
+        if (!foundShop) throw new AuthFailedError('Shop not Registered')
 
         /*
             * create new token  
         */
-        const tokens = await createTokenPair({ userId, email }, holderToken.publicKey, holderToken.privateKey)
+        const tokens = await createTokenPair({ userID, email }, holderToken.publicKey, holderToken.privateKey)
 
         /*
             ? update token
         */
-        const test = await keyTokenService.updateRefreshToken(
-            { refreshToken: tokens.refreshToken, refreshTokensUsed: refreshToken, userId }
+
+        await keyTokenService.updateRefreshToken(
+            { refreshToken: tokens.refreshToken, refreshTokensUsed: refreshToken, userID }
         )
-        console.log(test);
-        
+
         return {
-            user: { userId, email },
+            user: { userID, email },
             tokens
         }
     }
