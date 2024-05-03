@@ -22,7 +22,7 @@ const HEADER = {
     CLIENT_ID: 'x-client-id',
     AUTHORIZATION: 'authorization',
     keyStore: 'keyStore',
-    REFRESHTOKEN: "refreshtoken",
+    REFRESHTOKEN: "x-rtoken-id",
     user: 'user'
 };
 const createTokenPair = (payload, publicKey, privateKey) => __awaiter(void 0, void 0, void 0, function* () {
@@ -90,16 +90,16 @@ exports.authentication = (0, asyncHandler_1.asyncHandler)((req, res, next) => __
     const keyStore = yield keyToken_service_1.default.findByUserID(userIdREQ);
     if (!keyStore || "")
         throw new error_response_1.NotFoundError('Not found keystore');
-    //#3S
+    //#3
     const refreshToken = (_b = req.headers[HEADER.REFRESHTOKEN]) === null || _b === void 0 ? void 0 : _b.toString();
     if (refreshToken) {
         try {
             const DecodeUser = jsonwebtoken_1.default.verify(refreshToken, keyStore.privateKey);
             if (userIdREQ !== DecodeUser.userID)
                 throw new error_response_1.AuthFailedError('invalid userId'); //#5
-            req.headers[HEADER.keyStore] = keyStore === null || keyStore === void 0 ? void 0 : keyStore._id;
-            req.headers[HEADER.REFRESHTOKEN] = keyStore === null || keyStore === void 0 ? void 0 : keyStore.refreshToken;
-            req.headers[HEADER.user] = DecodeUser.toString();
+            req.headers[HEADER.keyStore] = JSON.stringify(keyStore);
+            req.headers[HEADER.REFRESHTOKEN] = refreshToken;
+            req.headers[HEADER.user] = JSON.stringify(DecodeUser);
             return next(); //#6
         }
         catch (error) {

@@ -19,7 +19,11 @@ class AcessController {
         this.handlerRefreshToken = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             new success_response_1.SuccessResponse({
                 message: "Get token success",
-                metadata: yield access_service_1.default.handlerRefreshToken(req.body.refreshToken)
+                metadata: yield access_service_1.default.handlerRefreshToken({
+                    refreshToken: req.headers['x-rtoken-id'],
+                    user: req.headers.user,
+                    keyStore: req.headers.keyStore
+                })
             }).send(res);
         });
         this.logout = (req, res, next) => __awaiter(this, void 0, void 0, function* () {

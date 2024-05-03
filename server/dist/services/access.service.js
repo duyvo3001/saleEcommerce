@@ -36,42 +36,24 @@ class AccessService {
         /*
             TODO check this token used
         */
-        this.handlerRefreshToken = (refreshToken) => __awaiter(this, void 0, void 0, function* () {
-            const foundToken = yield keyToken_service_1.default.findRefreshTokenUsed(refreshToken);
-            if (foundToken) {
-                /*
-                    TODO: who used token
-                */
-                const { userID, email } = yield (0, authUtils_1.verifyJWT)(refreshToken, foundToken.privateKey);
-                /*
-                    !delete userid in keytokens
-                    TODO in future at func handle this to email
-                */
+        this.handlerRefreshToken = (_a) => __awaiter(this, [_a], void 0, function* ({ refreshToken, user, keyStore }) {
+            const { userID, email } = JSON.parse(user);
+            const _KeyStore = JSON.parse(keyStore);
+            if (_KeyStore.refreshTokensUsed.includes(refreshToken)) {
                 yield keyToken_service_1.default.deleteKeyById(userID);
-                //
                 throw new error_response_1.ForbiddenError('Something went wrong ! Please relogin');
             }
-            /*
-                * if dont have a token
-            */
-            const holderToken = yield keyToken_service_1.default.findRefreshToken(refreshToken);
-            if (!holderToken)
-                throw new error_response_1.AuthFailedError('Shop not Registered');
-            /*
-                * verify token
-            */
-            const { userID, email } = yield (0, authUtils_1.verifyJWT)(refreshToken, holderToken.privateKey);
-            /*
-                * check userId
-            */
+            if (_KeyStore.refreshToken !== refreshToken) {
+                throw new error_response_1.AuthFailedError('Shop not Registered 1');
+            }
             let select = {};
             const foundShop = yield (0, shop_service_1.findByEmail)({ email, select });
             if (!foundShop)
-                throw new error_response_1.AuthFailedError('Shop not Registered');
+                throw new error_response_1.AuthFailedError('Shop not Registered 2');
             /*
                 * create new token
             */
-            const tokens = yield (0, authUtils_1.createTokenPair)({ userID, email }, holderToken.publicKey, holderToken.privateKey);
+            const tokens = yield (0, authUtils_1.createTokenPair)({ userID, email }, _KeyStore.publicKey, _KeyStore.privateKey);
             /*
                 ? update token
             */
@@ -82,8 +64,8 @@ class AccessService {
             };
         });
         this.logout = (keyStore) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            const id = ((_a = keyStore.headers[HEADER.keyStore]) === null || _a === void 0 ? void 0 : _a.toString()) || "";
+            var _b;
+            const id = ((_b = keyStore.headers[HEADER.keyStore]) === null || _b === void 0 ? void 0 : _b.toString()) || "";
             // console.log(keyStore.headers[HEADER.keyStore]);
             //1_ check email
             //2_ match pass
@@ -96,7 +78,7 @@ class AccessService {
                 message: "logout success"
             };
         });
-        this.login = (_b) => __awaiter(this, [_b], void 0, function* ({ email, password, refreshToken }) {
+        this.login = (_c) => __awaiter(this, [_c], void 0, function* ({ email, password, refreshToken }) {
             let select = {};
             const foundShop = yield (0, shop_service_1.findByEmail)({ email, select }); //1
             if (!foundShop)
@@ -129,7 +111,7 @@ class AccessService {
                 shop: foundShop, tokens
             };
         });
-        this.signUp = (_c) => __awaiter(this, [_c], void 0, function* ({ name, email, password, roles }) {
+        this.signUp = (_d) => __awaiter(this, [_d], void 0, function* ({ name, email, password, roles }) {
             const holderShop = yield shop_model_1.shopModel.findOne({ email }).lean(); // find shop 
             if (holderShop) {
                 throw new error_response_1.BadRequestError('Error: Shop already Registered');

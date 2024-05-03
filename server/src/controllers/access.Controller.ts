@@ -5,15 +5,10 @@ import { CREATED, SuccessResponse } from "../core/success.response";
 class AcessController {
 
     handlerRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
-        //V1: new SuccessResponse({
-        //     message: "Get token success",
-        //     metadata: await accessService.handlerRefreshToken(req.body.refreshToken)
-        // }).send(res)
-
         new SuccessResponse({
             message: "Get token success",
             metadata: await accessService.handlerRefreshToken({
-                refreshToken: req.headers.refreshToken as string,
+                refreshToken: req.headers['x-rtoken-id'] as string,
                 user: req.headers.user as string,
                 keyStore: req.headers.keyStore as string
             })

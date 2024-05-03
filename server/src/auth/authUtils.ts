@@ -9,8 +9,8 @@ const HEADER = {
     CLIENT_ID: 'x-client-id',
     AUTHORIZATION: 'authorization',
     keyStore: 'keyStore',
-    REFRESHTOKEN: "refreshtoken",
-    user:'user'
+    REFRESHTOKEN: "x-rtoken-id",
+    user: 'user'
 }
 interface UserIDJwtPayload extends jwt.JwtPayload {
     userID: string
@@ -92,17 +92,18 @@ export const authentication = asyncHandler(async (req: Request, res: Response, n
 
     if (!keyStore || "") throw new NotFoundError('Not found keystore')
 
-    //#3S
+    //#3
     const refreshToken = req.headers[HEADER.REFRESHTOKEN]?.toString()
+    
     if (refreshToken) {
         try {
             const DecodeUser: UserIDJwtPayload = jwt.verify(refreshToken, keyStore.privateKey) as UserIDJwtPayload
 
             if (userIdREQ !== DecodeUser.userID) throw new AuthFailedError('invalid userId')//#5
 
-            req.headers[HEADER.keyStore] = keyStore?._id
-            req.headers[HEADER.REFRESHTOKEN] = keyStore?.refreshToken
-            req.headers[HEADER.user] = DecodeUser.toString()
+            req.headers[HEADER.keyStore] = JSON.stringify(keyStore)
+            req.headers[HEADER.REFRESHTOKEN] = refreshToken
+            req.headers[HEADER.user] = JSON.stringify(DecodeUser)
             return next()//#6
         } catch (error) {
             throw error
