@@ -13,7 +13,7 @@ exports.permissions = exports.apiKey = void 0;
 const apikey_service_1 = require("../services/apikey.service");
 const HEADER = {
     API_KEY: 'x-api-key',
-    AUTHORIZATION: 'aithorization',
+    AUTHORIZATION: 'authorization',
     objKey: 'objKey'
 };
 const apiKey = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

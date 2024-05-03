@@ -3,7 +3,7 @@ import { findById } from "../services/apikey.service"
 
 const HEADER = {
     API_KEY: 'x-api-key',
-    AUTHORIZATION: 'aithorization',
+    AUTHORIZATION: 'authorization',
     objKey: 'objKey'
 }
 declare global {
