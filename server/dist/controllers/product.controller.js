@@ -17,10 +17,9 @@ const product_service_1 = __importDefault(require("../services/product.service")
 class ProductController {
     constructor() {
         this.createProduct = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            console.log(req.body.product_type, req.body);
             new success_response_1.SuccessResponse({
                 message: "Product created",
-                metadata: yield product_service_1.default.createProduct(req.body.product_type, req.body)
+                metadata: yield product_service_1.default.createProduct(req.body.product_type, Object.assign(Object.assign({}, req.body), { product_shop: req.headers['x-client-id'] }))
             }).send(res);
         });
     }

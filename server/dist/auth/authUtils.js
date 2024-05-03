@@ -45,33 +45,6 @@ const createTokenPair = (payload, publicKey, privateKey) => __awaiter(void 0, vo
     return { accessToken, refreshToken };
 });
 exports.createTokenPair = createTokenPair;
-// export const authentication = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-//     /*
-//         1 - check userId missing 
-//         2 - get accessToken 
-//         3 - verify Token
-//         4 - check user in db 
-//         5 - check keyStore with this userId
-//         6 - ok all  => return next()
-//     */
-//     //#1
-//     const userIdREQ = req.headers[HEADER.CLIENT_ID]?.toString()
-//     if (!userIdREQ || "") throw new AuthFailedError('invalid Request')
-//     //#2
-//     const keyStore = await keyTokenService.findByUserID(userIdREQ)
-//     if (!keyStore || "") throw new NotFoundError('Not found keystore')
-//     //#3 
-//     const accessToken = req.headers[HEADER.AUTHORIZATION]?.toString()
-//     if (!accessToken || "") throw new AuthFailedError('invalid Request')
-//     try {//#4
-//         const User: UserIDJwtPayload = jwt.verify(accessToken, keyStore.publicKey) as UserIDJwtPayload
-//         if (userIdREQ !== User.userID) throw new AuthFailedError('invalid userId')//#5
-//         req.headers[HEADER.keyStore] = keyStore?._id
-//         return next()//#6
-//     } catch (error) {
-//         throw error
-//     }
-// })
 exports.authentication = (0, asyncHandler_1.asyncHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c;
     /*

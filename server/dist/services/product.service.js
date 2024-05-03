@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose_1 = require("mongoose");
 const product_model_1 = require("../models/product.model");
 const error_response_1 = require("../core/error.response");
 class ProductFactory {
@@ -20,12 +21,11 @@ class ProductFactory {
         return __awaiter(this, void 0, void 0, function* () {
             switch (type) {
                 case 'Electronics':
-                    return new Electronics(payload);
+                    return new Electronics(payload).createProduct();
                 case 'Clothing':
                     return new Clothing(payload).createProduct();
                 default:
                     throw new error_response_1.BadRequestError("Invalid type");
-                    break;
             }
         });
     }
@@ -44,9 +44,9 @@ class Product {
         this.product_shop = product_shop;
         this.product_attributes = product_attributes;
     }
-    createProduct() {
+    createProduct(product_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield product_model_1.ProductModels.create(this);
+            return yield product_model_1.ProductModels.create(Object.assign(Object.assign({}, this), { _id: product_id }));
         });
     }
 }
@@ -59,10 +59,10 @@ class Clothing extends Product {
             createProduct: { get: () => super.createProduct }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            const newClothing = yield product_model_1.clothesModels.create(this.product_attributes);
+            const newClothing = yield product_model_1.clothesModels.create(Object.assign(Object.assign({}, this.product_attributes), { product_shop: this.product_shop }));
             if (!newClothing)
                 throw new error_response_1.BadRequestError("create new Clothing error");
-            const newProduct = yield _super.createProduct.call(this);
+            const newProduct = yield _super.createProduct.call(this, newClothing._id);
             if (!newProduct)
                 throw new error_response_1.BadRequestError("create new Product error");
             return newProduct;
@@ -75,10 +75,12 @@ class Electronics extends Product {
             createProduct: { get: () => super.createProduct }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            const newElectronic = yield product_model_1.electronicModels.create(this.product_attributes);
+            console.log("___________________________________________", this.product_shop, this.product_attributes);
+            const newElectronic = yield product_model_1.electronicModels.create(Object.assign(Object.assign({}, this.product_attributes), { product_shop: new mongoose_1.Types.ObjectId(this.product_shop) }));
+            console.log("________________________________________", newElectronic);
             if (!newElectronic)
-                throw new error_response_1.BadRequestError("create new Clothing error");
-            const newProduct = yield _super.createProduct.call(this);
+                throw new error_response_1.BadRequestError("create new Electronic error");
+            const newProduct = yield _super.createProduct.call(this, newElectronic._id);
             if (!newProduct)
                 throw new error_response_1.BadRequestError("create new Product error");
             return newProduct;

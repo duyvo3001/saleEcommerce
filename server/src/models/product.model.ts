@@ -21,8 +21,8 @@ const productSchema = new Schema<IProduct>({
     product_description: String,
     product_Price: { type: Number, required: true, },
     product_quantity: { type: Number, required: true, },
-    product_type: { type: [String], required: true, enum: ['Electionics', 'Clothing', 'furniture'] },
-    product_shop: String , 
+    product_type: { type: [String], required: true, enum: ['Electronics', 'Clothing', 'furniture'] },
+    product_shop: Types.ObjectId , 
     product_attributes: { type: Schema.Types.Mixed, required: true, },
 },
     {
@@ -32,23 +32,34 @@ const productSchema = new Schema<IProduct>({
 
 //Export the model
 
-const clothingShecma = new Schema({
+const clothingSchema = new Schema({
     brand : {type:String, required: true},
+    product_shop: Types.ObjectId , 
     size : String,
     material : String
 },{
     collection: 'clothes',
     timestamps: true,
 })
-const electronicShecma = new Schema({
+const electronicSchecma = new Schema({
     brand : {type:String, required: true},
+    product_shop: Types.ObjectId , 
     size : String,
     material : String
 },{
     collection: 'electronics',
     timestamps: true,
 })
-
+const furnitureSchecma = new Schema({
+    brand : {type:String, required: true},
+    product_shop: Types.ObjectId , 
+    size : String,
+    material : String
+},{
+    collection: 'electronics',
+    timestamps: true,
+})
 export const ProductModels = model(DOCUMENT_NAME, productSchema);
-export const electronicModels = model('electronics', electronicShecma);
-export const clothesModels = model('clothes', clothingShecma);
+export const electronicModels = model('electronics', electronicSchecma);
+export const clothesModels = model('clothes', clothingSchema);
+export const furnitureModels = model('furniture', furnitureSchecma);

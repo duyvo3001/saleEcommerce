@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-import { clothesModels, electronicModels, ProductModels } from "../models/product.model";
+import { clothesModels, electronicModels, ProductModels, furnitureModels } from "../models/product.model";
 import { BadRequestError } from "../core/error.response";
 
 interface IProduct {
@@ -9,28 +9,29 @@ interface IProduct {
     product_Price: Number,
     product_quantity: Number,
     product_type: [String],
-    product_shop: String,
+    product_shop: Types.ObjectId,
     product_attributes: Schema.Types.Mixed,
 }
-
+interface ProductClass {
+    createProduct: () => any; 
+}
 class ProductFactory {
 
     /*
         * type :"clothing",
         * payload 
     */
+    productRegistry = {}
+
+    registerProducttype(type: string, classRef : any) {
+        this.productRegistry[type] = classRef
+        // ProductFactory.productRegistry[type] = classRef
+    }
     async createProduct(type: string, payload: IProduct) {
-
-        switch (type) {
-            case 'Electronics':
-                return new Electronics(payload)
-            case 'Clothing':
-                return new Clothing(payload).createProduct()
-            default:
-                throw new BadRequestError("Invalid type");
-
-                break;
-        }
+        const productClass = this.productRegistry[type]
+        if (!productClass)
+            throw new BadRequestError("Invalid type");
+        return new productClass(payload).createProduct()
     }
 }
 
@@ -44,7 +45,7 @@ class Product {
     product_Price: Number;
     product_quantity: Number;
     product_type: [String];
-    product_shop: String;
+    product_shop: Types.ObjectId;
     product_attributes: Schema.Types.Mixed;
     constructor({
         product_name, product_thump, product_description, product_Price,
@@ -60,8 +61,8 @@ class Product {
         this.product_shop = product_shop
         this.product_attributes = product_attributes
     }
-    async createProduct() {
-        return await ProductModels.create(this)
+    async createProduct(product_id: any) {
+        return await ProductModels.create({ ...this, _id: product_id })
     }
 }
 
@@ -70,9 +71,12 @@ class Product {
 */
 class Clothing extends Product {
     async createProduct() {
-        const newClothing = await clothesModels.create(this.product_attributes)
+        const newClothing = await clothesModels.create({
+            ...this.product_attributes,
+            product_shop: this.product_shop
+        })
         if (!newClothing) throw new BadRequestError("create new Clothing error");
-        const newProduct = await super.createProduct()
+        const newProduct = await super.createProduct(newClothing._id)
         if (!newProduct) throw new BadRequestError("create new Product error");
 
         return newProduct
@@ -80,15 +84,38 @@ class Clothing extends Product {
 }
 
 class Electronics extends Product {
+
     async createProduct() {
-        const newElectronic = await electronicModels.create(this.product_attributes)
-        if (!newElectronic) throw new BadRequestError("create new Clothing error");
-        const newProduct = await super.createProduct()
+        const newElectronic = await electronicModels.create({
+            ...this.product_attributes,
+            product_shop: new Types.ObjectId(this.product_shop)
+        })
+        if (!newElectronic) throw new BadRequestError("create new Electronic error");
+        const newProduct = await super.createProduct(newElectronic._id)
         if (!newProduct) throw new BadRequestError("create new Product error");
 
         return newProduct
     }
 
 }
+class furnniture extends Product {
+
+    async createProduct() {
+        const newfurniture = await furnitureModels.create({
+            ...this.product_attributes,
+            product_shop: new Types.ObjectId(this.product_shop)
+        })
+        if (!newfurniture) throw new BadRequestError("create new furniture error");
+        const newProduct = await super.createProduct(newfurniture._id)
+        if (!newProduct) throw new BadRequestError("create new Product error");
+
+        return newProduct
+    }
+
+}
+//register product type 
+ProductFactory.registerProducttype("Electronics", Electronics)
+ProductFactory.registerProducttype("furnniture", furnniture)
+ProductFactory.registerProducttype("Clothing", Clothing)
 
 export default new ProductFactory()

@@ -4,10 +4,12 @@ import productService from "../services/product.service";
 
 class ProductController {
     createProduct = async (req: Request, res: Response, next: NextFunction) => {
-        console.log(req.body.product_type, req.body)
         new SuccessResponse({
             message: "Product created",
-            metadata: await productService.createProduct(req.body.product_type, req.body)
+            metadata: await productService.createProduct(req.body.product_type,{
+                ...req.body,
+                product_shop: req.headers['x-client-id']
+            } )
         }).send(res);
     }
 }
