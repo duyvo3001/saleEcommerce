@@ -21,14 +21,13 @@ class ProductFactory {
         * type :"clothing",
         * payload 
     */
-    productRegistry = {}
+    static productRegistry: { [type: string]: any } = {};
 
-    registerProducttype(type: string, classRef : any) {
-        this.productRegistry[type] = classRef
-        // ProductFactory.productRegistry[type] = classRef
+    static registerProductType(type: string, classRef : any) {
+        ProductFactory.productRegistry[type] = classRef
     }
     async createProduct(type: string, payload: IProduct) {
-        const productClass = this.productRegistry[type]
+        const productClass = ProductFactory.productRegistry[type]
         if (!productClass)
             throw new BadRequestError("Invalid type");
         return new productClass(payload).createProduct()
@@ -98,7 +97,7 @@ class Electronics extends Product {
     }
 
 }
-class furnniture extends Product {
+class Furniture extends Product {
 
     async createProduct() {
         const newfurniture = await furnitureModels.create({
@@ -114,8 +113,8 @@ class furnniture extends Product {
 
 }
 //register product type 
-ProductFactory.registerProducttype("Electronics", Electronics)
-ProductFactory.registerProducttype("furnniture", furnniture)
-ProductFactory.registerProducttype("Clothing", Clothing)
+ProductFactory.registerProductType("Electronics", Electronics)
+ProductFactory.registerProductType("Furniture", Furniture)
+ProductFactory.registerProductType("Clothing", Clothing)
 
 export default new ProductFactory()

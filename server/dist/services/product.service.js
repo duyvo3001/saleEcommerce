@@ -13,23 +13,23 @@ const mongoose_1 = require("mongoose");
 const product_model_1 = require("../models/product.model");
 const error_response_1 = require("../core/error.response");
 class ProductFactory {
-    /*
-        * type :"clothing",
-        * payload
-    */
+    static registerProductType(type, classRef) {
+        ProductFactory.productRegistry[type] = classRef;
+    }
     createProduct(type, payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            switch (type) {
-                case 'Electronics':
-                    return new Electronics(payload).createProduct();
-                case 'Clothing':
-                    return new Clothing(payload).createProduct();
-                default:
-                    throw new error_response_1.BadRequestError("Invalid type");
-            }
+            const productClass = ProductFactory.productRegistry[type];
+            if (!productClass)
+                throw new error_response_1.BadRequestError("Invalid type");
+            return new productClass(payload).createProduct();
         });
     }
 }
+/*
+    * type :"clothing",
+    * payload
+*/
+ProductFactory.productRegistry = {};
 /*
     *define base prouct class
 */
@@ -75,9 +75,7 @@ class Electronics extends Product {
             createProduct: { get: () => super.createProduct }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("___________________________________________", this.product_shop, this.product_attributes);
             const newElectronic = yield product_model_1.electronicModels.create(Object.assign(Object.assign({}, this.product_attributes), { product_shop: new mongoose_1.Types.ObjectId(this.product_shop) }));
-            console.log("________________________________________", newElectronic);
             if (!newElectronic)
                 throw new error_response_1.BadRequestError("create new Electronic error");
             const newProduct = yield _super.createProduct.call(this, newElectronic._id);
@@ -87,5 +85,25 @@ class Electronics extends Product {
         });
     }
 }
+class Furniture extends Product {
+    createProduct() {
+        const _super = Object.create(null, {
+            createProduct: { get: () => super.createProduct }
+        });
+        return __awaiter(this, void 0, void 0, function* () {
+            const newfurniture = yield product_model_1.furnitureModels.create(Object.assign(Object.assign({}, this.product_attributes), { product_shop: new mongoose_1.Types.ObjectId(this.product_shop) }));
+            if (!newfurniture)
+                throw new error_response_1.BadRequestError("create new furniture error");
+            const newProduct = yield _super.createProduct.call(this, newfurniture._id);
+            if (!newProduct)
+                throw new error_response_1.BadRequestError("create new Product error");
+            return newProduct;
+        });
+    }
+}
+//register product type 
+ProductFactory.registerProductType("Electronics", Electronics);
+ProductFactory.registerProductType("Furniture", Furniture);
+ProductFactory.registerProductType("Clothing", Clothing);
 exports.default = new ProductFactory();
 //# sourceMappingURL=product.service.js.map

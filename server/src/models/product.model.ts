@@ -21,7 +21,7 @@ const productSchema = new Schema<IProduct>({
     product_description: String,
     product_Price: { type: Number, required: true, },
     product_quantity: { type: Number, required: true, },
-    product_type: { type: [String], required: true, enum: ['Electronics', 'Clothing', 'furniture'] },
+    product_type: { type: [String], required: true, enum: ['Electronics', 'Clothing', 'Furniture'] },
     product_shop: Types.ObjectId , 
     product_attributes: { type: Schema.Types.Mixed, required: true, },
 },
@@ -56,7 +56,7 @@ const furnitureSchecma = new Schema({
     size : String,
     material : String
 },{
-    collection: 'electronics',
+    collection: 'furniture',
     timestamps: true,
 })
 export const ProductModels = model(DOCUMENT_NAME, productSchema);
