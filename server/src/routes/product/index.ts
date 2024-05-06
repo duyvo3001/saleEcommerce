@@ -9,5 +9,8 @@ const routerProduct = express.Router();
 routerProduct
     .use(authentication)
     .post('', asyncHandler(ProductController.createProduct))
+    
+    //QUERY 
+    .get('/drafts/all', asyncHandler(ProductController.getAllDraftsForShop))
 
 export default routerProduct

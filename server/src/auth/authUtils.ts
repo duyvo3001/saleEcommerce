@@ -20,7 +20,7 @@ export const createTokenPair = async (payload: {}, publicKey: string, privateKey
     // accesstoken 
     const accessToken: string = await jwt.sign(payload, privateKey, {
         algorithm: 'RS256',
-        expiresIn: '1h'
+        expiresIn: '2h'
     })
 
     // refreshtoken 

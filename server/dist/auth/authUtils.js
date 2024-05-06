@@ -29,7 +29,7 @@ const createTokenPair = (payload, publicKey, privateKey) => __awaiter(void 0, vo
     // accesstoken 
     const accessToken = yield jsonwebtoken_1.default.sign(payload, privateKey, {
         algorithm: 'RS256',
-        expiresIn: '1h'
+        expiresIn: '2h'
     });
     // refreshtoken 
     const refreshToken = yield jsonwebtoken_1.default.sign(payload, privateKey, {

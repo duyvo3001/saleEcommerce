@@ -11,6 +11,8 @@ const routerProduct = express_1.default.Router();
 // authentication //
 routerProduct
     .use(authUtils_1.authentication)
-    .post('', (0, asyncHandler_1.asyncHandler)(product_controller_1.default.createProduct));
+    .post('', (0, asyncHandler_1.asyncHandler)(product_controller_1.default.createProduct))
+    //QUERY 
+    .get('/drafts/all', (0, asyncHandler_1.asyncHandler)(product_controller_1.default.getAllDraftsForShop));
 exports.default = routerProduct;
 //# sourceMappingURL=index.js.map

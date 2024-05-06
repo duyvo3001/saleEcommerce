@@ -1,6 +1,7 @@
 import { Schema, model, Types } from "mongoose";
 import { clothesModels, electronicModels, ProductModels, furnitureModels } from "../models/product.model";
 import { BadRequestError } from "../core/error.response";
+import { findAllDraftsForShopRepo } from "../models/product.repo";
 
 interface IProduct {
     product_name: String,
@@ -12,8 +13,10 @@ interface IProduct {
     product_shop: Types.ObjectId,
     product_attributes: Schema.Types.Mixed,
 }
-interface ProductClass {
-    createProduct: () => any; 
+interface InterfaceFindProduct {
+    product_shop: Types.ObjectId,
+    limit: number,
+    skip: number
 }
 class ProductFactory {
 
@@ -23,7 +26,7 @@ class ProductFactory {
     */
     static productRegistry: { [type: string]: any } = {};
 
-    static registerProductType(type: string, classRef : any) {
+    static registerProductType(type: string, classRef: any) {
         ProductFactory.productRegistry[type] = classRef
     }
     async createProduct(type: string, payload: IProduct) {
@@ -32,6 +35,15 @@ class ProductFactory {
             throw new BadRequestError("Invalid type");
         return new productClass(payload).createProduct()
     }
+
+    /*
+        * find draft product for shop
+    */
+    async findAllDraftsForShop({ product_shop, limit, skip }: InterfaceFindProduct) {
+        const query = { product_shop, isDraft: true }
+        return await findAllDraftsForShopRepo({ query, limit, skip })
+    }
+
 }
 
 /*
@@ -48,7 +60,7 @@ class Product {
     product_attributes: Schema.Types.Mixed;
     constructor({
         product_name, product_thump, product_description, product_Price,
-        product_quantity, product_type, product_shop, product_attributes
+        product_quantity, product_type, product_shop, product_attributes,
     }: IProduct
     ) {
         this.product_name = product_name

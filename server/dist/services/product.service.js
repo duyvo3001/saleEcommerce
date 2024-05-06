@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const product_model_1 = require("../models/product.model");
 const error_response_1 = require("../core/error.response");
+const product_repo_1 = require("../models/product.repo");
 class ProductFactory {
     static registerProductType(type, classRef) {
         ProductFactory.productRegistry[type] = classRef;
@@ -24,6 +25,15 @@ class ProductFactory {
             return new productClass(payload).createProduct();
         });
     }
+    /*
+        * find draft product for shop
+    */
+    findAllDraftsForShop(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ product_shop, limit, skip }) {
+            const query = { product_shop, isDraft: true };
+            return yield (0, product_repo_1.findAllDraftsForShopRepo)({ query, limit, skip });
+        });
+    }
 }
 /*
     * type :"clothing",
@@ -34,7 +44,7 @@ ProductFactory.productRegistry = {};
     *define base prouct class
 */
 class Product {
-    constructor({ product_name, product_thump, product_description, product_Price, product_quantity, product_type, product_shop, product_attributes }) {
+    constructor({ product_name, product_thump, product_description, product_Price, product_quantity, product_type, product_shop, product_attributes, }) {
         this.product_name = product_name;
         this.product_thump = product_thump;
         this.product_description = product_description;
