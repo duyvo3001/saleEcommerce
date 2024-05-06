@@ -32,7 +32,24 @@ class ProductFactory {
     static findAllDraftsForShop(_a) {
         return __awaiter(this, arguments, void 0, function* ({ product_shop, limit, skip }) {
             const query = { product_shop, isDraft: true };
-            return yield (0, product_repo_1.findAllDraftsForShopRepo)({ query, limit, skip });
+            // return await findAllDraftsForShopRepo({ query, limit, skip })
+            const test = yield (0, product_repo_1.findAllDraftsForShopRepo)({ query, limit, skip });
+            console.log(test);
+            return test;
+        });
+    }
+    static findAllPublishForShop(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ product_shop, limit, skip }) {
+            const query = { product_shop, isPublished: true };
+            return yield (0, product_repo_1.findAllPublishForShopRepo)({ query, limit, skip });
+        });
+    }
+    /*
+        *  PUT publish Product
+    */
+    static publishProductByShop(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ product_shop, product_id }) {
+            return yield (0, product_repo_1.publishProductByShopRepo)({ product_shop, product_id });
         });
     }
 }

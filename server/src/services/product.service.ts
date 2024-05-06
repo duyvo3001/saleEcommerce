@@ -1,7 +1,7 @@
 import { Schema, model, Types } from "mongoose";
 import { clothesModels, electronicModels, ProductModels, furnitureModels } from "../models/product.model";
 import { BadRequestError } from "../core/error.response";
-import { findAllDraftsForShopRepo } from "../models/product.repo";
+import { findAllDraftsForShopRepo, findAllPublishForShopRepo, publishProductByShopRepo } from "../models/product.repo";
 
 interface IProduct {
     product_name: String,
@@ -18,6 +18,7 @@ interface InterfaceFindProduct {
     limit: number,
     skip: number
 }
+
 export class ProductFactory {
 
     /*
@@ -41,14 +42,26 @@ export class ProductFactory {
     */
     static async findAllDraftsForShop({ product_shop, limit, skip }: InterfaceFindProduct) {
         const query = { product_shop, isDraft: true }
-        return await findAllDraftsForShopRepo({ query, limit, skip })
+        // return await findAllDraftsForShopRepo({ query, limit, skip })
+        const test = await findAllDraftsForShopRepo({ query, limit, skip })
+        console.log(test);
+
+        return test
     }
-    
+    static async findAllPublishForShop({ product_shop, limit, skip }: InterfaceFindProduct) {
+        const query = { product_shop, isPublished: true }
+        return await findAllPublishForShopRepo({ query, limit, skip })
+    }
+
     /* 
-     *  
+        *  PUT publish Product 
     */
-
-
+    static async publishProductByShop({ product_shop, product_id }: { product_shop: Types.ObjectId, product_id: Types.ObjectId }) {
+        return await publishProductByShopRepo({ product_shop, product_id })
+    }
+    /* 
+        *  POST publish Product 
+    */
 }
 
 /*

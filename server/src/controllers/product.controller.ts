@@ -8,10 +8,6 @@ export class ProductController {
     static createProduct = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "Product created",
-            // metadata: await productService.createProduct(req.body.product_type, {
-            //     ...req.body,
-            //     product_shop: req.headers['x-client-id']
-            // })
             metadata: await ProductFactory.createProduct(req.body.product_type, {
                 ...req.body,
                 product_shop: req.headers['x-client-id']
@@ -20,19 +16,18 @@ export class ProductController {
     }
 
     /*
-        * Query
+        * Query Drafts
     */
-   /**
-    * @desc Get all Drafts for shop
-    * @param {Number} limit
-    * @param {Number} Skip
-    * @return {Json} 
-    */
-   static getAllDraftsForShop = async (req: Request, res: Response, next: NextFunction) => {
+    /**
+     * @desc Get all Drafts for shop
+     * @param {Number} limit
+     * @param {Number} Skip
+     * @return {Json} 
+     */
+    static getAllDraftsForShop = async (req: Request, res: Response, next: NextFunction) => {
         const limit = 50, skip = 0
-
         new SuccessResponse({
-            message: "Product created",
+            message: "Draft of shop",
             metadata: await ProductFactory.findAllDraftsForShop({
                 product_shop: new Types.ObjectId(req.headers['x-client-id']?.toString()),
                 limit,
@@ -43,5 +38,38 @@ export class ProductController {
     /*
         * End Query
     */
+
+    /*
+        * Query Publish
+    */
+    /**
+     * @desc Get all Drafts for shop
+     * @param {Number} limit
+     * @param {Number} Skip
+     * @return {Json} 
+     */
+    static getAllPublishForShop = async (req: Request, res: Response, next: NextFunction) => {
+        const limit = 50, skip = 0
+        new SuccessResponse({
+            message: "get publish for shop",
+            metadata: await ProductFactory.findAllPublishForShop({
+                product_shop: new Types.ObjectId(req.headers['x-client-id']?.toString()),
+                limit,
+                skip
+            })
+        }).send(res);
+    }
+    /*
+        * End Query
+    */
+    static PublishProductByShop = async (req: Request, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: "publish for shop success",
+            metadata: await ProductFactory.publishProductByShop({
+                product_shop: new Types.ObjectId(req.params.id),
+                product_id: new Types.ObjectId(req.headers['x-client-id']?.toString())
+            })
+        }).send(res);
+    }
 
 }

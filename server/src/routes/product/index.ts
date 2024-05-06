@@ -9,8 +9,10 @@ const routerProduct = express.Router();
 routerProduct
     .use(authentication)
     .post('', asyncHandler(ProductController.createProduct))
+    .post('/publish/:id', asyncHandler(ProductController.PublishProductByShop))
     
     //QUERY 
     .get('/drafts/all', asyncHandler(ProductController.getAllDraftsForShop))
+    .get('/publish/all', asyncHandler(ProductController.getAllPublishForShop))
 
 export default routerProduct

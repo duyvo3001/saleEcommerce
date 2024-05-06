@@ -16,7 +16,7 @@ exports.verifyJWT = exports.authentication = exports.createTokenPair = void 0;
 const asyncHandler_1 = require("../helpers/asyncHandler");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const error_response_1 = require("../core/error.response");
-const keyToken_service_1 = __importDefault(require("../services/keyToken.service"));
+const keyToken_service_1 = require("../services/keyToken.service");
 const HEADER = {
     API_KEY: 'x-api-key',
     CLIENT_ID: 'x-client-id',
@@ -60,7 +60,7 @@ exports.authentication = (0, asyncHandler_1.asyncHandler)((req, res, next) => __
     if (!userIdREQ || "")
         throw new error_response_1.AuthFailedError('invalid Request');
     //#2
-    const keyStore = yield keyToken_service_1.default.findByUserID(userIdREQ);
+    const keyStore = yield keyToken_service_1.KeyTokenService.findByUserID(userIdREQ);
     if (!keyStore || "")
         throw new error_response_1.NotFoundError('Not found keystore');
     //#3

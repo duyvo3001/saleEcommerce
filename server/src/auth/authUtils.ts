@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import { asyncHandler } from "../helpers/asyncHandler"
 import jwt from "jsonwebtoken"
 import { AuthFailedError, NotFoundError } from "../core/error.response"
-import keyTokenService from "../services/keyToken.service"
+import { KeyTokenService } from "../services/keyToken.service"
 
 const HEADER = {
     API_KEY: 'x-api-key',
@@ -52,13 +52,13 @@ export const authentication = asyncHandler(async (req: Request, res: Response, n
     if (!userIdREQ || "") throw new AuthFailedError('invalid Request')
 
     //#2
-    const keyStore = await keyTokenService.findByUserID(userIdREQ)
+    const keyStore = await KeyTokenService.findByUserID(userIdREQ)
 
     if (!keyStore || "") throw new NotFoundError('Not found keystore')
 
     //#3
     const refreshToken = req.headers[HEADER.REFRESHTOKEN]?.toString()
-    
+
     if (refreshToken) {
         try {
             const DecodeUser: UserIDJwtPayload = jwt.verify(refreshToken, keyStore.privateKey) as UserIDJwtPayload

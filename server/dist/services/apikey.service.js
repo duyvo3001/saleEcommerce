@@ -12,6 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.findById = void 0;
 const apikey_model_1 = require("../models/apikey.model");
 const findById = (key) => __awaiter(void 0, void 0, void 0, function* () {
+    /*
+        ! when in production mode turn code
+    */
     // const newKey = await apikeyModel.create(
     //     { key: randomBytes(64).toString('hex'), status: true, permissions: ['0000'] }
     // )
