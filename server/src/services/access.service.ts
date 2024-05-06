@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt"
-import keyTokenService from "./keyToken.service";
+// import keyTokenService from "./keyToken.service";
+import { KeyTokenService } from "./keyToken.service";
 
 import { shopModel } from "../models/shop.model";
 import { generateKeyPairSync } from "crypto"
@@ -38,17 +39,17 @@ type handlerTokenParams = {
     user: string,
     keyStore: string
 }
-class AccessService {
+export class AccessService {
     /*
         TODO check this token used
     */
-    handlerRefreshToken = async ({ refreshToken, user, keyStore }: handlerTokenParams) => {
+    static handlerRefreshToken = async ({ refreshToken, user, keyStore }: handlerTokenParams) => {
 
         const { userID, email } = JSON.parse(user)
         const _KeyStore = JSON.parse(keyStore)
         
         if (_KeyStore.refreshTokensUsed.includes(refreshToken)) {
-            await keyTokenService.deleteKeyById(userID)
+            await KeyTokenService.deleteKeyById(userID)
             throw new ForbiddenError('Something went wrong ! Please relogin')
         }
 
@@ -69,7 +70,7 @@ class AccessService {
             ? update token
         */
 
-        await keyTokenService.updateRefreshToken(
+        await KeyTokenService.updateRefreshToken(
             { refreshToken: tokens.refreshToken, refreshTokensUsed: refreshToken, userID }
         )
 
@@ -79,7 +80,7 @@ class AccessService {
         }
     }
 
-    logout = async (keyStore: Request) => {
+    static logout = async (keyStore: Request) => {
         const id: string = keyStore.headers[HEADER.keyStore]?.toString() || ""
         // console.log(keyStore.headers[HEADER.keyStore]);
 
@@ -89,7 +90,7 @@ class AccessService {
         //4_ generate tokens
         //5_ get data return login
 
-        await keyTokenService.removeKeyById(id) // remove id from key store
+        await KeyTokenService.removeKeyById(id) // remove id from key store
 
         // return delKey
         return {
@@ -97,7 +98,7 @@ class AccessService {
         }
     }
 
-    login = async ({ email, password, refreshToken }: LoginParams) => {
+    static login = async ({ email, password, refreshToken }: LoginParams) => {
         let select = {}
 
         const foundShop = await findByEmail({ email, select })//1
@@ -126,7 +127,7 @@ class AccessService {
             publicKey, privateKey,
         )
 
-        await keyTokenService.createKeyToken({
+        await KeyTokenService.createKeyToken({
             userID: foundShop._id,
             privateKey,
             publicKey,
@@ -138,7 +139,7 @@ class AccessService {
         }
     }
 
-    signUp = async ({ name, email, password, roles }: SignUpParams) => {
+    static signUp = async ({ name, email, password, roles }: SignUpParams) => {
 
         const holderShop = await shopModel.findOne({ email }).lean() // find shop 
 
@@ -164,7 +165,7 @@ class AccessService {
                 }
             });
 
-            const publicKeyString = await keyTokenService.createKeyToken({
+            const publicKeyString = await KeyTokenService.createKeyToken({
                 userID: newShop._id.toString(),
                 publicKey: publicKey.toString(),
                 privateKey: privateKey.toString(),
@@ -207,4 +208,4 @@ class AccessService {
     }
 }
 
-export default new AccessService()
+// export default new AccessService()

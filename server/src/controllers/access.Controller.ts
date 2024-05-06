@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express"
-import accessService from "../services/access.service";
+import { AccessService } from "../services/access.service"
 import { CREATED, SuccessResponse } from "../core/success.response";
 
-class AcessController {
+export class AccessController {
 
-    handlerRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
+    static handlerRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "Get token success",
-            metadata: await accessService.handlerRefreshToken({
+            metadata: await AccessService.handlerRefreshToken({
                 refreshToken: req.headers['x-rtoken-id'] as string,
                 user: req.headers.user as string,
                 keyStore: req.headers.keyStore as string
@@ -15,32 +15,30 @@ class AcessController {
         }).send(res)
     }
 
-    logout = async (req: Request, res: Response, next: NextFunction) => {
+    static logout = async (req: Request, res: Response, next: NextFunction) => {
 
         new SuccessResponse({
             message: "logout Success",
-            metadata: await accessService.logout(req)
+            metadata: await AccessService.logout(req)
         }).send(res)
     }
 
-    login = async (req: Request, res: Response, next: NextFunction) => {
+    static login = async (req: Request, res: Response, next: NextFunction) => {
         const { email, password, refreshToken } = req.body
 
         new SuccessResponse({
-            metadata: await accessService.login({ email, password, refreshToken })
+            metadata: await AccessService.login({ email, password, refreshToken })
         }).send(res)
     }
 
-    signUp = async (req: Request, res: Response, next: NextFunction) => {
+    static signUp = async (req: Request, res: Response, next: NextFunction) => {
         const { name, email, password, roles } = req.body
         new CREATED({
             message: 'Registed OK!',
-            metadata: await accessService.signUp({ name, email, password, roles }),
+            metadata: await AccessService.signUp({ name, email, password, roles }),
             options: {
                 limit: 10
             }
         }).send(res)
     }
 }
-
-export default new AcessController()

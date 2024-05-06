@@ -8,19 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const success_response_1 = require("../core/success.response");
-const product_service_1 = __importDefault(require("../services/product.service"));
+// import productService from "../services/product.service";
+const product_service_1 = require("../services/product.service");
 const mongoose_1 = require("mongoose");
 class ProductController {
     constructor() {
         this.createProduct = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             new success_response_1.SuccessResponse({
                 message: "Product created",
-                metadata: yield product_service_1.default.createProduct(req.body.product_type, Object.assign(Object.assign({}, req.body), { product_shop: req.headers['x-client-id'] }))
+                // metadata: await productService.createProduct(req.body.product_type, {
+                //     ...req.body,
+                //     product_shop: req.headers['x-client-id']
+                // })
+                metadata: yield product_service_1.ProductFactory.createProduct(req.body.product_type, Object.assign(Object.assign({}, req.body), { product_shop: req.headers['x-client-id'] }))
             }).send(res);
         });
         /*
@@ -37,7 +39,7 @@ class ProductController {
             const limit = 50, skip = 0;
             new success_response_1.SuccessResponse({
                 message: "Product created",
-                metadata: yield product_service_1.default.findAllDraftsForShop({
+                metadata: yield product_service_1.ProductFactory.findAllDraftsForShop({
                     product_shop: new mongoose_1.Types.ObjectId((_a = req.headers['x-client-id']) === null || _a === void 0 ? void 0 : _a.toString()),
                     limit,
                     skip

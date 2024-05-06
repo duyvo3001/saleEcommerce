@@ -9,8 +9,8 @@ interface User {
 type updateToken = {
     refreshToken: string, refreshTokensUsed: string, userID: string
 }
-class KeyTokenService {
-    createKeyToken = async ({ userID, publicKey, privateKey, refreshToken }: User) => {
+export class KeyTokenService {
+    static createKeyToken = async ({ userID, publicKey, privateKey, refreshToken }: User) => {
         try {
             const update = {
                 publicKey, privateKey, refreshTokenUsed: [], refreshToken
@@ -27,27 +27,27 @@ class KeyTokenService {
         }
     }
 
-    findByUserID = async (userId: string) => {
+    static findByUserID = async (userId: string) => {
         return await keytokenModel.findOne({ user: new Types.ObjectId(userId) }).lean()
     }
 
-    removeKeyById = async (id: string) => {
+    static removeKeyById = async (id: string) => {
         return await keytokenModel.deleteOne({ _id: new Types.ObjectId(id) })
     }
 
-    findRefreshTokenUsed = async (refreshToken: string) => {
+    static findRefreshTokenUsed = async (refreshToken: string) => {
         return await keytokenModel.findOne({ refreshTokensUsed: refreshToken }).lean()
     }
 
-    findRefreshToken = async (refreshToken: string) => {
+    static findRefreshToken = async (refreshToken: string) => {
         return await keytokenModel.findOne({ refreshToken }).lean()
     }
 
-    deleteKeyById = async (userId: string) => {
+    static deleteKeyById = async (userId: string) => {
         return await keytokenModel.deleteOne({ user: userId })
     }
 
-    updateRefreshToken = async ({ refreshToken, refreshTokensUsed, userID }: updateToken) => {
+    static updateRefreshToken = async ({ refreshToken, refreshTokensUsed, userID }: updateToken) => {
         const filter = { user: new Types.ObjectId(userID) }
         const update = {
             $set: { refreshToken },
@@ -58,5 +58,4 @@ class KeyTokenService {
 
 }
 
-export default new KeyTokenService()
 

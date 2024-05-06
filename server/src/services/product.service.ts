@@ -18,7 +18,7 @@ interface InterfaceFindProduct {
     limit: number,
     skip: number
 }
-class ProductFactory {
+export class ProductFactory {
 
     /*
         * type :"clothing",
@@ -29,7 +29,7 @@ class ProductFactory {
     static registerProductType(type: string, classRef: any) {
         ProductFactory.productRegistry[type] = classRef
     }
-    async createProduct(type: string, payload: IProduct) {
+    static async createProduct(type: string, payload: IProduct) {
         const productClass = ProductFactory.productRegistry[type]
         if (!productClass)
             throw new BadRequestError("Invalid type");
@@ -39,10 +39,15 @@ class ProductFactory {
     /*
         * find draft product for shop
     */
-    async findAllDraftsForShop({ product_shop, limit, skip }: InterfaceFindProduct) {
+    static async findAllDraftsForShop({ product_shop, limit, skip }: InterfaceFindProduct) {
         const query = { product_shop, isDraft: true }
         return await findAllDraftsForShopRepo({ query, limit, skip })
     }
+    
+    /* 
+     *  
+    */
+
 
 }
 
@@ -129,4 +134,4 @@ ProductFactory.registerProductType("Electronics", Electronics)
 ProductFactory.registerProductType("Furniture", Furniture)
 ProductFactory.registerProductType("Clothing", Clothing)
 
-export default new ProductFactory()
+// export default new ProductFactory()

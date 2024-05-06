@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProductFactory = void 0;
 const mongoose_1 = require("mongoose");
 const product_model_1 = require("../models/product.model");
 const error_response_1 = require("../core/error.response");
@@ -17,7 +18,7 @@ class ProductFactory {
     static registerProductType(type, classRef) {
         ProductFactory.productRegistry[type] = classRef;
     }
-    createProduct(type, payload) {
+    static createProduct(type, payload) {
         return __awaiter(this, void 0, void 0, function* () {
             const productClass = ProductFactory.productRegistry[type];
             if (!productClass)
@@ -28,13 +29,14 @@ class ProductFactory {
     /*
         * find draft product for shop
     */
-    findAllDraftsForShop(_a) {
+    static findAllDraftsForShop(_a) {
         return __awaiter(this, arguments, void 0, function* ({ product_shop, limit, skip }) {
             const query = { product_shop, isDraft: true };
             return yield (0, product_repo_1.findAllDraftsForShopRepo)({ query, limit, skip });
         });
     }
 }
+exports.ProductFactory = ProductFactory;
 /*
     * type :"clothing",
     * payload
@@ -115,5 +117,5 @@ class Furniture extends Product {
 ProductFactory.registerProductType("Electronics", Electronics);
 ProductFactory.registerProductType("Furniture", Furniture);
 ProductFactory.registerProductType("Clothing", Clothing);
-exports.default = new ProductFactory();
+// export default new ProductFactory()
 //# sourceMappingURL=product.service.js.map

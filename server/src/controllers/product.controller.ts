@@ -1,13 +1,18 @@
 import { NextFunction, Request, Response } from "express"
 import { SuccessResponse } from "../core/success.response";
-import productService from "../services/product.service";
+// import productService from "../services/product.service";
+import { ProductFactory } from "../services/product.service";
 import { Types } from "mongoose";
 
-class ProductController {
-    createProduct = async (req: Request, res: Response, next: NextFunction) => {
+export class ProductController {
+    static createProduct = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "Product created",
-            metadata: await productService.createProduct(req.body.product_type, {
+            // metadata: await productService.createProduct(req.body.product_type, {
+            //     ...req.body,
+            //     product_shop: req.headers['x-client-id']
+            // })
+            metadata: await ProductFactory.createProduct(req.body.product_type, {
                 ...req.body,
                 product_shop: req.headers['x-client-id']
             })
@@ -23,12 +28,12 @@ class ProductController {
     * @param {Number} Skip
     * @return {Json} 
     */
-    getAllDraftsForShop = async (req: Request, res: Response, next: NextFunction) => {
+   static getAllDraftsForShop = async (req: Request, res: Response, next: NextFunction) => {
         const limit = 50, skip = 0
 
         new SuccessResponse({
             message: "Product created",
-            metadata: await productService.findAllDraftsForShop({
+            metadata: await ProductFactory.findAllDraftsForShop({
                 product_shop: new Types.ObjectId(req.headers['x-client-id']?.toString()),
                 limit,
                 skip
@@ -40,5 +45,3 @@ class ProductController {
     */
 
 }
-
-export default new ProductController()
