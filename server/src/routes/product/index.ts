@@ -7,10 +7,13 @@ const routerProduct = express.Router();
 
 // authentication //
 routerProduct
-    .use(authentication)
+    .get('/search/all/:KeySearch', ProductController.getListSearchProduct)
+
+routerProduct.use(authentication)
     .post('', asyncHandler(ProductController.createProduct))
-    .post('/publish/:id', asyncHandler(ProductController.PublishProductByShop))
-    
+    .put('/Publish/:id', asyncHandler(ProductController.PublishProductByShop))
+    .put('/UnPublish/:id', asyncHandler(ProductController.UnPublishProductByShop))
+
     //QUERY 
     .get('/drafts/all', asyncHandler(ProductController.getAllDraftsForShop))
     .get('/publish/all', asyncHandler(ProductController.getAllPublishForShop))

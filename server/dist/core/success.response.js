@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CREATED = exports.OK = exports.SuccessResponse = void 0;
 const { StatusCodes, ReasonPhrases } = require('../utils/httpStatusCode');
 class SuccessResponse {
-    constructor({ message = "", statusCode = StatusCodes.OK, reasonStatusCode = ReasonPhrases.OK, metadata = {} }) {
+    constructor({ message = "", statusCode = StatusCodes.OK, reasonStatusCode = ReasonPhrases.OK, metadata = {} || null }) {
         this.message = !message ? reasonStatusCode : message;
         this.status = statusCode;
         this.metadata = metadata;

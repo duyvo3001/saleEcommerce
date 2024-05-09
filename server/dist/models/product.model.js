@@ -43,6 +43,10 @@ const productSchema = new mongoose_1.Schema({
     collection: COLLECTION_NAME
 });
 /*
+    * create index for search
+*/
+productSchema.index({ product_name: 'text', product_description: 'text' });
+/*
     * document middleware : run before .save() and .create()
 */
 productSchema.pre('save', function (next) {

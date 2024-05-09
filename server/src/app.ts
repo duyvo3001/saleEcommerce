@@ -34,6 +34,8 @@ app.use('/', router)
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     const error = new HttpError('Not Found', 404)
+    console.log(error);
+    
     next(error)
 })
 
@@ -43,7 +45,7 @@ app.use((error : Error , req : Request, res : Response, next : NextFunction)=>{
     return res.status(statusCode).json({
         status : 'error',
         code: statusCode,
-        // stack: error.stack ,
+        stack: error.stack ,
         message :error.message || 'Internal Server Error'
     })
 })

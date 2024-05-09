@@ -50,6 +50,11 @@ const productSchema = new Schema<IProduct>({
     });
 
 /*
+    * create index for search      
+*/
+productSchema.index({ product_name: 'text', product_description: 'text' })
+
+/*
     * document middleware : run before .save() and .create() 
 */
 productSchema.pre('save', async function (next) {

@@ -8,8 +8,8 @@ interface Metadata {
 export class SuccessResponse {
     private message: string;
     private status: number;
-    private metadata: Metadata;
-    constructor({ message = "", statusCode = StatusCodes.OK, reasonStatusCode = ReasonPhrases.OK, metadata = {} }) {
+    private metadata: Metadata | null;
+    constructor({ message = "", statusCode = StatusCodes.OK, reasonStatusCode = ReasonPhrases.OK, metadata = {} || null }) {
         this.message = !message ? reasonStatusCode : message
         this.status = statusCode
         this.metadata = metadata

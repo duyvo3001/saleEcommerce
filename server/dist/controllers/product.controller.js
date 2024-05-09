@@ -12,7 +12,6 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductController = void 0;
 const success_response_1 = require("../core/success.response");
-// import productService from "../services/product.service";
 const product_service_1 = require("../services/product.service");
 const mongoose_1 = require("mongoose");
 class ProductController {
@@ -78,9 +77,26 @@ ProductController.PublishProductByShop = (req, res, next) => __awaiter(void 0, v
     new success_response_1.SuccessResponse({
         message: "publish for shop success",
         metadata: yield product_service_1.ProductFactory.publishProductByShop({
-            product_shop: new mongoose_1.Types.ObjectId(req.params.id),
-            product_id: new mongoose_1.Types.ObjectId((_d = req.headers['x-client-id']) === null || _d === void 0 ? void 0 : _d.toString())
+            product_id: new mongoose_1.Types.ObjectId(req.params.id),
+            product_shop: new mongoose_1.Types.ObjectId((_d = req.headers['x-client-id']) === null || _d === void 0 ? void 0 : _d.toString())
         })
+    }).send(res);
+});
+ProductController.UnPublishProductByShop = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _e;
+    new success_response_1.SuccessResponse({
+        message: "Un Publish for shop success",
+        metadata: yield product_service_1.ProductFactory.UnPublishProductByShop({
+            product_id: new mongoose_1.Types.ObjectId(req.params.id),
+            product_shop: new mongoose_1.Types.ObjectId((_e = req.headers['x-client-id']) === null || _e === void 0 ? void 0 : _e.toString())
+        })
+    }).send(res);
+});
+ProductController.getListSearchProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params);
+    new success_response_1.SuccessResponse({
+        message: "Get list search product success",
+        metadata: yield product_service_1.ProductFactory.searchProduct({ KeySearch: req.params.toString() })
     }).send(res);
 });
 //# sourceMappingURL=product.controller.js.map

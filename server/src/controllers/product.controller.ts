@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express"
 import { SuccessResponse } from "../core/success.response";
-// import productService from "../services/product.service";
 import { ProductFactory } from "../services/product.service";
 import { Types } from "mongoose";
 
@@ -66,10 +65,27 @@ export class ProductController {
         new SuccessResponse({
             message: "publish for shop success",
             metadata: await ProductFactory.publishProductByShop({
-                product_shop: new Types.ObjectId(req.params.id),
-                product_id: new Types.ObjectId(req.headers['x-client-id']?.toString())
+                product_id: new Types.ObjectId(req.params.id),
+                product_shop: new Types.ObjectId(req.headers['x-client-id']?.toString())
+            })
+        }).send(res);
+    }
+    static UnPublishProductByShop = async (req: Request, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: "Un Publish for shop success",
+            metadata: await ProductFactory.UnPublishProductByShop({
+                product_id: new Types.ObjectId(req.params.id),
+                product_shop: new Types.ObjectId(req.headers['x-client-id']?.toString())
             })
         }).send(res);
     }
 
+    static getListSearchProduct = async (req: Request, res: Response, next: NextFunction) => {
+        console.log(req.params);
+        
+        new SuccessResponse({
+            message: "Get list search product success",
+            metadata: await ProductFactory.searchProduct({ KeySearch: req.params.toString() })
+        }).send(res);
+    }
 }

@@ -1,7 +1,7 @@
 import { Schema, model, Types } from "mongoose";
 import { clothesModels, electronicModels, ProductModels, furnitureModels } from "../models/product.model";
 import { BadRequestError } from "../core/error.response";
-import { findAllDraftsForShopRepo, findAllPublishForShopRepo, publishProductByShopRepo } from "../models/product.repo";
+import { findAllDraftsForShopRepo, findAllPublishForShopRepo, publishProductByShopRepo, searchProductByUserRepo } from "../models/product.repo";
 
 interface IProduct {
     product_name: String,
@@ -43,13 +43,10 @@ export class ProductFactory {
     static async findAllDraftsForShop({ product_shop, limit, skip }: InterfaceFindProduct) {
         const query = { product_shop, isDraft: true }
         // return await findAllDraftsForShopRepo({ query, limit, skip })
-        const test = await findAllDraftsForShopRepo({ query, limit, skip })
-        console.log(test);
-
-        return test
+        return await findAllDraftsForShopRepo({ query, limit, skip })
     }
     static async findAllPublishForShop({ product_shop, limit, skip }: InterfaceFindProduct) {
-        const query = { product_shop, isPublished: true }
+        const query = { product_shop, isPublish: true }
         return await findAllPublishForShopRepo({ query, limit, skip })
     }
 
@@ -60,8 +57,17 @@ export class ProductFactory {
         return await publishProductByShopRepo({ product_shop, product_id })
     }
     /* 
-        *  POST publish Product 
+       *  PUT Un Publish Product 
+   */
+    static async UnPublishProductByShop({ product_shop, product_id }: { product_shop: Types.ObjectId, product_id: Types.ObjectId }) {
+        return await publishProductByShopRepo({ product_shop, product_id })
+    }
+    /* 
+        *  GET search Product
     */
+    static async searchProduct({ KeySearch }: { KeySearch: string }) {
+        return await searchProductByUserRepo({ KeySearch})
+    }
 }
 
 /*

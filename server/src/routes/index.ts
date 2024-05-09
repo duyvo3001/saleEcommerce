@@ -10,8 +10,8 @@ router.use(apiKey)
 //check permissions
 router.use(permissions('0000'))
 
+router.use('/v1/api/product', routerProduct)
 router.use('/v1/api', routerShop)
-.use('/v1/api/product', routerProduct)
 
 
 export default router

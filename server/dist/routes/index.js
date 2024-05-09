@@ -12,7 +12,7 @@ const router = express_1.default.Router();
 router.use(checkAuth_1.apiKey);
 //check permissions
 router.use((0, checkAuth_1.permissions)('0000'));
-router.use('/v1/api', access_1.default)
-    .use('/v1/api/product', product_1.default);
+router.use('/v1/api/product', product_1.default);
+router.use('/v1/api', access_1.default);
 exports.default = router;
 //# sourceMappingURL=index.js.map
