@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findProductRepo = exports.findAllProductRepo = exports.searchProductByUserRepo = exports.UnPublishProductByShopRepo = exports.publishProductByShopRepo = exports.findAllPublishForShopRepo = exports.findAllDraftsForShopRepo = void 0;
+exports.updateProductById = exports.findProductRepo = exports.findAllProductRepo = exports.searchProductByUserRepo = exports.UnPublishProductByShopRepo = exports.publishProductByShopRepo = exports.findAllPublishForShopRepo = exports.findAllDraftsForShopRepo = void 0;
 const productRepo_utils_1 = require("../utils/productUtils/productRepo.utils");
 const product_model_1 = require("./product.model");
 const findAllDraftsForShopRepo = (_a) => __awaiter(void 0, [_a], void 0, function* ({ query, limit, skip }) {
@@ -56,4 +56,8 @@ const findProductRepo = (_f) => __awaiter(void 0, [_f], void 0, function* ({ pro
     return product_model_1.ProductModels.findById(product_id).select((0, productRepo_utils_1.unGetSelectData)(unSelect));
 });
 exports.findProductRepo = findProductRepo;
+const updateProductById = (_g) => __awaiter(void 0, [_g], void 0, function* ({ product_id, bodyUpdate, model, isNew = true }) {
+    return yield model.findByIdAndUpdate(product_id, bodyUpdate, { new: isNew });
+});
+exports.updateProductById = updateProductById;
 //# sourceMappingURL=product.repo.js.map

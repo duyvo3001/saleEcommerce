@@ -1,3 +1,4 @@
+import { updateProductById } from './../models/product.repo';
 import { NextFunction, Request, Response } from "express"
 import { SuccessResponse } from "../core/success.response";
 import { ProductFactory } from "../services/product.service";
@@ -12,6 +13,20 @@ export class ProductController {
                 product_shop: req.headers['x-client-id']
             })
         }).send(res);
+    }
+
+    /*
+        * update product
+    */
+    static updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: "Product updated",
+            metadata: await ProductFactory.updateProduct(req.body.product_type, req.params.product_id, {
+                ...req.body,
+                product_shop: req.headers['x-client-id']
+            })
+        }).send(res);
+
     }
 
     /*
@@ -97,7 +112,7 @@ export class ProductController {
     static findProduct = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "Find all products success",
-            metadata: await ProductFactory.findProduct({ product_id: req.params.product_id, unSelect: ['__v','product_Variation'] })
+            metadata: await ProductFactory.findProduct({ product_id: req.params.product_id, unSelect: ['__v', 'product_Variation'] })
         }).send(res);
     }
 

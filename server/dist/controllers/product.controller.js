@@ -25,6 +25,15 @@ ProductController.createProduct = (req, res, next) => __awaiter(void 0, void 0, 
     }).send(res);
 });
 /*
+    * update product
+*/
+ProductController.updateProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    new success_response_1.SuccessResponse({
+        message: "Product updated",
+        metadata: yield product_service_1.ProductFactory.updateProduct(req.body.product_type, req.params.product_id, Object.assign(Object.assign({}, req.body), { product_shop: req.headers['x-client-id'] }))
+    }).send(res);
+});
+/*
     * Query Drafts
 */
 /**
@@ -107,7 +116,7 @@ ProductController.findAllProduct = (req, res, next) => __awaiter(void 0, void 0,
 ProductController.findProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     new success_response_1.SuccessResponse({
         message: "Find all products success",
-        metadata: yield product_service_1.ProductFactory.findProduct({ product_id: req.params.product_id, unSelect: ['__v'] })
+        metadata: yield product_service_1.ProductFactory.findProduct({ product_id: req.params.product_id, unSelect: ['__v', 'product_Variation'] })
     }).send(res);
 });
 //# sourceMappingURL=product.controller.js.map

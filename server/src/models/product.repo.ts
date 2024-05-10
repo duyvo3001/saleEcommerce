@@ -36,8 +36,8 @@ export const findAllProductRepo = async ({ limit, sort, page, filter, select }: 
     limit: number, sort: string, page: number, filter: { isPublish: boolean }, select: string[]
 }) => {
     const skip = (page - 1) * limit
-    const sortBy =  sort === 'ctime' ? { _id: -1 } : { _id: 1 }
-    const products = await ProductModels.findOne(filter,null,sortBy)
+    const sortBy = sort === 'ctime' ? { _id: -1 } : { _id: 1 }
+    const products = await ProductModels.findOne(filter, null, sortBy)
         // .sort(sortBy)
         .skip(skip)
         .limit(limit)
@@ -46,7 +46,12 @@ export const findAllProductRepo = async ({ limit, sort, page, filter, select }: 
     return products
 }
 
-export const findProductRepo = async({product_id,unSelect}:{product_id:string,unSelect : string[]})=>{
+export const findProductRepo = async ({ product_id, unSelect }: { product_id: string, unSelect: string[] }) => {
     return ProductModels.findById(product_id).select(unGetSelectData(unSelect))
 }
 
+export const updateProductById = async (
+    { product_id, bodyUpdate, model, isNew = true }: { product_id: string, bodyUpdate: {}, model: any, isNew: boolean }
+) => {
+    return await model.findByIdAndUpdate(product_id, bodyUpdate, { new: isNew })
+}

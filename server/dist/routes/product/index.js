@@ -15,6 +15,7 @@ routerProduct
     .get('/:product_id', product_controller_1.ProductController.findProduct);
 routerProduct.use(authUtils_1.authentication)
     .post('', (0, asyncHandler_1.asyncHandler)(product_controller_1.ProductController.createProduct))
+    .patch('/:product_id', (0, asyncHandler_1.asyncHandler)(product_controller_1.ProductController.updateProduct))
     .put('/Publish/:id', (0, asyncHandler_1.asyncHandler)(product_controller_1.ProductController.PublishProductByShop))
     .put('/UnPublish/:id', (0, asyncHandler_1.asyncHandler)(product_controller_1.ProductController.UnPublishProductByShop))
     //QUERY 

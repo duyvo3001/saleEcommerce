@@ -1,7 +1,7 @@
 import { Schema, model, Types } from "mongoose";
 import { clothesModels, electronicModels, ProductModels, furnitureModels } from "../models/product.model";
 import { BadRequestError } from "../core/error.response";
-import { findAllDraftsForShopRepo, findAllProductRepo, findAllPublishForShopRepo, findProductRepo, publishProductByShopRepo, searchProductByUserRepo } from "../models/product.repo";
+import { findAllDraftsForShopRepo, findAllProductRepo, findAllPublishForShopRepo, findProductRepo, publishProductByShopRepo, searchProductByUserRepo, updateProductById } from "../models/product.repo";
 
 interface IProduct {
     product_name: String,
@@ -35,6 +35,12 @@ export class ProductFactory {
         if (!productClass)
             throw new BadRequestError("Invalid type");
         return new productClass(payload).createProduct()
+    }
+
+    static async updateProduct(type: string, product_id: string, payload: IProduct) {
+        const productClass = ProductFactory.productRegistry[type]
+        if (!productClass) throw new BadRequestError("Invalid type");
+        return new productClass(payload).updateProduct(product_id)
     }
 
     /*
@@ -78,8 +84,10 @@ export class ProductFactory {
     }
 
     static async findProduct({ product_id, unSelect }: { product_id: string, unSelect: string[] }) {
-        return await findProductRepo({ product_id, unSelect :unSelect })
+        return await findProductRepo({ product_id, unSelect: unSelect })
     }
+
+
 }
 
 /*
@@ -108,9 +116,20 @@ class Product {
         this.product_shop = product_shop
         this.product_attributes = product_attributes
     }
+    /*
+        * create product 
+    */
     async createProduct(product_id: any) {
         return await ProductModels.create({ ...this, _id: product_id })
     }
+
+    /*
+        * update product 
+    */
+    async updateProduct(product_id: string, bodyUpdate: {}) {
+        return await updateProductById({ product_id: product_id, bodyUpdate: bodyUpdate, model: ProductModels, isNew: true })
+    }
+
 }
 
 /*
@@ -127,6 +146,15 @@ class Clothing extends Product {
         if (!newProduct) throw new BadRequestError("create new Product error");
 
         return newProduct
+    }
+
+    async updateProduct(product_id: string) {
+        const objectParams = this
+        if (objectParams.product_attributes) {
+            await updateProductById({ product_id: product_id, bodyUpdate: objectParams, model: clothesModels, isNew: true })
+        }
+        const updateProduct = await super.updateProduct(product_id, objectParams);
+        return updateProduct
     }
 }
 

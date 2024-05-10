@@ -26,6 +26,14 @@ class ProductFactory {
             return new productClass(payload).createProduct();
         });
     }
+    static updateProduct(type, product_id, payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const productClass = ProductFactory.productRegistry[type];
+            if (!productClass)
+                throw new error_response_1.BadRequestError("Invalid type");
+            return new productClass(payload).updateProduct(product_id);
+        });
+    }
     /*
         * find draft product for shop
     */
@@ -100,9 +108,20 @@ class Product {
         this.product_shop = product_shop;
         this.product_attributes = product_attributes;
     }
+    /*
+        * create product
+    */
     createProduct(product_id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield product_model_1.ProductModels.create(Object.assign(Object.assign({}, this), { _id: product_id }));
+        });
+    }
+    /*
+        * update product
+    */
+    updateProduct(product_id, bodyUpdate) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield (0, product_repo_1.updateProductById)({ product_id: product_id, bodyUpdate: bodyUpdate, model: product_model_1.ProductModels, isNew: true });
         });
     }
 }
@@ -122,6 +141,19 @@ class Clothing extends Product {
             if (!newProduct)
                 throw new error_response_1.BadRequestError("create new Product error");
             return newProduct;
+        });
+    }
+    updateProduct(product_id) {
+        const _super = Object.create(null, {
+            updateProduct: { get: () => super.updateProduct }
+        });
+        return __awaiter(this, void 0, void 0, function* () {
+            const objectParams = this;
+            if (objectParams.product_attributes) {
+                yield (0, product_repo_1.updateProductById)({ product_id: product_id, bodyUpdate: objectParams, model: product_model_1.clothesModels, isNew: true });
+            }
+            const updateProduct = yield _super.updateProduct.call(this, product_id, objectParams);
+            return updateProduct;
         });
     }
 }

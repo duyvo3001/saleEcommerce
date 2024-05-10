@@ -13,6 +13,7 @@ routerProduct
 
 routerProduct.use(authentication)
     .post('', asyncHandler(ProductController.createProduct))
+    .patch('/:product_id', asyncHandler(ProductController.updateProduct))
     .put('/Publish/:id', asyncHandler(ProductController.PublishProductByShop))
     .put('/UnPublish/:id', asyncHandler(ProductController.UnPublishProductByShop))
 
