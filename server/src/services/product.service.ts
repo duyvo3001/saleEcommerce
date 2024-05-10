@@ -1,7 +1,7 @@
 import { Schema, model, Types } from "mongoose";
 import { clothesModels, electronicModels, ProductModels, furnitureModels } from "../models/product.model";
 import { BadRequestError } from "../core/error.response";
-import { findAllDraftsForShopRepo, findAllPublishForShopRepo, publishProductByShopRepo, searchProductByUserRepo } from "../models/product.repo";
+import { findAllDraftsForShopRepo, findAllProductRepo, findAllPublishForShopRepo, findProductRepo, publishProductByShopRepo, searchProductByUserRepo } from "../models/product.repo";
 
 interface IProduct {
     product_name: String,
@@ -65,8 +65,20 @@ export class ProductFactory {
     /* 
         *  GET search Product
     */
-    static async searchProduct({ KeySearch }: { KeySearch: string }) {
-        return await searchProductByUserRepo({ KeySearch})
+    static async searchProduct(KeySearch: string) {
+        return await searchProductByUserRepo(KeySearch)
+    }
+
+    static async findAllProducts({ limit = 50, sort = 'ctime', page = 1, filter = { isPublish: true } }) {
+        return await findAllProductRepo(
+            {
+                limit, sort, filter, page,
+                select: ['product_name', 'product_Price', 'product_thump']
+            })
+    }
+
+    static async findProduct({ product_id, unSelect }: { product_id: string, unSelect: string[] }) {
+        return await findProductRepo({ product_id, unSelect :unSelect })
     }
 }
 

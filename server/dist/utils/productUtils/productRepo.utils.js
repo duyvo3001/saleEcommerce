@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.queryUn_Or_publishProduct = exports.queryProduct = void 0;
+exports.unGetSelectData = exports.getSelectData = exports.queryUn_Or_publishProduct = exports.queryProduct = void 0;
 const product_model_1 = require("../../models/product.model");
 const queryProduct = (_a) => __awaiter(void 0, [_a], void 0, function* ({ query, limit, skip }) {
     return yield product_model_1.ProductModels.find(query)
@@ -34,4 +34,12 @@ const queryUn_Or_publishProduct = (_b) => __awaiter(void 0, [_b], void 0, functi
     return modifiedCount;
 });
 exports.queryUn_Or_publishProduct = queryUn_Or_publishProduct;
+const getSelectData = (select = []) => {
+    return Object.fromEntries(select.map(el => [el, 1]));
+};
+exports.getSelectData = getSelectData;
+const unGetSelectData = (select = []) => {
+    return Object.fromEntries(select.map(el => [el, 0]));
+};
+exports.unGetSelectData = unGetSelectData;
 //# sourceMappingURL=productRepo.utils.js.map

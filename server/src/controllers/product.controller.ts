@@ -81,11 +81,24 @@ export class ProductController {
     }
 
     static getListSearchProduct = async (req: Request, res: Response, next: NextFunction) => {
-        console.log(req.params);
-        
         new SuccessResponse({
             message: "Get list search product success",
-            metadata: await ProductFactory.searchProduct({ KeySearch: req.params.toString() })
+            metadata: await ProductFactory.searchProduct(req.params.KeySearch)
         }).send(res);
     }
+
+    static findAllProduct = async (req: Request, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: "Find all products success",
+            metadata: await ProductFactory.findAllProducts(req.query)
+        }).send(res);
+    }
+
+    static findProduct = async (req: Request, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: "Find all products success",
+            metadata: await ProductFactory.findProduct({ product_id: req.params.product_id, unSelect: ['__v','product_Variation'] })
+        }).send(res);
+    }
+
 }

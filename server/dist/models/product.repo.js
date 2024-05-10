@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchProductByUserRepo = exports.UnPublishProductByShopRepo = exports.publishProductByShopRepo = exports.findAllPublishForShopRepo = exports.findAllDraftsForShopRepo = void 0;
+exports.findProductRepo = exports.findAllProductRepo = exports.searchProductByUserRepo = exports.UnPublishProductByShopRepo = exports.publishProductByShopRepo = exports.findAllPublishForShopRepo = exports.findAllDraftsForShopRepo = void 0;
 const productRepo_utils_1 = require("../utils/productUtils/productRepo.utils");
 const product_model_1 = require("./product.model");
 const findAllDraftsForShopRepo = (_a) => __awaiter(void 0, [_a], void 0, function* ({ query, limit, skip }) {
@@ -28,16 +28,32 @@ const UnPublishProductByShopRepo = (_d) => __awaiter(void 0, [_d], void 0, funct
     return (0, productRepo_utils_1.queryUn_Or_publishProduct)({ product_shop, product_id, isDraft: true, isPublish: false });
 });
 exports.UnPublishProductByShopRepo = UnPublishProductByShopRepo;
-const searchProductByUserRepo = (_e) => __awaiter(void 0, [_e], void 0, function* ({ KeySearch }) {
+const searchProductByUserRepo = (KeySearch) => __awaiter(void 0, void 0, void 0, function* () {
     const regexSearch = new RegExp(KeySearch);
     const results = product_model_1.ProductModels.findOne({
-        $text: { $search: regexSearch.toString() }
+        $text: { $search: regexSearch.source }
     }, {
-        scorce: { $meta: 'textScorce' }
+        score: { $meta: 'textScore' }
     })
-        .sort({ scorce: { $meta: 'textScorce' } }).lean()
+        .sort({ score: { $meta: 'textScore' } }).lean()
         .lean();
     return results;
 });
 exports.searchProductByUserRepo = searchProductByUserRepo;
+const findAllProductRepo = (_e) => __awaiter(void 0, [_e], void 0, function* ({ limit, sort, page, filter, select }) {
+    const skip = (page - 1) * limit;
+    const sortBy = sort === 'ctime' ? { _id: -1 } : { _id: 1 };
+    const products = yield product_model_1.ProductModels.findOne(filter, null, sortBy)
+        // .sort(sortBy)
+        .skip(skip)
+        .limit(limit)
+        .select((0, productRepo_utils_1.getSelectData)(select))
+        .lean();
+    return products;
+});
+exports.findAllProductRepo = findAllProductRepo;
+const findProductRepo = (_f) => __awaiter(void 0, [_f], void 0, function* ({ product_id, unSelect }) {
+    return product_model_1.ProductModels.findById(product_id).select((0, productRepo_utils_1.unGetSelectData)(unSelect));
+});
+exports.findProductRepo = findProductRepo;
 //# sourceMappingURL=product.repo.js.map

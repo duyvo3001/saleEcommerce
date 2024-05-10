@@ -30,3 +30,11 @@ export const queryUn_Or_publishProduct = async ({ product_shop, product_id, isDr
     const { modifiedCount } = await foundShop.updateOne(foundShop)
     return modifiedCount
 }
+
+export const getSelectData = (select: string[] = []) => {
+    return Object.fromEntries(select.map(el => [el, 1]))
+}
+
+export const unGetSelectData = (select: string[] = []) => {
+    return Object.fromEntries(select.map(el => [el, 0]))
+}

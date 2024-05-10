@@ -93,10 +93,21 @@ ProductController.UnPublishProductByShop = (req, res, next) => __awaiter(void 0,
     }).send(res);
 });
 ProductController.getListSearchProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params);
     new success_response_1.SuccessResponse({
         message: "Get list search product success",
-        metadata: yield product_service_1.ProductFactory.searchProduct({ KeySearch: req.params.toString() })
+        metadata: yield product_service_1.ProductFactory.searchProduct(req.params.KeySearch)
+    }).send(res);
+});
+ProductController.findAllProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    new success_response_1.SuccessResponse({
+        message: "Find all products success",
+        metadata: yield product_service_1.ProductFactory.findAllProducts(req.query)
+    }).send(res);
+});
+ProductController.findProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    new success_response_1.SuccessResponse({
+        message: "Find all products success",
+        metadata: yield product_service_1.ProductFactory.findProduct({ product_id: req.params.product_id, unSelect: ['__v'] })
     }).send(res);
 });
 //# sourceMappingURL=product.controller.js.map

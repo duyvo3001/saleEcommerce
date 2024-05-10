@@ -10,7 +10,9 @@ const product_controller_1 = require("../../controllers/product.controller");
 const routerProduct = express_1.default.Router();
 // authentication //
 routerProduct
-    .get('/search/all/:KeySearch', product_controller_1.ProductController.getListSearchProduct);
+    .get('/search/all/:KeySearch', product_controller_1.ProductController.getListSearchProduct)
+    .get('', product_controller_1.ProductController.findAllProduct)
+    .get('/:product_id', product_controller_1.ProductController.findProduct);
 routerProduct.use(authUtils_1.authentication)
     .post('', (0, asyncHandler_1.asyncHandler)(product_controller_1.ProductController.createProduct))
     .put('/Publish/:id', (0, asyncHandler_1.asyncHandler)(product_controller_1.ProductController.PublishProductByShop))

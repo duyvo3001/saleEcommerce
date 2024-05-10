@@ -61,9 +61,22 @@ class ProductFactory {
     /*
         *  GET search Product
     */
-    static searchProduct(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ KeySearch }) {
-            return yield (0, product_repo_1.searchProductByUserRepo)({ KeySearch });
+    static searchProduct(KeySearch) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield (0, product_repo_1.searchProductByUserRepo)(KeySearch);
+        });
+    }
+    static findAllProducts(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ limit = 50, sort = 'ctime', page = 1, filter = { isPublish: true } }) {
+            return yield (0, product_repo_1.findAllProductRepo)({
+                limit, sort, filter, page,
+                select: ['product_name', 'product_Price', 'product_thump']
+            });
+        });
+    }
+    static findProduct(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ product_id, unSelect }) {
+            return yield (0, product_repo_1.findProductRepo)({ product_id, unSelect: unSelect });
         });
     }
 }
