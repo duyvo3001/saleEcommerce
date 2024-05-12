@@ -38,3 +38,28 @@ export const getSelectData = (select: string[] = []) => {
 export const unGetSelectData = (select: string[] = []) => {
     return Object.fromEntries(select.map(el => [el, 0]))
 }
+
+export const removeUndefindObject = (obj: any): any => {
+    console.log(obj);
+
+    Object.keys(obj).forEach(el => {
+        if (obj[el] === null || obj[el] === undefined) {
+            delete obj[el]
+        }
+    })
+    return obj
+}
+
+export const updateNestedObject = (obj: any): any => {
+    const final: any = {}
+    Object.keys(obj).forEach((el: any): any => {
+        if (typeof obj[el] === 'object' && !Array.isArray(obj[el])) {
+            const response = updateNestedObject(obj[el])
+            Object.keys(response).forEach((elFinal: any): any => {
+                elFinal[`${el}.${elFinal}`] = response[elFinal]
+            })
+        }
+        else final[el] = obj[el]
+    })
+    return final
+}

@@ -1,3 +1,4 @@
+import { removeUndefindObject, updateNestedObject } from './../utils/productUtils/productRepo.utils';
 import { Schema, model, Types } from "mongoose";
 import { clothesModels, electronicModels, ProductModels, furnitureModels } from "../models/product.model";
 import { BadRequestError } from "../core/error.response";
@@ -63,7 +64,7 @@ export class ProductFactory {
         return await publishProductByShopRepo({ product_shop, product_id })
     }
     /* 
-       *  PUT Un Publish Product 
+       *  PUT UnPublish Product 
    */
     static async UnPublishProductByShop({ product_shop, product_id }: { product_shop: Types.ObjectId, product_id: Types.ObjectId }) {
         return await publishProductByShopRepo({ product_shop, product_id })
@@ -149,11 +150,25 @@ class Clothing extends Product {
     }
 
     async updateProduct(product_id: string) {
-        const objectParams = this
+
+        const objectParams = removeUndefindObject(this)
+
+        /*
+            * remove obj a{ a : 2 } but don't remove obj a{ b : 1} in obj  a{ a : 2 , b : 1 }
+        */
+        const updateNestedObj_attributes = updateNestedObject(objectParams.product_attributes)
+        const updateNestedObj_params = updateNestedObject(objectParams)
+
         if (objectParams.product_attributes) {
-            await updateProductById({ product_id: product_id, bodyUpdate: objectParams, model: clothesModels, isNew: true })
+            await updateProductById(
+                {
+                    product_id: product_id,
+                    bodyUpdate: updateNestedObj_attributes,
+                    model: clothesModels,
+                    isNew: true
+                })
         }
-        const updateProduct = await super.updateProduct(product_id, objectParams);
+        const updateProduct = await super.updateProduct(product_id, updateNestedObj_params);
         return updateProduct
     }
 }

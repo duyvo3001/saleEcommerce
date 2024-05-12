@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductFactory = void 0;
+const productRepo_utils_1 = require("./../utils/productUtils/productRepo.utils");
 const mongoose_1 = require("mongoose");
 const product_model_1 = require("../models/product.model");
 const error_response_1 = require("../core/error.response");
@@ -59,7 +60,7 @@ class ProductFactory {
         });
     }
     /*
-       *  PUT Un Publish Product
+       *  PUT UnPublish Product
    */
     static UnPublishProductByShop(_a) {
         return __awaiter(this, arguments, void 0, function* ({ product_shop, product_id }) {
@@ -148,11 +149,21 @@ class Clothing extends Product {
             updateProduct: { get: () => super.updateProduct }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            const objectParams = this;
+            const objectParams = (0, productRepo_utils_1.removeUndefindObject)(this);
+            /*
+                * remove obj a{ a : 2 } but don't remove obj a{ b : 1} in obj  a{ a : 2 , b : 1 }
+            */
+            const updateNestedObj_attributes = (0, productRepo_utils_1.updateNestedObject)(objectParams.product_attributes);
+            const updateNestedObj_params = (0, productRepo_utils_1.updateNestedObject)(objectParams);
             if (objectParams.product_attributes) {
-                yield (0, product_repo_1.updateProductById)({ product_id: product_id, bodyUpdate: objectParams, model: product_model_1.clothesModels, isNew: true });
+                yield (0, product_repo_1.updateProductById)({
+                    product_id: product_id,
+                    bodyUpdate: updateNestedObj_attributes,
+                    model: product_model_1.clothesModels,
+                    isNew: true
+                });
             }
-            const updateProduct = yield _super.updateProduct.call(this, product_id, objectParams);
+            const updateProduct = yield _super.updateProduct.call(this, product_id, updateNestedObj_params);
             return updateProduct;
         });
     }
