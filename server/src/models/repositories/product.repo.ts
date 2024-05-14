@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
-import { queryProduct, queryUn_Or_publishProduct, InterfaceFindProduct, unGetSelectData, getSelectData } from "../utils/productUtils/productRepo.utils";
-import { ProductModels } from "./product.model";
+import { queryProduct, queryUn_Or_publishProduct, InterfaceFindProduct, unGetSelectData, getSelectData } from "../../utils/productUtils/productRepo.utils";
+import { ProductModels } from "../product.model";
 export const findAllDraftsForShopRepo = async ({ query, limit, skip }: InterfaceFindProduct) => {
     return queryProduct({ query, limit, skip })
 }

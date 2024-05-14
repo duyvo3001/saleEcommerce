@@ -2,14 +2,16 @@ import { removeUndefindObject, updateNestedObject } from './../utils/productUtil
 import { Schema, model, Types } from "mongoose";
 import { clothesModels, electronicModels, ProductModels, furnitureModels } from "../models/product.model";
 import { BadRequestError } from "../core/error.response";
-import { findAllDraftsForShopRepo, findAllProductRepo, findAllPublishForShopRepo, findProductRepo, publishProductByShopRepo, searchProductByUserRepo, updateProductById } from "../models/product.repo";
+import { findAllDraftsForShopRepo, findAllProductRepo, findAllPublishForShopRepo, findProductRepo, publishProductByShopRepo, searchProductByUserRepo, updateProductById } from "../models/repositories/product.repo";
+import { insertInventory } from '../models/repositories/inventory.repo';
+import { parse } from 'path';
 
 interface IProduct {
     product_name: String,
     product_thump: String,
     product_description: String,
-    product_Price: Number,
-    product_quantity: Number,
+    product_Price: number,
+    product_quantity: number,
     product_type: [String],
     product_shop: Types.ObjectId,
     product_attributes: Schema.Types.Mixed,
@@ -98,8 +100,8 @@ class Product {
     product_name: String;
     product_thump: String;
     product_description: String;
-    product_Price: Number;
-    product_quantity: Number;
+    product_Price: number;
+    product_quantity: number;
     product_type: [String];
     product_shop: Types.ObjectId;
     product_attributes: Schema.Types.Mixed;
@@ -121,8 +123,20 @@ class Product {
         * create product 
     */
     async createProduct(product_id: any) {
-        return await ProductModels.create({ ...this, _id: product_id })
+        const newProduct =  await ProductModels.create({ ...this, _id: product_id })
+        const productid = await newProduct._id
+        if (newProduct) {
+            await insertInventory({
+                product_id : productid, 
+                shop_id : this.product_shop , 
+                stock : this.product_quantity,
+                location : 'unKnown'
+            })
+        }
+        return newProduct
+
     }
+
 
     /*
         * update product 

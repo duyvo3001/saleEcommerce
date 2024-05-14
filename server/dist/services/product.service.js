@@ -14,7 +14,8 @@ const productRepo_utils_1 = require("./../utils/productUtils/productRepo.utils")
 const mongoose_1 = require("mongoose");
 const product_model_1 = require("../models/product.model");
 const error_response_1 = require("../core/error.response");
-const product_repo_1 = require("../models/product.repo");
+const product_repo_1 = require("../models/repositories/product.repo");
+const inventory_repo_1 = require("../models/repositories/inventory.repo");
 class ProductFactory {
     static registerProductType(type, classRef) {
         ProductFactory.productRegistry[type] = classRef;
@@ -114,7 +115,17 @@ class Product {
     */
     createProduct(product_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield product_model_1.ProductModels.create(Object.assign(Object.assign({}, this), { _id: product_id }));
+            const newProduct = yield product_model_1.ProductModels.create(Object.assign(Object.assign({}, this), { _id: product_id }));
+            const productid = yield newProduct._id;
+            if (newProduct) {
+                yield (0, inventory_repo_1.insertInventory)({
+                    product_id: productid,
+                    shop_id: this.product_shop,
+                    stock: this.product_quantity,
+                    location: 'unKnown'
+                });
+            }
+            return newProduct;
         });
     }
     /*
