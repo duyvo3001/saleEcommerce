@@ -31,9 +31,9 @@ export const searchProductByUserRepo = async (KeySearch: string) => {
         .lean()
     return results
 }
-
+type filterFindAllProdut = { isPublish: boolean } | { isPublish: boolean, product_shop: Types.ObjectId } | { isPublish: boolean, _id: any }
 export const findAllProductRepo = async ({ limit, sort, page, filter, select }: {
-    limit: number, sort: string, page: number, filter: { isPublish: boolean }, select: string[]
+    limit: number, sort: string, page: number, filter: filterFindAllProdut, select: string[]
 }) => {
     const skip = (page - 1) * limit
     const sortBy = sort === 'ctime' ? { _id: -1 } : { _id: 1 }

@@ -51,7 +51,6 @@ export class ProductFactory {
     */
     static async findAllDraftsForShop({ product_shop, limit, skip }: InterfaceFindProduct) {
         const query = { product_shop, isDraft: true }
-        // return await findAllDraftsForShopRepo({ query, limit, skip })
         return await findAllDraftsForShopRepo({ query, limit, skip })
     }
     static async findAllPublishForShop({ product_shop, limit, skip }: InterfaceFindProduct) {

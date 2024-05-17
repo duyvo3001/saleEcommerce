@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-import slugify from "slugify";
+
 
 const DOCUMENT_NAME = 'Inventory'
 const COLLECTION_NAME = 'Inventories'
