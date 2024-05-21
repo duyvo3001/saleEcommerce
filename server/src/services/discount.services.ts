@@ -33,12 +33,25 @@ type DiscountCode = {
     uses_count: number,
     max_uses_per_user: number,
     userId: Types.ObjectId,
+    users_used: Types.ObjectId,
+}
+interface getAllDiscountCode {
+    codeId: string,
+    products: string[],
     limit: number,
     page: number,
-    codeId: string,
-    products: string,
-    users_used: Types.ObjectId
 }
+interface IGetAllDiscountCode extends Pick<DiscountCode, 'code' | 'userId' | 'shopId'> {
+    limit: number;
+    page: number;
+}
+// interface IGetAllDiscountCodeWithShop extends DiscountCode, getAllDiscountCode {
+//     shopId: string,
+// }
+// interface IGetAllDiscountAmount extends DiscountCode, getAllDiscountCode {
+//     shopId: string,
+//     userId :Types.ObjectId
+// }
 
 export class DiscountService {
     /*
@@ -47,12 +60,14 @@ export class DiscountService {
     static async createDiscountCode(payload: DiscountCode) {
         const {
             code, start_date, end_date, is_active, shopId, min_order_value, product_ids, applies_to,
-            name, description, type, value, max_value, max_uses, uses_count, max_uses_per_user, users_used
+            name, description, type, value, max_value, max_uses, uses_count, max_uses_per_user, users_used, userId
         } = payload
 
         const checkDate = new Date() < new Date(start_date) || new Date() > new Date(end_date) // check code expried
+        console.log(new Date() < new Date(start_date));
+
         if (checkDate === true) {
-            throw new BadRequestError('Discount code has expried')
+            throw new BadRequestError('Discount code has expried 2')
         }
 
         const check_start_end_Date = new Date(start_date) >= new Date(end_date)  // check date
@@ -100,9 +115,10 @@ export class DiscountService {
     */
 
 
-    static async getAllDiscountCodeWithProduct({
-        code, shopId, userId, limit, page
-    }: DiscountCode) {
+    static async getAllDiscountCodeWithProduct(payload: IGetAllDiscountCode) {
+        const {
+            code, shopId, userId, limit, page
+        } = payload
         //create index for discount code 
         const foundDiscount = await discountModels.findOne({
             disscount_code: code,
@@ -146,7 +162,7 @@ export class DiscountService {
         * get all discount code for shop
     */
 
-    static async getAllDiscountCodesByShop({ limit, page, shopId }: DiscountCode) {
+    static async getAllDiscountCodesByShop({ limit, page, shopId }: IGetAllDiscountCode) {
         const discounts = await findAllDiscountCodesUnSelect({
             limit: +limit,
             page: +page,
@@ -161,54 +177,54 @@ export class DiscountService {
         return discounts
     }
 
-    static async getDiscountAmount({ codeId, userId, shopId, products }: DiscountCode) {
-        const foundDiscount = await checkDiscountExists(discountModels, shopId)
+    // static async getDiscountAmount({ codeId, userId, shopId, products }: IGetAllDiscountCode) {
+    //     const foundDiscount = await checkDiscountExists(discountModels, shopId)
 
-        if (!foundDiscount) throw new NotFoundError(`discount doesn't exitst`)
+    //     if (!foundDiscount) throw new NotFoundError(`discount doesn't exitst`)
 
-        const {
-            discount_is_active,
-            discount_max_uses,
-            discount_start_date,
-            discount_end_date,
-            discount_min_order_value,
-            discount_max_uses_per_user,
-            discount_users_used,
-            discount_value,
-            dicount_type
-        } = foundDiscount
+    //     const {
+    //         discount_is_active,
+    //         discount_max_uses,
+    //         discount_start_date,
+    //         discount_end_date,
+    //         discount_min_order_value,
+    //         discount_max_uses_per_user,
+    //         discount_users_used,
+    //         discount_value,
+    //         dicount_type
+    //     } = foundDiscount
 
-        if (!discount_is_active) throw new NotFoundError(`discount expried`);
-        if (!discount_max_uses) throw new NotFoundError(`discount expried`);
+    //     if (!discount_is_active) throw new NotFoundError(`discount expried`);
+    //     if (!discount_max_uses) throw new NotFoundError(`discount expried`);
 
-        if (new Date() < new Date(discount_start_date || new Date() > new Date(discount_end_date))) {
-            throw new NotFoundError(`discount code has expried`)
-        }
+    //     if (new Date() < new Date(discount_start_date || new Date() > new Date(discount_end_date))) {
+    //         throw new NotFoundError(`discount code has expried 1`)
+    //     }
 
-        let totalOrder = 0
+    //     let totalOrder = 0
 
-        if (discount_min_order_value > 0) {
-            totalOrder = products.reduce((acc, product) => {
-                return acc + (product.quantity * product.price)
-            }, 0)
+    //     if (discount_min_order_value > 0) {
+    //         totalOrder = products?.reduce((acc: any, product: any) => {
+    //             return acc + (product.quantity * product.price)
+    //         }, 0)
 
-            if (totalOrder < discount_min_order_value)
-                throw new NotFoundError(`discount requires a minimum order value of ${discount_min_order_value}`)
-        }
+    //         if (totalOrder < discount_min_order_value)
+    //             throw new NotFoundError(`discount requires a minimum order value of ${discount_min_order_value}`)
+    //     }
 
-        if (discount_max_uses_per_user > 0) {
-            const userDiscount = discount_users_used.find(user => user.userId === userId)
-            if (userDiscount) {
+    //     if (discount_max_uses_per_user > 0) {
+    //         const userDiscount = discount_users_used.find((user: any) => user.userId === userId)
+    //         if (userDiscount) {
 
-            }
-        }
+    //         }
+    //     }
 
-        const amount = dicount_type === 'fixed_amount' ? discount_value : totalOrder * (discount_value / 100)
+    //     const amount = dicount_type === 'fixed_amount' ? discount_value : totalOrder * (discount_value / 100)
 
-        return {
-            totalOrder,
-            discount: amount,
-            totalPrice: totalOrder - amount
-        }
-    }
+    //     return {
+    //         totalOrder,
+    //         discount: amount,
+    //         totalPrice: totalOrder - amount
+    //     }
+    // }
 }

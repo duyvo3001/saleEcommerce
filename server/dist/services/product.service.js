@@ -42,7 +42,6 @@ class ProductFactory {
     static findAllDraftsForShop(_a) {
         return __awaiter(this, arguments, void 0, function* ({ product_shop, limit, skip }) {
             const query = { product_shop, isDraft: true };
-            // return await findAllDraftsForShopRepo({ query, limit, skip })
             return yield (0, product_repo_1.findAllDraftsForShopRepo)({ query, limit, skip });
         });
     }

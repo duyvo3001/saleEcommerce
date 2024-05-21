@@ -15,9 +15,9 @@ class Database {
 
     private connect(): void {
         mongoose.connect(connectString, { maxPoolSize: +process.env.MONGO_MAX_POOL_SIZE! })
-            .then(() =>{
+            .then(() => {
                 console.log('Connected to MongoDB Successfully :  ')
-            } , conuntConnect)
+            }, conuntConnect)
             .catch((err) => console.log('Error Connecting to MongoDB:', err));
         mongoose.connection.db
 
