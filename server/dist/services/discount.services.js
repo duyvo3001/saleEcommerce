@@ -23,13 +23,6 @@ const error_response_1 = require("../core/error.response");
 const discount_model_1 = require("../models/discount.model");
 const product_repo_1 = require("../models/repositories/product.repo");
 const discount_repo_1 = require("../models/repositories/discount.repo");
-// interface IGetAllDiscountCodeWithShop extends DiscountCode, getAllDiscountCode {
-//     shopId: string,
-// }
-// interface IGetAllDiscountAmount extends DiscountCode, getAllDiscountCode {
-//     shopId: string,
-//     userId :Types.ObjectId
-// }
 class DiscountService {
     /*
         ?create discount code
@@ -50,11 +43,12 @@ class DiscountService {
                 * create index for discount code
             */
             const foundDiscount = yield discount_model_1.discountModels.findOne({
-                disscount_code: code,
-                disscount_shopId: shopId,
-            }).lean();
-            if (foundDiscount && foundDiscount.discount_is_active) {
-                throw new error_response_1.BadRequestError('Disscount exists');
+                discount_code: code,
+                discount_shopId: shopId,
+            });
+            console.log(foundDiscount === null || foundDiscount === void 0 ? void 0 : foundDiscount.discount_is_active);
+            if (foundDiscount && (foundDiscount === null || foundDiscount === void 0 ? void 0 : foundDiscount.discount_is_active)) {
+                throw new error_response_1.BadRequestError('discount exists');
             }
             const newDiscount = yield discount_model_1.discountModels.create({
                 discount_name: name,
@@ -88,9 +82,10 @@ class DiscountService {
             const { code, shopId, userId, limit, page } = payload;
             //create index for discount code 
             const foundDiscount = yield discount_model_1.discountModels.findOne({
-                disscount_code: code,
-                disscount_shopId: shopId,
+                discount_code: code,
+                discount_shopId: shopId,
             }).lean();
+            console.log(foundDiscount);
             if (!foundDiscount || !foundDiscount.discount_is_active) {
                 throw new error_response_1.NotFoundError('Discount not exists');
             }

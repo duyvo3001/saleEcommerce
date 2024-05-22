@@ -1,14 +1,11 @@
 import bcrypt from "bcrypt"
-// import keyTokenService from "./keyToken.service";
 import { KeyTokenService } from "./keyToken.service";
-
 import { shopModel } from "../models/shop.model";
 import { generateKeyPairSync } from "crypto"
 import { createTokenPair, verifyJWT } from "../auth/authUtils";
 import { AuthFailedError, BadRequestError, ForbiddenError } from "../core/error.response";
 import { findByEmail } from "./shop.service";
-import { Types } from 'mongoose';
-import { NextFunction, Request, Response } from "express"
+import { Request } from "express"
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -47,7 +44,7 @@ export class AccessService {
 
         const { userID, email } = JSON.parse(user)
         const _KeyStore = JSON.parse(keyStore)
-        
+
         if (_KeyStore.refreshTokensUsed.includes(refreshToken)) {
             await KeyTokenService.deleteKeyById(userID)
             throw new ForbiddenError('Something went wrong ! Please relogin')
@@ -83,12 +80,6 @@ export class AccessService {
     static logout = async (keyStore: Request) => {
         const id: string = keyStore.headers[HEADER.keyStore]?.toString() || ""
         // console.log(keyStore.headers[HEADER.keyStore]);
-
-        //1_ check email
-        //2_ match pass
-        //3_ create At and rt and save 
-        //4_ generate tokens
-        //5_ get data return login
 
         await KeyTokenService.removeKeyById(id) // remove id from key store
 

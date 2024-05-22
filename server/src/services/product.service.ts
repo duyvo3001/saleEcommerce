@@ -1,10 +1,9 @@
 import { removeUndefindObject, updateNestedObject } from './../utils/productUtils/productRepo.utils';
-import { Schema, model, Types } from "mongoose";
+import { Schema, Types } from "mongoose";
 import { clothesModels, electronicModels, ProductModels, furnitureModels } from "../models/product.model";
 import { BadRequestError } from "../core/error.response";
 import { findAllDraftsForShopRepo, findAllProductRepo, findAllPublishForShopRepo, findProductRepo, publishProductByShopRepo, searchProductByUserRepo, updateProductById } from "../models/repositories/product.repo";
 import { insertInventory } from '../models/repositories/inventory.repo';
-import { parse } from 'path';
 
 interface IProduct {
     product_name: String,
@@ -122,14 +121,14 @@ class Product {
         * create product 
     */
     async createProduct(product_id: any) {
-        const newProduct =  await ProductModels.create({ ...this, _id: product_id })
+        const newProduct = await ProductModels.create({ ...this, _id: product_id })
         const productid = await newProduct._id
         if (newProduct) {
             await insertInventory({
-                product_id : productid, 
-                shop_id : this.product_shop , 
-                stock : this.product_quantity,
-                location : 'unKnown'
+                product_id: productid,
+                shop_id: this.product_shop,
+                stock: this.product_quantity,
+                location: 'unKnown'
             })
         }
         return newProduct

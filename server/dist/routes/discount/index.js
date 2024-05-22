@@ -11,6 +11,6 @@ const dicount_Controller_1 = require("../../controllers/dicount.Controller");
 exports.routerDiscount = express_1.default.Router();
 exports.routerDiscount.use(authUtils_1.authentication);
 exports.routerDiscount.post('/discountCode', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.createDiscountCode));
-exports.routerDiscount.post('/discountCode', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.getAllDiscountCodes));
+exports.routerDiscount.get('/get-all-list-discount', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.getAllDiscountCodes));
 // routerDiscount.post('/discountCode',asyncHandler(DiscountController.createDiscountCode))
 //# sourceMappingURL=index.js.map

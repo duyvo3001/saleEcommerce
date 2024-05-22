@@ -47,9 +47,13 @@ DiscountController.createDiscountCode = (req, res, next) => __awaiter(void 0, vo
     }).send(res);
 });
 DiscountController.getAllDiscountCodes = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { code, shopId, userId, limit, page } = req.body;
+    const { code, shopId, userId, limit, page } = req.query;
     const payload = {
-        code, shopId, userId, limit, page
+        code: code,
+        shopId: new mongoose_1.Types.ObjectId(shopId),
+        userId: userId,
+        limit: Number(limit),
+        page: Number(page)
     };
     new success_response_1.SuccessResponse({
         message: "Get token success",

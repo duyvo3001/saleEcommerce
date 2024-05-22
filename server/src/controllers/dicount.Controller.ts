@@ -6,7 +6,9 @@ import { NextFunction, Request, Response } from "express"
 export class DiscountController {
 
     static createDiscountCode = async (req: Request, res: Response, next: NextFunction) => {
-        const { code, is_active, product_ids, applies_to, name, description, min_order_value, type, value, max_value, max_uses, uses_count, max_uses_per_user, userId, users_used, limit, page, start_date, end_date } = req.body
+        const { code, is_active, product_ids, applies_to, name, description, min_order_value, type,
+            value, max_value, max_uses, uses_count, max_uses_per_user, userId,
+            users_used, limit, page, start_date, end_date } = req.body
         const payload = {
             code,
             start_date,
@@ -34,14 +36,20 @@ export class DiscountController {
     }
 
     static getAllDiscountCodes = async (req: Request, res: Response, next: NextFunction) => {
-        const { code, shopId, userId, limit, page } = req.body
+        const { code, shopId, userId, limit, page } = req.query
+
         const payload = {
-            code, shopId, userId, limit, page
+            code: code as string,
+            shopId: new Types.ObjectId(shopId as string),
+            userId : userId as string,
+            limit: Number(limit),
+            page: Number(page)
         }
+
         new SuccessResponse({
             message: "Get token success",
             metadata: await DiscountService.getAllDiscountCodeWithProduct(payload)
         }).send(res)
     }
-    
+
 }

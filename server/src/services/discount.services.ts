@@ -32,7 +32,7 @@ type DiscountCode = {
     max_uses: number,
     uses_count: number,
     max_uses_per_user: number,
-    userId: Types.ObjectId,
+    userId: string,
     users_used: Types.ObjectId,
 }
 interface getAllDiscountCode {
@@ -45,13 +45,6 @@ interface IGetAllDiscountCode extends Pick<DiscountCode, 'code' | 'userId' | 'sh
     limit: number;
     page: number;
 }
-// interface IGetAllDiscountCodeWithShop extends DiscountCode, getAllDiscountCode {
-//     shopId: string,
-// }
-// interface IGetAllDiscountAmount extends DiscountCode, getAllDiscountCode {
-//     shopId: string,
-//     userId :Types.ObjectId
-// }
 
 export class DiscountService {
     /*
@@ -79,12 +72,15 @@ export class DiscountService {
             * create index for discount code
         */
         const foundDiscount = await discountModels.findOne({
-            disscount_code: code,
-            disscount_shopId: shopId,
-        }).lean()
+            discount_code: code,
+            discount_shopId: shopId,
+        })
 
-        if (foundDiscount && foundDiscount.discount_is_active) {
-            throw new BadRequestError('Disscount exists');
+        console.log(foundDiscount?.discount_is_active);
+        
+
+        if (foundDiscount && foundDiscount?.discount_is_active) {
+            throw new BadRequestError('discount exists');
         }
 
         const newDiscount = await discountModels.create({
@@ -121,9 +117,11 @@ export class DiscountService {
         } = payload
         //create index for discount code 
         const foundDiscount = await discountModels.findOne({
-            disscount_code: code,
-            disscount_shopId: shopId,
+            discount_code: code,
+            discount_shopId: shopId,
         }).lean()
+
+        console.log(foundDiscount);
 
         if (!foundDiscount || !foundDiscount.discount_is_active) {
             throw new NotFoundError('Discount not exists')

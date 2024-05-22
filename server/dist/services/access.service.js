@@ -15,7 +15,6 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AccessService = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
-// import keyTokenService from "./keyToken.service";
 const keyToken_service_1 = require("./keyToken.service");
 const shop_model_1 = require("../models/shop.model");
 const crypto_1 = require("crypto");
@@ -72,11 +71,6 @@ AccessService.logout = (keyStore) => __awaiter(void 0, void 0, void 0, function*
     var _c;
     const id = ((_c = keyStore.headers[HEADER.keyStore]) === null || _c === void 0 ? void 0 : _c.toString()) || "";
     // console.log(keyStore.headers[HEADER.keyStore]);
-    //1_ check email
-    //2_ match pass
-    //3_ create At and rt and save 
-    //4_ generate tokens
-    //5_ get data return login
     yield keyToken_service_1.KeyTokenService.removeKeyById(id); // remove id from key store
     // return delKey
     return {
