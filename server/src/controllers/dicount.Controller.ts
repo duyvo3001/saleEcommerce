@@ -35,13 +35,13 @@ export class DiscountController {
         }).send(res)
     }
 
-    static getAllDiscountCodes = async (req: Request, res: Response, next: NextFunction) => {
+    static getAllDiscountCodesWithProduct = async (req: Request, res: Response, next: NextFunction) => {
         const { code, shopId, userId, limit, page } = req.query
 
         const payload = {
             code: code as string,
             shopId: new Types.ObjectId(shopId as string),
-            userId : userId as string,
+            userId: userId as string,
             limit: Number(limit),
             page: Number(page)
         }
@@ -52,4 +52,61 @@ export class DiscountController {
         }).send(res)
     }
 
+    static getAllDiscountCodesWithShop = async (req: Request, res: Response, next: NextFunction) => {
+        const { shopId, limit, page } = req.query
+
+        const payload = {
+            shopId: new Types.ObjectId(shopId as string),
+            limit: Number(limit),
+            page: Number(page)
+        }
+
+        new SuccessResponse({
+            message: "Get token success",
+            metadata: await DiscountService.getAllDiscountCodesByShop(payload)
+        }).send(res)
+    }
+
+    static getDiscountAmount = async (req: Request, res: Response, next: NextFunction) => {
+        const { codeId, shopId, userId, products } = req.body
+
+        const payload = {
+            codeId: codeId as string,
+            shopId: new Types.ObjectId(shopId as string),
+            userId: userId as string,
+            products: products
+        }
+
+        new SuccessResponse({
+            message: "Get token success",
+            metadata: await DiscountService.getDiscountAmount(payload)
+        }).send(res)
+    }
+    static DeleteDiscount = async (req: Request, res: Response, next: NextFunction) => {
+        const { codeId, shopId, userId, products } = req.body
+
+        const payload = {
+            codeId: codeId as string,
+            shopId: new Types.ObjectId(shopId as string),
+        }
+
+        new SuccessResponse({
+            message: "Get token success",
+            metadata: await DiscountService.deleteDiscountCode(payload)
+        }).send(res)
+    }
+    static CancelDiscount = async (req: Request, res: Response, next: NextFunction) => {
+        const { codeId, shopId, userId } = req.body
+
+        const payload = {
+            codeId: codeId as string,
+            shopId: new Types.ObjectId(shopId as string),
+            userId: userId as string,
+        }
+
+        new SuccessResponse({
+            message: "Get token success",
+            metadata: await DiscountService.cancelDiscountCode(payload)
+        }).send(res)
+    }
 }

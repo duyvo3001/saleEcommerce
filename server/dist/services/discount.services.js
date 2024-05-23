@@ -42,11 +42,10 @@ class DiscountService {
             /*
                 * create index for discount code
             */
-            const foundDiscount = yield discount_model_1.discountModels.findOne({
+            const foundDiscount = yield (0, discount_repo_1.checkDiscountExists)(discount_model_1.discountModels, {
                 discount_code: code,
                 discount_shopId: shopId,
             });
-            console.log(foundDiscount === null || foundDiscount === void 0 ? void 0 : foundDiscount.discount_is_active);
             if (foundDiscount && (foundDiscount === null || foundDiscount === void 0 ? void 0 : foundDiscount.discount_is_active)) {
                 throw new error_response_1.BadRequestError('discount exists');
             }
@@ -81,11 +80,10 @@ class DiscountService {
         return __awaiter(this, void 0, void 0, function* () {
             const { code, shopId, userId, limit, page } = payload;
             //create index for discount code 
-            const foundDiscount = yield discount_model_1.discountModels.findOne({
+            const foundDiscount = yield (0, discount_repo_1.checkDiscountExists)(discount_model_1.discountModels, {
                 discount_code: code,
                 discount_shopId: shopId,
-            }).lean();
-            console.log(foundDiscount);
+            });
             if (!foundDiscount || !foundDiscount.discount_is_active) {
                 throw new error_response_1.NotFoundError('Discount not exists');
             }
@@ -135,6 +133,40 @@ class DiscountService {
                 model: discount_model_1.discountModels
             });
             return discounts;
+        });
+    }
+    static getDiscountAmount(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ codeId, userId, shopId, products }) {
+            const foundDiscount = yield (0, discount_repo_1.checkDiscountExists)(discount_model_1.discountModels, { discount_shopId: shopId });
+            if (!foundDiscount)
+                throw new error_response_1.NotFoundError(`discount doesn't exitst`);
+            const { discount_is_active, discount_max_uses, discount_start_date, discount_end_date, discount_min_order_value, discount_max_uses_per_user, discount_users_used, discount_value, dicount_type } = foundDiscount;
+            if (!discount_is_active)
+                throw new error_response_1.NotFoundError(`discount expried`);
+            if (!discount_max_uses)
+                throw new error_response_1.NotFoundError(`discount expried`);
+            if (new Date() < new Date(discount_start_date || new Date() > new Date(discount_end_date))) {
+                throw new error_response_1.NotFoundError(`discount code has expried 1`);
+            }
+            let totalOrder = 0;
+            if (discount_min_order_value > 0) {
+                totalOrder = products.reduce((acc, product) => {
+                    return acc + (product.quantity * product.price);
+                }, 0);
+                if (totalOrder < discount_min_order_value)
+                    throw new error_response_1.NotFoundError(`discount requires a minimum order value of ${discount_min_order_value}`);
+            }
+            if (discount_max_uses_per_user > 0) {
+                const userDiscount = discount_users_used.find((user) => user.userId === userId);
+                if (userDiscount) {
+                }
+            }
+            const amount = dicount_type === 'fixed_amount' ? discount_value : totalOrder * (discount_value / 100);
+            return {
+                totalOrder,
+                discount: amount,
+                totalPrice: totalOrder - amount
+            };
         });
     }
 }

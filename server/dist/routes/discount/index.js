@@ -9,8 +9,10 @@ const asyncHandler_1 = require("../../helpers/asyncHandler");
 const authUtils_1 = require("../../auth/authUtils");
 const dicount_Controller_1 = require("../../controllers/dicount.Controller");
 exports.routerDiscount = express_1.default.Router();
+exports.routerDiscount.post('/amount', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.getDiscountAmount));
 exports.routerDiscount.use(authUtils_1.authentication);
 exports.routerDiscount.post('/discountCode', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.createDiscountCode));
-exports.routerDiscount.get('/get-all-list-discount', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.getAllDiscountCodes));
-// routerDiscount.post('/discountCode',asyncHandler(DiscountController.createDiscountCode))
+exports.routerDiscount.get('/all-list-discount-product', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.getAllDiscountCodesWithProduct));
+exports.routerDiscount.get('/all-list-discount-shop', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.getAllDiscountCodesWithShop));
+// routerDiscount.post('/amount',asyncHandler(DiscountController.getDiscountAmount))
 //# sourceMappingURL=index.js.map
