@@ -22,21 +22,21 @@ export class cartController {
     static updateToCart = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "",
-            metadata: CartService.addTocartV2(req.body)
+            metadata: await CartService.addTocartV2(req.body)
         }).send(res)
     }
 
     static deleteToCart = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "",
-            metadata: CartService.deleteUserCart(req.body)
+            metadata: await CartService.deleteUserCart(req.body)
         }).send(res)
     }
 
-    // listToCart = async (req: Request, res: Response, next: NextFunction) => {
-    //     new SuccessResponse({
-    //         message: "",
-    //         metadata: CartService.getListUsersCart(req.params)
-    //     }).send(res)
-    // }
+    static listToCart = async (req: Request, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: "get list success",
+            metadata: await CartService.getListUsersCart(req.params.id)
+        }).send(res)
+    }
 }

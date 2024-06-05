@@ -113,7 +113,8 @@ export class CartService {
     }
 
     static async addTocartV2({ userId, shop_order_ids }: { userId: Types.ObjectId, shop_order_ids: Array<cart> }) {
-        const { productId, quantity, old_quantity } = shop_order_ids[0].item_products
+        const test: any = shop_order_ids[0].item_products
+        const { productId, quantity, old_quantity } = test[0]
 
         //check foundProduct
         const foundProduct = await getProductById(productId)
@@ -123,7 +124,6 @@ export class CartService {
             throw new NotFoundError('Product not belong to the shop')
 
         //if quantity == 0 delete from cart
-
         if (quantity === 0) {
             //deleted
         }
@@ -150,6 +150,6 @@ export class CartService {
     }
 
     static async getListUsersCart(userId: string) {
-        return await cartModel.findOne({ cart_userId: userId }).lean()
+        return await cartModel.findOne({ cart_userId: userId })
     }
 }

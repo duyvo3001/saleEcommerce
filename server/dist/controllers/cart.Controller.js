@@ -34,13 +34,19 @@ cartController.addToCart = (req, res, next) => __awaiter(void 0, void 0, void 0,
 cartController.updateToCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     new success_response_1.SuccessResponse({
         message: "",
-        metadata: cart_service_1.CartService.addTocartV2(req.body)
+        metadata: yield cart_service_1.CartService.addTocartV2(req.body)
     }).send(res);
 });
 cartController.deleteToCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     new success_response_1.SuccessResponse({
         message: "",
-        metadata: cart_service_1.CartService.deleteUserCart(req.body)
+        metadata: yield cart_service_1.CartService.deleteUserCart(req.body)
+    }).send(res);
+});
+cartController.listToCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    new success_response_1.SuccessResponse({
+        message: "get list success",
+        metadata: yield cart_service_1.CartService.getListUsersCart(req.params.id)
     }).send(res);
 });
 //# sourceMappingURL=cart.Controller.js.map

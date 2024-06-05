@@ -9,5 +9,5 @@ routerCart
 .post('/',asyncHandler(cartController.addToCart))
 .post('/update',asyncHandler(cartController.updateToCart))
 .delete('/',asyncHandler(cartController.deleteToCart))
-// .get('/',cartController.addToCart)
+.get('/:id',asyncHandler(cartController.listToCart))
 

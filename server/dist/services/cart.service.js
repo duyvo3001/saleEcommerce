@@ -71,7 +71,7 @@ class CartService {
                 ? add different product
             */
             let checkProducts = false;
-            for (let index = 0; index <= userCart.cart_products.length; index++) {
+            for (let index = 0; index < userCart.cart_products.length; index++) {
                 if (product.productId === userCart.cart_products[index].productId) {
                     checkProducts = true;
                 }
@@ -85,7 +85,8 @@ class CartService {
     }
     static addTocartV2(_a) {
         return __awaiter(this, arguments, void 0, function* ({ userId, shop_order_ids }) {
-            const { productId, quantity, old_quantity } = shop_order_ids[0].item_products;
+            const test = shop_order_ids[0].item_products;
+            const { productId, quantity, old_quantity } = test[0];
             //check foundProduct
             const foundProduct = yield (0, product_repo_1.getProductById)(productId);
             if (!foundProduct)
@@ -120,7 +121,7 @@ class CartService {
     }
     static getListUsersCart(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield cart_model_1.cartModel.findOne({ cart_userId: userId }).lean();
+            return yield cart_model_1.cartModel.findOne({ cart_userId: userId });
         });
     }
 }

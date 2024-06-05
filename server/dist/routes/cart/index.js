@@ -9,8 +9,8 @@ const asyncHandler_1 = require("../../helpers/asyncHandler");
 const cart_Controller_1 = require("../../controllers/cart.Controller");
 exports.routerCart = express_1.default.Router();
 exports.routerCart
-    .post('/', (cart_Controller_1.cartController.addToCart))
+    .post('/', (0, asyncHandler_1.asyncHandler)(cart_Controller_1.cartController.addToCart))
     .post('/update', (0, asyncHandler_1.asyncHandler)(cart_Controller_1.cartController.updateToCart))
-    .delete('/', (0, asyncHandler_1.asyncHandler)(cart_Controller_1.cartController.deleteToCart));
-// .get('/',cartController.addToCart)
+    .delete('/', (0, asyncHandler_1.asyncHandler)(cart_Controller_1.cartController.deleteToCart))
+    .get('/:id', (0, asyncHandler_1.asyncHandler)(cart_Controller_1.cartController.listToCart));
 //# sourceMappingURL=index.js.map
