@@ -16,13 +16,18 @@ import { query } from "express";
 type addtocart = { userId: Types.ObjectId, product: {} }
 type product = { productId: Types.ObjectId, quantity: Number }
 interface cart {
-    item_products: item_products , 
-    shopId : String
+    item_products: item_products,
+    shopId: String
 }
 interface item_products {
     productId: Types.ObjectId,
     quantity: number,
     old_quantity: number
+}
+
+interface IaddTocart {
+    userId: Types.ObjectId;
+    product: product;
 }
 
 export class CartService {
@@ -40,41 +45,44 @@ export class CartService {
             }
         }
 
-        const options = { upset: true, new: true }
+        const options = { upsert: true, new: true }
+        const test = await cartModel.findOneAndUpdate(query, updateOrInsert, options);
+        console.log("test1", test);
 
-        return await cartModel.findOneAndUpdate(query, updateOrInsert, options);
+        return test
     }
     static async updateUserCartQuantity({ userId, product }: { userId: Types.ObjectId, product: product }) {
         const { productId, quantity } = product
+
+
         const query = {
             cart_userId: userId,
             'cart_products.productId': productId,
             cart_state: 'active'
         }
+
         const udateSet = {
             $inc: {
                 'cart_products.$.quantity': quantity
             }
         }
-        const options = {
-            upsert: true, new: true
-        }
+        const options = { upsert: true, new: true }
 
-        return await cartModel.findOneAndUpdate(query, udateSet, options);
+        const test = await cartModel.findOneAndUpdate(query, udateSet, options);
+        console.log("test1", test);
+        return test
     }
 
     /*
         * end repo cart
     */
 
-    static async addTocart({ userId, product }: {
-        userId: Types.ObjectId, product: product
-    }) {
-        console.log(userId, product);
-        
+    static async addTocart({ userId, product }: IaddTocart) {
+
         //check cart is aviable 
         const userCart = await cartModel.findOne({ cart_userId: userId })
-        if (!userCart) {
+
+        if (userCart == null || !userCart) {
             return await CartService.createUserCart({ userId, product })
         }
 
@@ -83,6 +91,21 @@ export class CartService {
         */
         if (!userCart.cart_products.length) {
             userCart.cart_products = [product]
+            return await userCart.save()
+        }
+
+        /*
+            ? add different product
+        */
+        let checkProducts = false
+        for (let index = 0; index < userCart.cart_products.length; index++) {
+            if (product.productId === userCart.cart_products[index].productId) {
+                checkProducts = true
+            }
+        }
+
+        if (checkProducts !== true) {
+            userCart.cart_products.push(product)
             return await userCart.save()
         }
 

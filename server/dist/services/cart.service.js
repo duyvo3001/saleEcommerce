@@ -25,8 +25,10 @@ class CartService {
                     cart_products: product
                 }
             };
-            const options = { upset: true, new: true };
-            return yield cart_model_1.cartModel.findOneAndUpdate(query, updateOrInsert, options);
+            const options = { upsert: true, new: true };
+            const test = yield cart_model_1.cartModel.findOneAndUpdate(query, updateOrInsert, options);
+            console.log("test1", test);
+            return test;
         });
     }
     static updateUserCartQuantity(_a) {
@@ -42,10 +44,10 @@ class CartService {
                     'cart_products.$.quantity': quantity
                 }
             };
-            const options = {
-                upsert: true, new: true
-            };
-            return yield cart_model_1.cartModel.findOneAndUpdate(query, udateSet, options);
+            const options = { upsert: true, new: true };
+            const test = yield cart_model_1.cartModel.findOneAndUpdate(query, udateSet, options);
+            console.log("test1", test);
+            return test;
         });
     }
     /*
@@ -53,10 +55,9 @@ class CartService {
     */
     static addTocart(_a) {
         return __awaiter(this, arguments, void 0, function* ({ userId, product }) {
-            console.log(userId, product);
             //check cart is aviable 
             const userCart = yield cart_model_1.cartModel.findOne({ cart_userId: userId });
-            if (!userCart) {
+            if (userCart == null || !userCart) {
                 return yield CartService.createUserCart({ userId, product });
             }
             /*
@@ -64,6 +65,19 @@ class CartService {
             */
             if (!userCart.cart_products.length) {
                 userCart.cart_products = [product];
+                return yield userCart.save();
+            }
+            /*
+                ? add different product
+            */
+            let checkProducts = false;
+            for (let index = 0; index <= userCart.cart_products.length; index++) {
+                if (product.productId === userCart.cart_products[index].productId) {
+                    checkProducts = true;
+                }
+            }
+            if (checkProducts !== true) {
+                userCart.cart_products.push(product);
                 return yield userCart.save();
             }
             return yield CartService.updateUserCartQuantity({ userId, product });

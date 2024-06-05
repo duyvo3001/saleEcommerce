@@ -6,8 +6,8 @@ import { cartController } from '../../controllers/cart.Controller';
 export const routerCart = express.Router();
 
 routerCart
-.post('/',cartController.addToCart)
-.post('/update',cartController.updateToCart)
-.delete('/',cartController.deleteToCart)
+.post('/',asyncHandler(cartController.addToCart))
+.post('/update',asyncHandler(cartController.updateToCart))
+.delete('/',asyncHandler(cartController.deleteToCart))
 // .get('/',cartController.addToCart)
 
