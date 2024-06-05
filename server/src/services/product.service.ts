@@ -80,7 +80,7 @@ export class ProductFactory {
         return await findAllProductRepo(
             {
                 limit, sort, filter, page,
-                select: ['product_name', 'product_Price', 'product_thump']
+                select: ['product_name', 'product_Price', 'product_thump','product_shop']
             })
     }
 

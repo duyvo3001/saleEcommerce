@@ -41,8 +41,8 @@ DiscountController.createDiscountCode = (req, res, next) => __awaiter(void 0, vo
         userId,
         users_used,
     };
-    new success_response_1.SuccessResponse({
-        message: "Created Success",
+    new success_response_1.CREATED({
+        message: "Created discount success",
         metadata: yield discount_services_1.DiscountService.createDiscountCode(payload)
     }).send(res);
 });
@@ -77,12 +77,35 @@ DiscountController.getDiscountAmount = (req, res, next) => __awaiter(void 0, voi
     const payload = {
         codeId: codeId,
         shopId: new mongoose_1.Types.ObjectId(shopId),
-        userId: codeId,
+        userId: userId,
         products: products
     };
     new success_response_1.SuccessResponse({
         message: "Get token success",
         metadata: yield discount_services_1.DiscountService.getDiscountAmount(payload)
+    }).send(res);
+});
+DiscountController.DeleteDiscount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { codeId, shopId, userId, products } = req.body;
+    const payload = {
+        codeId: codeId,
+        shopId: new mongoose_1.Types.ObjectId(shopId),
+    };
+    new success_response_1.SuccessResponse({
+        message: "Get token success",
+        metadata: yield discount_services_1.DiscountService.deleteDiscountCode(payload)
+    }).send(res);
+});
+DiscountController.CancelDiscount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { codeId, shopId, userId } = req.body;
+    const payload = {
+        codeId: codeId,
+        shopId: new mongoose_1.Types.ObjectId(shopId),
+        userId: userId,
+    };
+    new success_response_1.SuccessResponse({
+        message: "Get token success",
+        metadata: yield discount_services_1.DiscountService.cancelDiscountCode(payload)
     }).send(res);
 });
 //# sourceMappingURL=dicount.Controller.js.map

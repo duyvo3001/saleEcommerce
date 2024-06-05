@@ -79,7 +79,7 @@ class ProductFactory {
         return __awaiter(this, arguments, void 0, function* ({ limit = 50, sort = 'ctime', page = 1, filter = { isPublish: true } }) {
             return yield (0, product_repo_1.findAllProductRepo)({
                 limit, sort, filter, page,
-                select: ['product_name', 'product_Price', 'product_thump']
+                select: ['product_name', 'product_Price', 'product_thump', 'product_shop']
             });
         });
     }

@@ -3,8 +3,8 @@ import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
 import connectMongodb from "./dbs/init.mongodb"
-import { checkOverload } from "./helpers/check.connect";
 import router from "./routes";
+import { checkOverload } from "./helpers/check.connect";
 import { HttpError } from "./utils/errorhandling";
 export const app: Express = express();
 
@@ -45,7 +45,7 @@ app.use((error : Error , req : Request, res : Response, next : NextFunction)=>{
     return res.status(statusCode).json({
         status : 'error',
         code: statusCode,
-        stack: error.stack ,
+        stack: error.stack , // dung de bao loi tren ! khong duoc dung tren moi truong production
         message :error.message || 'Internal Server Error'
     })
 })

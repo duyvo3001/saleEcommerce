@@ -70,7 +70,6 @@ AccessService.handlerRefreshToken = (_b) => __awaiter(void 0, [_b], void 0, func
 AccessService.logout = (keyStore) => __awaiter(void 0, void 0, void 0, function* () {
     var _c;
     const id = ((_c = keyStore.headers[HEADER.keyStore]) === null || _c === void 0 ? void 0 : _c.toString()) || "";
-    // console.log(keyStore.headers[HEADER.keyStore]);
     yield keyToken_service_1.KeyTokenService.removeKeyById(id); // remove id from key store
     // return delKey
     return {

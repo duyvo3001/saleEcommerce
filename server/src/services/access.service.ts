@@ -79,7 +79,6 @@ export class AccessService {
 
     static logout = async (keyStore: Request) => {
         const id: string = keyStore.headers[HEADER.keyStore]?.toString() || ""
-        // console.log(keyStore.headers[HEADER.keyStore]);
 
         await KeyTokenService.removeKeyById(id) // remove id from key store
 

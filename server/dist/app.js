@@ -9,8 +9,8 @@ const morgan_1 = __importDefault(require("morgan"));
 const helmet_1 = __importDefault(require("helmet"));
 const compression_1 = __importDefault(require("compression"));
 const init_mongodb_1 = __importDefault(require("./dbs/init.mongodb"));
-const check_connect_1 = require("./helpers/check.connect");
 const routes_1 = __importDefault(require("./routes"));
+const check_connect_1 = require("./helpers/check.connect");
 const errorhandling_1 = require("./utils/errorhandling");
 exports.app = (0, express_1.default)();
 //init middleware
@@ -44,7 +44,7 @@ exports.app.use((error, req, res, next) => {
     return res.status(statusCode).json({
         status: 'error',
         code: statusCode,
-        stack: error.stack,
+        stack: error.stack, // dung de bao loi tren ! khong duoc dung tren moi truong production
         message: error.message || 'Internal Server Error'
     });
 });

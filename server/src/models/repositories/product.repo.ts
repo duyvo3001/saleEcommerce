@@ -1,23 +1,38 @@
 import { Types } from "mongoose";
 import { queryProduct, queryUn_Or_publishProduct, InterfaceFindProduct, unGetSelectData, getSelectData } from "../../utils/productUtils/productRepo.utils";
 import { ProductModels } from "../product.model";
-export const findAllDraftsForShopRepo = async ({ query, limit, skip }: InterfaceFindProduct) => {
-    return queryProduct({ query, limit, skip })
+type Un_Or_publishProductByShop = {
+    product_shop: Types.ObjectId;
+    product_id: Types.ObjectId;
+};
+type filterFindAllProdut = { isPublish: boolean } | { isPublish: boolean, product_shop: Types.ObjectId } | { isPublish: boolean, _id: any }
+interface IfindAllProduct {
+    limit: number;
+    sort: string;
+    page: number;
+    filter: filterFindAllProdut;
+    select: string[];
 }
 
-export const findAllPublishForShopRepo = async ({ query, limit, skip }: InterfaceFindProduct) => {
-    return queryProduct({ query, limit, skip })
-}
+type IfindProductRepo = {
+    product_id: string;
+    unSelect: string[];
+};
 
-export const publishProductByShopRepo = async ({ product_shop, product_id }:
-    { product_shop: Types.ObjectId, product_id: Types.ObjectId }) => {
-    return queryUn_Or_publishProduct({ product_shop, product_id, isDraft: false, isPublish: true })
-}
+type IupdateProductById = {
+    product_id: string;
+    bodyUpdate: {};
+    model: any;
+    isNew: boolean;
+};
 
-export const UnPublishProductByShopRepo = async ({ product_shop, product_id }:
-    { product_shop: Types.ObjectId, product_id: Types.ObjectId }) => {
-    return queryUn_Or_publishProduct({ product_shop, product_id, isDraft: true, isPublish: false })
-}
+export const findAllDraftsForShopRepo = async ({ query, limit, skip }: InterfaceFindProduct) => queryProduct({ query, limit, skip })
+
+export const findAllPublishForShopRepo = async ({ query, limit, skip }: InterfaceFindProduct) => queryProduct({ query, limit, skip })
+
+export const publishProductByShopRepo = async ({ product_shop, product_id }: Un_Or_publishProductByShop) => queryUn_Or_publishProduct({ product_shop, product_id, isDraft: false, isPublish: true })
+
+export const UnPublishProductByShopRepo = async ({ product_shop, product_id }: Un_Or_publishProductByShop) => queryUn_Or_publishProduct({ product_shop, product_id, isDraft: true, isPublish: false })
 
 export const searchProductByUserRepo = async (KeySearch: string) => {
     const regexSearch = new RegExp(KeySearch)
@@ -31,10 +46,11 @@ export const searchProductByUserRepo = async (KeySearch: string) => {
         .lean()
     return results
 }
-type filterFindAllProdut = { isPublish: boolean } | { isPublish: boolean, product_shop: Types.ObjectId } | { isPublish: boolean, _id: any }
-export const findAllProductRepo = async ({ limit, sort, page, filter, select }: {
-    limit: number, sort: string, page: number, filter: filterFindAllProdut, select: string[]
-}) => {
+
+/*
+    * params : limit, sort, page, filter, select
+*/
+export const findAllProductRepo = async ({ limit, sort, page, filter, select }: IfindAllProduct) => {
     const skip = (page - 1) * limit
     const sortBy = sort === 'ctime' ? { _id: -1 } : { _id: 1 }
     const products = await ProductModels.findOne(filter, null, sortBy)
@@ -46,12 +62,11 @@ export const findAllProductRepo = async ({ limit, sort, page, filter, select }: 
     return products
 }
 
-export const findProductRepo = async ({ product_id, unSelect }: { product_id: string, unSelect: string[] }) => {
-    return ProductModels.findById(product_id).select(unGetSelectData(unSelect))
-}
+export const findProductRepo = async ({ product_id, unSelect }: IfindProductRepo) => ProductModels.findById(product_id).select(unGetSelectData(unSelect))
 
-export const updateProductById = async (
-    { product_id, bodyUpdate, model, isNew = true }: { product_id: string, bodyUpdate: {}, model: any, isNew: boolean }
-) => {
-    return await model.findByIdAndUpdate(product_id, bodyUpdate, { new: isNew })
+export const getProductById = async (product_id: Types.ObjectId) => await ProductModels.findOne({ _id: product_id })
+
+
+export const updateProductById = async ({ product_id, bodyUpdate, model, isNew = true }: IupdateProductById) => {
+    return await model.findByIdAndUpdate(product_id, bodyUpdate, { new: isNew });
 }

@@ -14,5 +14,7 @@ exports.routerDiscount.use(authUtils_1.authentication);
 exports.routerDiscount.post('/discountCode', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.createDiscountCode));
 exports.routerDiscount.get('/all-list-discount-product', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.getAllDiscountCodesWithProduct));
 exports.routerDiscount.get('/all-list-discount-shop', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.getAllDiscountCodesWithShop));
+exports.routerDiscount.delete('', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.DeleteDiscount));
+exports.routerDiscount.post('/cancel', (0, asyncHandler_1.asyncHandler)(dicount_Controller_1.DiscountController.CancelDiscount));
 // routerDiscount.post('/amount',asyncHandler(DiscountController.getDiscountAmount))
 //# sourceMappingURL=index.js.map

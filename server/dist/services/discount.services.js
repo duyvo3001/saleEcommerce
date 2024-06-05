@@ -19,6 +19,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DiscountService = void 0;
+const mongoose_1 = require("mongoose");
 const error_response_1 = require("../core/error.response");
 const discount_model_1 = require("../models/discount.model");
 const product_repo_1 = require("../models/repositories/product.repo");
@@ -167,6 +168,36 @@ class DiscountService {
                 discount: amount,
                 totalPrice: totalOrder - amount
             };
+        });
+    }
+    static deleteDiscountCode(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ shopId, codeId }) {
+            const deleted = yield discount_model_1.discountModels.deleteOne({
+                discount_code: codeId,
+                discount_shopId: new mongoose_1.Types.ObjectId(shopId)
+            });
+            return deleted;
+        });
+    }
+    static cancelDiscountCode(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ codeId, shopId, userId }) {
+            const foundDiscount = yield (0, discount_repo_1.checkDiscountExists)(discount_model_1.discountModels, {
+                discount_code: codeId,
+                discount_shopId: new mongoose_1.Types.ObjectId(shopId)
+            });
+            if (!foundDiscount) {
+                throw new error_response_1.NotFoundError("discount doesn't exit");
+            }
+            const result = yield discount_model_1.discountModels.findByIdAndDelete(foundDiscount._id, {
+                $pull: {
+                    discount_users_used: userId
+                },
+                $inc: {
+                    discount_max_uses: 1,
+                    discount_uses_conut: -1
+                }
+            });
+            return result;
         });
     }
 }

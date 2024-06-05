@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { SuccessResponse } from "../core/success.response";
+import { CREATED, SuccessResponse } from "../core/success.response";
 import { DiscountService } from "../services/discount.services";
 import { NextFunction, Request, Response } from "express"
 
@@ -29,8 +29,8 @@ export class DiscountController {
             userId,
             users_used,
         }
-        new SuccessResponse({
-            message: "Created Success",
+        new CREATED({
+            message: "Created discount success",
             metadata: await DiscountService.createDiscountCode(payload)
         }).send(res)
     }
