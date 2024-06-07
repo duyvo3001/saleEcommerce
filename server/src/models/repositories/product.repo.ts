@@ -70,3 +70,17 @@ export const getProductById = async (product_id: Types.ObjectId) => await Produc
 export const updateProductById = async ({ product_id, bodyUpdate, model, isNew = true }: IupdateProductById) => {
     return await model.findByIdAndUpdate(product_id, bodyUpdate, { new: isNew });
 }
+
+export const checkProductServer : any = async (products: any) => {
+    return await Promise.all(products.map(async (product: any) => {
+        const foundProduct = await getProductById(product.productId)
+
+        if (foundProduct) {
+            return {
+                price: foundProduct.product_Price,
+                quantity: foundProduct.product_quantity,
+                productId: foundProduct._id
+            }
+        }
+    }))
+}

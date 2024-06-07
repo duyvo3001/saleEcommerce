@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { CREATED, SuccessResponse } from "../core/success.response";
 import { CartService } from "../services/cart.service";
-import { parse } from "path";
 
 export class cartController {
     /*
