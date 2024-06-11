@@ -6,7 +6,7 @@ export class AccessController {
 
     static handlerRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
-            message: "Get token success",
+            message: "Get token success1",
             metadata: await AccessService.handlerRefreshToken({
                 refreshToken: req.headers['x-rtoken-id'] as string,
                 user: req.headers.user as string,
