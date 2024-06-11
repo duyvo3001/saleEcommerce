@@ -30,6 +30,16 @@ interface IaddTocart {
     product: product;
 }
 
+interface IUpdateCart {
+    userId: Types.ObjectId;
+    shop_order_ids: Array<cart>;
+}
+
+interface IdeleteCart {
+    userId: Types.ObjectId;
+    productId: Types.ObjectId;
+}
+
 export class CartService {
 
     /*
@@ -112,7 +122,7 @@ export class CartService {
         return await CartService.updateUserCartQuantity({ userId, product })
     }
 
-    static async addTocartV2({ userId, shop_order_ids }: { userId: Types.ObjectId, shop_order_ids: Array<cart> }) {
+    static async addTocartV2({ userId, shop_order_ids }: IUpdateCart) {
         const test: any = shop_order_ids[0].item_products
         const { productId, quantity, old_quantity } = test[0]
 
@@ -135,7 +145,7 @@ export class CartService {
         })
     }
 
-    static async deleteUserCart({ userId, productId }: { userId: Types.ObjectId, productId: Types.ObjectId }) {
+    static async deleteUserCart({ userId, productId }: IdeleteCart) {
         const query = { cart_userId: userId, cart_state: 'active' }
         const updateSet = {
             $pull: {

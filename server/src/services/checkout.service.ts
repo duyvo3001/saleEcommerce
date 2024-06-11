@@ -8,7 +8,7 @@ import { DiscountService } from "./discount.services";
 interface IcheckoutReview {
     cartId: Types.ObjectId,
     userId: string,
-    shop_order_ids: Types.ObjectId
+    shop_order_ids: Array<Ishop_order_ids_news>
 }
 interface Ishop_discount {
     shopId: Types.ObjectId,
@@ -16,15 +16,16 @@ interface Ishop_discount {
     codeId: string
 }
 interface Iitem_products {
-    price: number,
-    quantity: number,
     productId: Types.ObjectId
+    quantity: number,
+    price: number,
 }
 interface Ishop_order_ids_news {
     shopId: Types.ObjectId,
     shop_discount: Array<Ishop_discount>,
     item_products: Array<Iitem_products>,
 }
+
 
 export class checkOutService {
 
@@ -71,31 +72,36 @@ export class checkOutService {
             totalCheckout: 0, // total
         }
 
-        const shop_order_ids_news: Array<Ishop_order_ids_news> = []
+        // const shop_order_ids_news: Array<Ishop_order_ids_news> = []
+        console.log("shop_order_ids_news___________________", cartId, userId, shop_order_ids);
 
         let shop_array = []
 
-        for (let i = 0; i < shop_order_ids_news.length; i++) {
-            const { shopId, shop_discount, item_products } = shop_order_ids_news[i]
+        for (let i = 0; i < shop_order_ids.length; i++) {
+            const { shopId, shop_discount, item_products } = shop_order_ids[i]
+            console.log("check1", shopId, shop_discount, item_products);
 
-            const _CheckProductServer = await checkProductServer(item_products)
+            const _CheckProductServer: Array<Iitem_products> = await checkProductServer(item_products)
+            console.log("_CheckProductServer_____________: ", _CheckProductServer[0]);
 
             if (!_CheckProductServer[0]) throw new BadRequestError('order wrong')
 
-            const checkoutPrice = await checkProductServer.reduce((acc: any, product: any) => {
+            const checkoutPrice = await _CheckProductServer.reduce((acc: any, product: any) => {
                 return acc + (product.quantity * product.price)
             }, 0)
+            console.log("checkoutPrice____________: ", checkoutPrice);
 
             //total price before handling
-            checkout_order += checkoutPrice
+            checkout_order.totalPrice += checkoutPrice
 
             const itemCheckout = {
                 shopId,
-                shop_discounts: shop_discount ,
+                shop_discounts: shop_discount,
                 priceRaw: checkoutPrice,
                 priceApplyDiscount: checkoutPrice,
                 item_products: _CheckProductServer
             }
+            console.log("itemCheckout____________: ", itemCheckout);
 
             //if shop_discounts alivable > 0 , check valid or not
             if (shop_discount.length > 0) {
@@ -103,11 +109,17 @@ export class checkOutService {
                     codeId: shop_discount[0].codeId,
                     userId,
                     shopId,
-                    products: _CheckProductServer
+                    products: [{
+                        productId: _CheckProductServer[0].productId,
+                        quantity: _CheckProductServer[0].quantity,
+                        price: _CheckProductServer[0].price
+                    }]
                 })
-                // total discount 
-                checkout_order.totalDiscount += discount
+                console.log("totalOrder, discount, totalPrice", totalOrder, discount, totalPrice);
 
+                checkout_order.totalDiscount += +discount
+
+                // total discount 
                 if (discount > 0) {
                     itemCheckout.priceApplyDiscount = checkoutPrice - discount
                 }
@@ -116,12 +128,11 @@ export class checkOutService {
             // total final
             checkout_order.totalCheckout += itemCheckout.priceApplyDiscount
             shop_array.push(itemCheckout)
-
         }
 
         return {
             shop_order_ids,
-            shop_order_ids_news : shop_array,
+            shop_order_ids_news: shop_array,
             checkout_order
         }
     }

@@ -8,6 +8,15 @@
 			"problemMatcher": [],
 			"label": "npm: dev - server",
 			"detail": "nodemon --exec npx ts-node server.ts"
+		},
+		{
+			"type": "npm",
+			"script": "build",
+			"path": "server",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build - server",
+			"detail": "tsc"
 		}
 	]
 }
