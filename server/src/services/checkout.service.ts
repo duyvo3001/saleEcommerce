@@ -10,6 +10,16 @@ interface IcheckoutReview {
     userId: string,
     shop_order_ids: Array<Ishop_order_ids_news>
 }
+interface IOrder extends Pick<IcheckoutReview, 'cartId' | 'userId'> {
+    shop_order_ids: Array<Ishop_order_ids_news>,
+    user_address: string,
+    user_payment: string
+}
+interface Ishop_order_ids_news {
+    shopId: Types.ObjectId,
+    shop_discount: Array<Ishop_discount>,
+    item_products: Array<Iitem_products>,
+}
 interface Ishop_discount {
     shopId: Types.ObjectId,
     discountId: Types.ObjectId,
@@ -19,11 +29,6 @@ interface Iitem_products {
     productId: Types.ObjectId
     quantity: number,
     price: number,
-}
-interface Ishop_order_ids_news {
-    shopId: Types.ObjectId,
-    shop_discount: Array<Ishop_discount>,
-    item_products: Array<Iitem_products>,
 }
 
 
@@ -60,11 +65,12 @@ export class checkOutService {
                 }
             ]
     */
+
     static async checkoutReview({ cartId, userId, shop_order_ids }: IcheckoutReview) {
 
         const foundCart = await findCartById(cartId)
-
         if (!foundCart) throw new BadRequestError(`Cart doesn't exist`)
+
         let checkout_order = {
             totalPrice: 0, // total price
             feeShip: 0, // fee ship price,
@@ -72,24 +78,18 @@ export class checkOutService {
             totalCheckout: 0, // total
         }
 
-        // const shop_order_ids_news: Array<Ishop_order_ids_news> = []
-        console.log("shop_order_ids_news___________________", cartId, userId, shop_order_ids);
-
         let shop_array = []
 
         for (let i = 0; i < shop_order_ids.length; i++) {
             const { shopId, shop_discount, item_products } = shop_order_ids[i]
-            console.log("check1", shopId, shop_discount, item_products);
 
             const _CheckProductServer: Array<Iitem_products> = await checkProductServer(item_products)
-            console.log("_CheckProductServer_____________: ", _CheckProductServer[0]);
 
             if (!_CheckProductServer[0]) throw new BadRequestError('order wrong')
 
             const checkoutPrice = await _CheckProductServer.reduce((acc: any, product: any) => {
                 return acc + (product.quantity * product.price)
             }, 0)
-            console.log("checkoutPrice____________: ", checkoutPrice);
 
             //total price before handling
             checkout_order.totalPrice += checkoutPrice
@@ -101,7 +101,6 @@ export class checkOutService {
                 priceApplyDiscount: checkoutPrice,
                 item_products: _CheckProductServer
             }
-            console.log("itemCheckout____________: ", itemCheckout);
 
             //if shop_discounts alivable > 0 , check valid or not
             if (shop_discount.length > 0) {
@@ -115,7 +114,6 @@ export class checkOutService {
                         price: _CheckProductServer[0].price
                     }]
                 })
-                console.log("totalOrder, discount, totalPrice", totalOrder, discount, totalPrice);
 
                 checkout_order.totalDiscount += +discount
 
@@ -135,6 +133,30 @@ export class checkOutService {
             shop_order_ids_news: shop_array,
             checkout_order
         }
+    }
+
+    static async orderByUser({ cartId, userId, shop_order_ids, user_address, user_payment }: IOrder) {
+
+        const { shop_order_ids_news, checkout_order } = await checkOutService.checkoutReview({
+            cartId, userId, shop_order_ids: shop_order_ids
+        })
+
+        const foundCart = await findCartById(cartId)
+        if (!foundCart) throw new BadRequestError(`Cart doesn't exist`)
+
+        /*
+            TODO check lai 1 lan nua co vuot ton kho 
+        */
+
+        const products = shop_order_ids.flatMap(order => order.item_products)
+
+        console.log(products);
+        for (let i = 0; i < products.length; i++) {
+            const {productId , quantity} = products[i]
+            
+        }
+
+
     }
 
 }

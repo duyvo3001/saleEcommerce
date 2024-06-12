@@ -6,6 +6,7 @@ import connectMongodb from "./dbs/init.mongodb"
 import router from "./routes";
 import { checkOverload } from "./helpers/check.connect";
 import { HttpError } from "./utils/errorhandling";
+import { initRedis } from "./dbs/init.redis";
 export const app: Express = express();
 
 //init middleware
@@ -23,15 +24,17 @@ try {
         process.exit(1);
     }
 }
+
+//init redis
+initRedis
+
 checkOverload()
 //init middleware
 
 //init routes
-
 app.use('/', router)
 
 //handle errors
-
 app.use((req: Request, res: Response, next: NextFunction) => {
     const error = new HttpError('Not Found', 404)
     console.log(error);
