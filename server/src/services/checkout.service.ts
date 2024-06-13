@@ -3,6 +3,8 @@ import { findCartById } from "../models/repositories/cart.repo";
 import { BadRequestError } from "../core/error.response";
 import { checkProductServer } from "../models/repositories/product.repo";
 import { DiscountService } from "./discount.services";
+import { acquireLock, releaseLock } from "./redis.services";
+import { orderModel } from "../models/order.model";
 
 
 interface IcheckoutReview {
@@ -148,15 +150,58 @@ export class checkOutService {
             TODO check lai 1 lan nua co vuot ton kho 
         */
 
+        //get new array of product
         const products = shop_order_ids.flatMap(order => order.item_products)
 
         console.log(products);
+        const acquireProducct = []
         for (let i = 0; i < products.length; i++) {
-            const {productId , quantity} = products[i]
-            
+            const { productId, quantity } = products[i]
+            const keyLock = await acquireLock({ productId, quantity, cartId })
+            acquireProducct.push(keyLock ? true : false)
+            if (keyLock) {
+                await releaseLock(keyLock)
+            }
         }
 
+        /*
+            * check if out of stock in inventory 
+         */
+        if (acquireProducct.includes(false)) {
+            throw new BadRequestError(`1 so san pham da duoc cap nhat, vui long quay lai gio hang`)
+        }
 
+        const newOrder = orderModel.create({
+            order_userId: userId,
+            order_checkout: checkout_order,
+            order_shipping: user_address,
+            order_payment: user_payment,
+            order_products: shop_order_ids_news
+        })
+
+        /*
+            *if insert success then remove product in cart
+        */
+        if (newOrder == null || [] || undefined) {
+
+        }
     }
+
+    /*
+        ? 1. Query Order [user]
+    */
+    static async getOrderbyUser(){}
+    /*
+        ? 2. Query Order Using by ID [user]
+    */
+    static async getOneOrderbyUser(){}
+    /*
+        ? 3. Query  Cancel Order [user]
+    */
+    static async cancelOrderbyUser(){}
+    /*
+        ? 4. Query update Status [Shop/admin]
+    */
+    static async updateOrderStatusbyShop(){}
 
 }

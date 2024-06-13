@@ -1,15 +1,16 @@
 import { createClient } from 'redis';
 import { RedisErrorResponse } from '../core/error.response';
 
-let client = {}
+let client: any = {}
+
 let statusConnectRedis = {
     CONNECT: 'connect',
     END: 'end',
     RECONNECT: 'reconnecting',
     ERROR: 'error'
 }
-let connectionTimeout: number | null = null;
-
+// let connectionTimeout: number | null = null;
+let connectionTimeout: ReturnType<typeof setTimeout> = setTimeout(() => '', 1000);
 const REDIS_CONNECT_TIMEOUT = 10000
 const REDIS_CONNECT_MESSAGE = {
     code: -99,
