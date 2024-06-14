@@ -1,30 +1,7 @@
 import { Types } from "mongoose";
 import { queryProduct, queryUn_Or_publishProduct, InterfaceFindProduct, unGetSelectData, getSelectData } from "../../utils/productUtils/productRepo.utils";
 import { ProductModels } from "../product.model";
-type Un_Or_publishProductByShop = {
-    product_shop: Types.ObjectId;
-    product_id: Types.ObjectId;
-};
-type filterFindAllProdut = { isPublish: boolean } | { isPublish: boolean, product_shop: Types.ObjectId } | { isPublish: boolean, _id: any }
-interface IfindAllProduct {
-    limit: number;
-    sort: string;
-    page: number;
-    filter: filterFindAllProdut;
-    select: string[];
-}
-
-type IfindProductRepo = {
-    product_id: string;
-    unSelect: string[];
-};
-
-type IupdateProductById = {
-    product_id: string;
-    bodyUpdate: {};
-    model: any;
-    isNew: boolean;
-};
+import { Un_Or_publishProductByShop, IfindAllProduct, IfindProductRepo, IupdateProductById } from "./interface/IProduct";
 
 export const findAllDraftsForShopRepo = async ({ query, limit, skip }: InterfaceFindProduct) => queryProduct({ query, limit, skip })
 

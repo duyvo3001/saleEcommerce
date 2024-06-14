@@ -4,22 +4,7 @@ import { clothesModels, electronicModels, ProductModels, furnitureModels } from 
 import { BadRequestError } from "../core/error.response";
 import { findAllDraftsForShopRepo, findAllProductRepo, findAllPublishForShopRepo, findProductRepo, publishProductByShopRepo, searchProductByUserRepo, updateProductById } from "../models/repositories/product.repo";
 import { insertInventory } from '../models/repositories/inventory.repo';
-
-interface IProduct {
-    product_name: String,
-    product_thump: String,
-    product_description: String,
-    product_Price: number,
-    product_quantity: number,
-    product_type: [String],
-    product_shop: Types.ObjectId,
-    product_attributes: Schema.Types.Mixed,
-}
-interface InterfaceFindProduct {
-    product_shop: Types.ObjectId,
-    limit: number,
-    skip: number
-}
+import { IProduct, InterfaceFindProduct, IpublishProductShop } from './interface/IProduct';
 
 export class ProductFactory {
 
@@ -60,13 +45,13 @@ export class ProductFactory {
     /* 
         *  PUT publish Product 
     */
-    static async publishProductByShop({ product_shop, product_id }: { product_shop: Types.ObjectId, product_id: Types.ObjectId }) {
+    static async publishProductByShop({ product_shop, product_id }: IpublishProductShop) {
         return await publishProductByShopRepo({ product_shop, product_id })
     }
     /* 
        *  PUT UnPublish Product 
    */
-    static async UnPublishProductByShop({ product_shop, product_id }: { product_shop: Types.ObjectId, product_id: Types.ObjectId }) {
+    static async UnPublishProductByShop({ product_shop, product_id }: IpublishProductShop) {
         return await publishProductByShopRepo({ product_shop, product_id })
     }
     /* 
@@ -80,7 +65,7 @@ export class ProductFactory {
         return await findAllProductRepo(
             {
                 limit, sort, filter, page,
-                select: ['product_name', 'product_Price', 'product_thump','product_shop']
+                select: ['product_name', 'product_Price', 'product_thump', 'product_shop']
             })
     }
 

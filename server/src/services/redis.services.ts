@@ -1,6 +1,7 @@
 import { promisify } from 'util';
 import { getRedis } from '../dbs/init.redis';
-import { IreservationInventory, reservationInventory } from '../models/repositories/inventory.repo';
+import { reservationInventory } from '../models/repositories/inventory.repo';
+import { IreservationInventory } from "../models/repositories/interface/Iinventory";
 
 const { instanceConnect: redisClient } = getRedis()
 

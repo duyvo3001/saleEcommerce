@@ -3,74 +3,41 @@ import { cartModel } from "../models/cart.model";
 import { BadRequestError, NotFoundError } from "../core/error.response";
 import { getProductById } from "../models/repositories/product.repo";
 import { query } from "express";
-
-/*
-    key : 
-    * add product 
-    * reduce product quantity by one user
-    * inrease product quantity by one user
-    * get cart
-    * delete cart user
-    * delete cart item user
-*/
-type addtocart = { userId: Types.ObjectId, product: {} }
-type product = { productId: Types.ObjectId, quantity: Number }
-interface cart {
-    item_products: item_products,
-    shopId: String
-}
-interface item_products {
-    productId: Types.ObjectId,
-    quantity: number,
-    old_quantity: number
-}
-
-interface IaddTocart {
-    userId: Types.ObjectId;
-    product: product;
-}
-
-interface IUpdateCart {
-    userId: Types.ObjectId;
-    shop_order_ids: Array<cart>;
-}
-
-interface IdeleteCart {
-    userId: Types.ObjectId;
-    productId: Types.ObjectId;
-}
+import { addtocart, product, IaddTocart, IUpdateCart, IdeleteCart } from "./interface/Icart";
 
 export class CartService {
-
+    /*
+        key :
+        * add product
+        * reduce product quantity by one user
+        * inrease product quantity by one user
+        * get cart
+        * delete cart user
+        * delete cart item user
+    */
     /*
         * start repo cart
     */
     static async createUserCart({ userId, product }: addtocart) {
 
         const query = { cart_userId: userId, cart_state: 'active' }
-
         const updateOrInsert = {
             $addToSet: {
                 cart_products: product
             }
         }
-
         const options = { upsert: true, new: true }
-        const test = await cartModel.findOneAndUpdate(query, updateOrInsert, options);
-        console.log("test1", test);
 
-        return test
+        return await cartModel.findOneAndUpdate(query, updateOrInsert, options);
     }
     static async updateUserCartQuantity({ userId, product }: { userId: Types.ObjectId, product: product }) {
         const { productId, quantity } = product
-
 
         const query = {
             cart_userId: userId,
             'cart_products.productId': productId,
             cart_state: 'active'
         }
-
         const udateSet = {
             $inc: {
                 'cart_products.$.quantity': quantity
@@ -78,9 +45,7 @@ export class CartService {
         }
         const options = { upsert: true, new: true }
 
-        const test = await cartModel.findOneAndUpdate(query, udateSet, options);
-        console.log("test1", test);
-        return test
+        return await cartModel.findOneAndUpdate(query, udateSet, options);
     }
 
     /*

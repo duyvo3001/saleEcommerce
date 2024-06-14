@@ -1,11 +1,8 @@
 import { checkOverload } from './../../helpers/check.connect';
-import { Types } from "mongoose"
 import { unGetSelectData } from "../../utils/productUtils/productRepo.utils"
 import { discountModels } from '../discount.model';
+import { findAlldiscountCode } from './interface/Idiscount';
 
-
-type filterFindAllProdut = { discount_is_active: boolean } | { discount_is_active: boolean, discount_shopId: Types.ObjectId } | { discount_is_active: boolean, discount_shopId: any }
-type findAlldiscountCode = { limit: number, page: number, sort: string, filter: filterFindAllProdut, Select_unSelect: string[], model: any }
 
 export const findAllDiscountCodesUnSelect = async ({
     limit = 50, page = 1, sort = 'ctime', filter, Select_unSelect, model

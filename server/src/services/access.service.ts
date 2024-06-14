@@ -6,36 +6,8 @@ import { createTokenPair, verifyJWT } from "../auth/authUtils";
 import { AuthFailedError, BadRequestError, ForbiddenError } from "../core/error.response";
 import { findByEmail } from "./shop.service";
 import { Request } from "express"
+import { handlerTokenParams, HEADER, LoginParams, SignUpParams, RoleShop } from "./interface/Iaccess";
 
-const RoleShop = {
-    SHOP: 'SHOP',
-    WRITER: 'WRITER',
-    EDITOR: 'EDITOR',
-    ADMIN: 'ADMIN',
-}
-interface SignUpParams {
-    name: string;
-    email: string;
-    password: string;
-    roles: []; // Assuming roles is an array of strings, adjust if necessary
-}
-interface LoginParams {
-    password: string;
-    refreshToken: string;
-    email: string;
-}
-
-const HEADER = {
-    API_KEY: 'x-api-key',
-    CLIENT_ID: 'x-client-id',
-    AUTHORIZATION: 'authorization',
-    keyStore: 'keyStore'
-}
-type handlerTokenParams = {
-    refreshToken: string,
-    user: string,
-    keyStore: string
-}
 export class AccessService {
     /*
         TODO check this token used

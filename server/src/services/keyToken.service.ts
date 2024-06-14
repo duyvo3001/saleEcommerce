@@ -1,14 +1,6 @@
 import { keytokenModel } from "../models/keytoken.model"
 import { Types } from "mongoose"
-interface User {
-    userID: string,
-    publicKey: string,
-    privateKey: string,
-    refreshToken: string
-}
-type updateToken = {
-    refreshToken: string, refreshTokensUsed: string, userID: string
-}
+import { User, updateToken } from "./interface/IkeyUser"
 export class KeyTokenService {
     static createKeyToken = async ({ userID, publicKey, privateKey, refreshToken }: User) => {
         try {

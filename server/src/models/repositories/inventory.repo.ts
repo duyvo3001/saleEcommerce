@@ -1,17 +1,7 @@
-import { Types } from "mongoose"
 import { InventoryModels } from "../inventory.model"
-import { Interface } from "readline"
+import { Inventory, IreservationInventory } from "./interface/Iinventory"
 
-type Inventory = { product_id: Types.ObjectId, shop_id: Types.ObjectId, stock: number, location: string }
-
-export interface IreservationInventory {
-    productId: Types.ObjectId,
-    quantity: number,
-    cartId: Types.ObjectId,
-}
-export const insertInventory = async ({
-    product_id, shop_id, stock, location
-}: Inventory) => {
+const insertInventory = async ({ product_id, shop_id, stock, location }: Inventory) => {
     return await InventoryModels.create({
         inventory_productId: product_id,
         inventory_location: location,
@@ -45,5 +35,5 @@ const reservationInventory = async ({ productId, quantity, cartId }: Ireservatio
 }
 
 export {
-    reservationInventory
+    reservationInventory, insertInventory
 }
