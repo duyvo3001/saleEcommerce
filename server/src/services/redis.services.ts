@@ -1,42 +1,59 @@
-import { promisify } from 'util';
-import { getRedis } from '../dbs/init.redis';
-import { reservationInventory } from '../models/repositories/inventory.repo';
+import { promisify } from "util";
+// import { getRedis } from '../dbs/init.redis';
+import { client } from "../dbs/init.redisBasic";
+import { reservationInventory } from "../models/repositories/inventory.repo";
 import { IreservationInventory } from "../models/repositories/interface/Iinventory";
 
-const { instanceConnect: redisClient } = getRedis()
+const redisClient = client;
 
-const pexpire = promisify(redisClient.pexpire).bind(redisClient)
-const setnxAsync = promisify(redisClient.setnx).bind(redisClient)
+// const pexpire = promisify(redisClient.pExpire).bind(redisClient);
+// const setnxAsync = promisify(redisClient.setEx).bind(redisClient);
+
+// console.log("pexpire_________", pexpire);
 
 // khoa bi quan
-const acquireLock = async ({ productId, quantity, cartId }: IreservationInventory) => {
-    const key = `lock_v2024_${productId}`
-    const retryTimes = 10
-    const exprieTime = 3000
+const acquireLock = async ({
+  productId,
+  quantity,
+  cartId,
+}: IreservationInventory) => {
+  const value = {
+    productId,
+    quantity,
+    cartId,
+  };
+  const key = `lock_v2024_${productId}`;
+  const retryTimes = 10;
+  const exprieTime = 3000;
 
-    for (let i = 0; i < retryTimes; i++) {
-        const result = await setnxAsync(key, exprieTime)
-        console.log(`result::: ${result}`);
+  const serializedObject = JSON.stringify(value);
+  for (let i = 0; i < retryTimes; i++) {
+    // const result = await setnxAsync(key, exprieTime,value);
+    const result = await redisClient.setEx(key, exprieTime, serializedObject);
 
-        if (result === 1) {
-            const isReversation = await reservationInventory({ productId, quantity, cartId })
-            if (isReversation.modifiedCount) {
-                await pexpire(key, exprieTime)
-                return key
-            }
-            return null
-        }
-        else await new Promise((resolve) => setTimeout(resolve, 50))
-    }
-}
+    console.log(`result::: ${result}`);
+
+    if (result == "OK") {
+      const isReversation = await reservationInventory({
+        productId,
+        quantity,
+        cartId,
+      });
+      console.log(isReversation);
+      
+      if (isReversation.acknowledged == true) {
+        await redisClient.pExpire(key, exprieTime);
+        return key;
+      }
+      return null;
+    } else await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+};
 
 // khoa lac quan
-const releaseLock = async (keyLock : any) => {
-    const delAsyncKey = promisify(redisClient.del).bind(redisClient)
-    return await delAsyncKey(keyLock)
-}
+const releaseLock = async (keyLock: any) => {
+  const delAsyncKey = promisify(redisClient.del).bind(redisClient);
+  return await delAsyncKey(keyLock);
+};
 
-export {
-    acquireLock,
-    releaseLock
-}
+export { acquireLock, releaseLock };

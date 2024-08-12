@@ -28,6 +28,7 @@ const dev: EnvironmentConfig = {
     },
 };
 
+
 const product: EnvironmentConfig = {
     app: {
         port: parseInt(process.env.PRO_APP_PORT || '8080', 10),

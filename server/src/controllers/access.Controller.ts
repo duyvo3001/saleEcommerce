@@ -25,7 +25,8 @@ export class AccessController {
 
     static login = async (req: Request, res: Response, next: NextFunction) => {
         const { email, password, refreshToken } = req.body
-
+        console.log( email, password, refreshToken );
+        
         new SuccessResponse({
             metadata: await AccessService.login({ email, password, refreshToken })
         }).send(res)

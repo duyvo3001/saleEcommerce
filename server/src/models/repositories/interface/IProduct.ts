@@ -4,7 +4,7 @@ interface Un_Or_publishProductByShop {
     product_shop: Types.ObjectId;
     product_id: Types.ObjectId;
 }
-;
+
 type filterFindAllProduct = { isPublish: boolean; } | { isPublish: boolean; product_shop: Types.ObjectId; } | { isPublish: boolean; _id: any; };
 interface IfindAllProduct {
     limit: number;

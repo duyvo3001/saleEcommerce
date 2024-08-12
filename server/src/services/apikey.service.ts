@@ -10,5 +10,7 @@ export const findById = async (key: string) => {
     // )
     // console.log('hello_______________-------', newKey)
     const objKey = await apikeyModel.findOne({ key, status: true }).lean()
+    console.log(objKey);
+    
     return objKey
 }

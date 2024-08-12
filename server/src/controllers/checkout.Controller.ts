@@ -17,4 +17,11 @@ export class checkoutController {
             metadata: await checkOutService.checkoutReview(req.body)
         }).send(res)
     }
+
+    static OrderByUser = async (req: Request, res: Response, next: NextFunction)=>{
+        new SuccessResponse({
+            message: "order by user successfully",
+            metadata: await checkOutService.orderByUser(req.body)
+        }).send(res)
+    }
 }

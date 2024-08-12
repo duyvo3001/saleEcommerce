@@ -6,7 +6,8 @@ import connectMongodb from "./dbs/init.mongodb"
 import router from "./routes";
 import { checkOverload } from "./helpers/check.connect";
 import { HttpError } from "./utils/errorhandling";
-import { initRedis } from "./dbs/init.redis";
+
+// import { initRedis } from "./dbs/init.redis";
 export const app: Express = express();
 
 //init middleware
@@ -26,7 +27,7 @@ try {
 }
 
 //init redis
-initRedis
+
 
 checkOverload()
 //init middleware
@@ -38,18 +39,18 @@ app.use('/', router)
 app.use((req: Request, res: Response, next: NextFunction) => {
     const error = new HttpError('Not Found', 404)
     console.log(error);
-    
+
     next(error)
 })
 
-app.use((error : Error , req : Request, res : Response, next : NextFunction)=>{
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     const statusCode = 500
 
     return res.status(statusCode).json({
-        status : 'error',
+        status: 'error',
         code: statusCode,
-        stack: error.stack , // dung de bao loi tren ! khong duoc dung tren moi truong production
-        message :error.message || 'Internal Server Error'
+        stack: error.stack, // dung de bao loi tren ! khong duoc dung tren moi truong production
+        message: error.message || 'Internal Server Error'
     })
 })
 // module.exports = app

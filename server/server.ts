@@ -1,7 +1,6 @@
 import app from "./src/app";
 import configMongodb from "./src/config/config.mongodb";
 
-
 const PORT = configMongodb.app.port; 
 
 const server = app.listen(PORT,()=>{

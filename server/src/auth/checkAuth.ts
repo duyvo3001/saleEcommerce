@@ -19,6 +19,8 @@ export const apiKey = async (req: Request, res: Response, next: NextFunction) =>
     try {
         // const headers = new Headers();
         const key = req.headers[HEADER.API_KEY]?.toString()
+        console.log(key);
+        
         if (!key) {
             return res.status(403).json({
                 message: 'Forbidden Error1'

@@ -6,5 +6,6 @@ export const routerCheckout = express.Router();
 
 routerCheckout
     .post('/review', asyncHandler(checkoutController.CheckOutReview))
+    .post('/order', asyncHandler(checkoutController.OrderByUser))
 
 

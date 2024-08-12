@@ -18,13 +18,13 @@ export class InventoryService {
             throw new BadRequestError(`The product dose not exist`)
         }
 
-        const query = { inven_shopId: shopId, inven_productId: productId }
+        const query = { inventory_shopId: shopId, inventory_productId: productId }
         const updateSet = {
             $inc: {
-                inven_stock: stock
+                inventory_stock: stock
             },
             $set: {
-                inven_location: location
+                inventory_location: location
             }
         }
         const options = {

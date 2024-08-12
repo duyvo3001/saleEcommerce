@@ -4,7 +4,6 @@ import 'dotenv/config'
 import { conuntConnect } from '../helpers/check.connect';
 import config from '../config/config.mongodb';
 
-// const connectString =`mongodb+srv://${config.db.name}:${config.db.pass}@${config.db.host}.tzjnjep.mongodb.net/${config.db.dbName}?retryWrites=true&w=majority`!
 const connectString = `mongodb+srv://${config.db.name}:${config.db.pass}@${config.db.host}.tzjnjep.mongodb.net/${config.db.dbName}?retryWrites=true&w=majority&appName=${config.db.name}`
 class Database {
     private static instance: Database;

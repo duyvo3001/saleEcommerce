@@ -1,4 +1,4 @@
-import { createClient } from 'redis';
+import { createClient ,RedisClientType  } from 'redis';
 import { RedisErrorResponse } from '../core/error.response';
 
 let client: any = {}
@@ -54,12 +54,17 @@ const handleEventConnect = ({ connectionRedis }: any) => {
 }
 
 const initRedis = () => {
+
     const instanceRedis = createClient();
     client.instanceConnect = instanceRedis;
     handleEventConnect({ connectionRedis: instanceRedis })
 }
 
-const getRedis = () => client
+const getRedis = () => {
+
+    return client 
+}
+console.log(client);
 
 const closeRedis = () => { }
 
