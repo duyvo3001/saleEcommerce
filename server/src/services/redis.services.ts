@@ -39,8 +39,8 @@ const acquireLock = async ({
         quantity,
         cartId,
       });
-      console.log(isReversation);
-      
+      console.log("isReversation:_____",isReversation);
+
       if (isReversation.acknowledged == true) {
         await redisClient.pExpire(key, exprieTime);
         return key;
@@ -52,8 +52,9 @@ const acquireLock = async ({
 
 // khoa lac quan
 const releaseLock = async (keyLock: any) => {
-  const delAsyncKey = promisify(redisClient.del).bind(redisClient);
-  return await delAsyncKey(keyLock);
+  // const delAsyncKey = promisify(redisClient.del).bind(redisClient);
+  const delAsyncKey = await redisClient.del(keyLock);
+  return delAsyncKey;
 };
 
 export { acquireLock, releaseLock };

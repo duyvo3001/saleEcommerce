@@ -5,6 +5,14 @@ import { NextFunction, Request, Response } from "express"
 
 export class DiscountController {
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static createDiscountCode = async (req: Request, res: Response, next: NextFunction) => {
         const { code, is_active, product_ids, applies_to, name, description, min_order_value, type,
             value, max_value, max_uses, uses_count, max_uses_per_user, userId,
@@ -35,6 +43,14 @@ export class DiscountController {
         }).send(res)
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static getAllDiscountCodesWithProduct = async (req: Request, res: Response, next: NextFunction) => {
         const { code, shopId, userId, limit, page } = req.query
 
@@ -52,6 +68,14 @@ export class DiscountController {
         }).send(res)
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static getAllDiscountCodesWithShop = async (req: Request, res: Response, next: NextFunction) => {
         const { shopId, limit, page } = req.query
 
@@ -67,6 +91,14 @@ export class DiscountController {
         }).send(res)
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static getDiscountAmount = async (req: Request, res: Response, next: NextFunction) => {
         const { codeId, shopId, userId, products } = req.body
 
@@ -78,10 +110,19 @@ export class DiscountController {
         }
 
         new SuccessResponse({
-            message: "Get token success",
+            message: "Get disscount success",
             metadata: await DiscountService.getDiscountAmount(payload)
         }).send(res)
     }
+
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static DeleteDiscount = async (req: Request, res: Response, next: NextFunction) => {
         const { codeId, shopId, userId, products } = req.body
 
@@ -95,6 +136,15 @@ export class DiscountController {
             metadata: await DiscountService.deleteDiscountCode(payload)
         }).send(res)
     }
+    
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static CancelDiscount = async (req: Request, res: Response, next: NextFunction) => {
         const { codeId, shopId, userId } = req.body
 

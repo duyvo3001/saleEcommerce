@@ -49,15 +49,20 @@ export const updateProductById = async ({ product_id, bodyUpdate, model, isNew =
 }
 
 export const checkProductServer : any = async (products: any) => {
-    return await Promise.all(products.map(async (product: any) => {
-        const foundProduct = await getProductById(product.productId)
 
+    return await Promise.all(products.map(async (product: any) => {
+
+        const foundProduct = await getProductById(product.productId)
+        console.log('product quantity found',product.quantity);
+        
         if (foundProduct) {
             return {
                 price: foundProduct.product_Price,
-                quantity: foundProduct.product_quantity,
+                quantity: product.quantity,
                 productId: foundProduct._id
             }
         }
+
     }))
+
 }

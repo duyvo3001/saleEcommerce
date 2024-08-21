@@ -123,8 +123,7 @@ export class CartService {
         const deleteCart = await cartModel.updateOne(query, updateSet)
         return deleteCart
     }
-
-    static async getListUsersCart(userId: string) {
+        static async getListUsersCart(userId: string) {
         return await cartModel.findOne({ cart_userId: userId })
     }
 }

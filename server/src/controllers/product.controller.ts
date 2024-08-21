@@ -5,6 +5,15 @@ import { ProductFactory } from "../services/product.service";
 import { Types } from "mongoose";
 
 export class ProductController {
+
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static createProduct = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "Product created",
@@ -17,6 +26,14 @@ export class ProductController {
 
     /*
         * update product
+    */
+   /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
     */
     static updateProduct = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
@@ -76,6 +93,15 @@ export class ProductController {
     /*
         * End Query
     */
+
+   /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static PublishProductByShop = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "publish for shop success",
@@ -85,6 +111,15 @@ export class ProductController {
             })
         }).send(res);
     }
+
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static UnPublishProductByShop = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "Un Publish for shop success",
@@ -95,6 +130,14 @@ export class ProductController {
         }).send(res);
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static getListSearchProduct = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "Get list search product success",
@@ -102,6 +145,14 @@ export class ProductController {
         }).send(res);
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static findAllProduct = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "Find all products success",
@@ -109,6 +160,14 @@ export class ProductController {
         }).send(res);
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static findProduct = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "Find all products success",

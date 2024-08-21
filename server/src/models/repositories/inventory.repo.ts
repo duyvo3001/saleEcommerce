@@ -7,12 +7,14 @@ const insertInventory = async ({
   stock,
   location,
 }: Inventory) => {
+
   return await InventoryModels.create({
     inventory_productId: product_id,
     inventory_location: location,
     inventory_stock: stock,
     inventory_shopId: shop_id,
   });
+  
 };
 
 const reservationInventory = async ({
@@ -20,22 +22,25 @@ const reservationInventory = async ({
   quantity,
   cartId,
 }: IreservationInventory) => {
+
   const query = {
     inventory_productId: productId,
     inventory_stock: { $gte: quantity },
   };
+
   const updateSet = {
     $inc: {
       inventory_stock: -quantity,
     },
     $push: {
-      inven_reservations: {
+      inventory_reservations: {
         quantity,
         cartId,
         createOn: new Date(),
       },
     },
   };
+
   const options = {
     upsert: true,
     new: true,

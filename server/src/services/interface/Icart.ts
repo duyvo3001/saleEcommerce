@@ -20,7 +20,7 @@ interface IUpdateCart {
     shop_order_ids: Array<cart>;
 }
 interface IdeleteCart {
-    userId: Types.ObjectId;
+    userId: Number;
     productId: Types.ObjectId;
 }
 

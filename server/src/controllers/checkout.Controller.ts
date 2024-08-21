@@ -17,11 +17,74 @@ export class checkoutController {
             metadata: await checkOutService.checkoutReview(req.body)
         }).send(res)
     }
-
-    static OrderByUser = async (req: Request, res: Response, next: NextFunction)=>{
+     /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
+    static OrderByUser = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "order by user successfully",
             metadata: await checkOutService.orderByUser(req.body)
+        }).send(res)
+    }
+     /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
+    static GetOrderByUser = async (req: Request, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: "order by user successfully",
+            metadata: await checkOutService.getOrderbyUser(req.params.id)
+        }).send(res)
+    }
+     /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
+    static GetOneOrderByUser = async (req: Request, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: "order by user successfully",
+            metadata: await checkOutService.getOneOrderbyUser(req.body)
+        }).send(res)
+    }
+     /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
+    static CancelOrder = async (req: Request, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: "order by user successfully",
+            metadata: await checkOutService.cancelOrderbyUser(req.body)
+        }).send(res)
+    }
+     /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
+    static UpdateOrder = async (req: Request, res: Response, next: NextFunction) => {
+        new SuccessResponse({
+            message: "order by user successfully",
+            metadata: await checkOutService.updateOrderStatusbyShop()
         }).send(res)
     }
 }

@@ -4,6 +4,14 @@ import { CREATED, SuccessResponse } from "../core/success.response";
 
 export class AccessController {
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static handlerRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "Get token success1",
@@ -15,6 +23,14 @@ export class AccessController {
         }).send(res)
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static logout = async (req: Request, res: Response, next: NextFunction) => {
 
         new SuccessResponse({
@@ -23,6 +39,14 @@ export class AccessController {
         }).send(res)
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static login = async (req: Request, res: Response, next: NextFunction) => {
         const { email, password, refreshToken } = req.body
         console.log( email, password, refreshToken );
@@ -32,6 +56,14 @@ export class AccessController {
         }).send(res)
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static signUp = async (req: Request, res: Response, next: NextFunction) => {
         const { name, email, password, roles } = req.body
         new CREATED({

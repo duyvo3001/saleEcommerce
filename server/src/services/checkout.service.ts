@@ -5,7 +5,8 @@ import { DiscountService } from "./discount.services";
 import { acquireLock, releaseLock } from "./redis.services";
 import { orderModel } from "../models/order.model";
 import { IcheckoutReview, Iitem_products, IOrder } from "./interface/Icheckout";
-
+import { CartService } from "./cart.service";
+import { Types } from "mongoose";
 export class checkOutService {
   /*
     {
@@ -129,7 +130,7 @@ export class checkOutService {
       await checkOutService.checkoutReview({
         cartId,
         userId,
-        shop_order_ids: shop_order_ids,
+        shop_order_ids,
       });
 
     const foundCart = await findCartById(cartId);
@@ -141,21 +142,18 @@ export class checkOutService {
 
     //get new array of product
     const products = shop_order_ids.flatMap((order) => order.item_products);
-    console.log('product:________',products);
-    
+
     const acquireProducct = [];
     for (let i = 0; i < products.length; i++) {
       const { productId, quantity } = products[i];
       const keyLock = await acquireLock({ productId, quantity, cartId });
-      console.log("key_______",keyLock);
-      
+
       acquireProducct.push(keyLock ? true : false);
       if (keyLock) {
         await releaseLock(keyLock);
       }
     }
-    console.log('accq',acquireProducct);
-    
+
     /*
      * check if out of stock in inventory
      */
@@ -165,38 +163,73 @@ export class checkOutService {
       );
     }
 
-    const newOrder = orderModel.create({
+    /*
+     * create a new order in ORDER
+     */
+
+    const newOrder = await orderModel.create({
       order_userId: userId,
       order_checkout: checkout_order,
       order_shipping: user_address,
       order_payment: user_payment,
-      order_products: shop_order_ids_news,
+      order_product: shop_order_ids_news,
     });
 
     /*
      *if insert success then remove product in cart
      */
-    if (newOrder == null || [] || undefined) {
+    if (newOrder != null) {
+      for (let i = 0; i < products.length; i++) {
+        await CartService.deleteUserCart({
+          userId: +userId,
+          productId: products[i].productId,
+        });
+      }
     }
-    console.log(newOrder);
-    
+
     return { newOrder };
   }
 
   /*
         ? 1. Query Order [user]
     */
-  static async getOrderbyUser() {}
+  static async getOrderbyUser(userId: string) {
+
+    const order = await orderModel.findOne({ order_userId: userId });
+
+    if (order == null) {
+      throw new BadRequestError(`Order ${userId} not found`);
+    }
+    return { order };
+  }
+
   /*
         ? 2. Query Order Using by ID [user]
     */
-  static async getOneOrderbyUser() {}
+  static async getOneOrderbyUser({ userId, productId, }: { userId: string; productId: Types.ObjectId; }) {
+
+    const query = {
+      order_userId: userId,
+      'order_product.item_products.productId': productId
+    }
+    const order = await orderModel.findOne(query);
+
+    if (order == null) {
+      throw new BadRequestError(`Order ${userId} not found`);
+    }
+
+    return { order };
+  }
+
   /*
         ? 3. Query  Cancel Order [user]
     */
-  static async cancelOrderbyUser() {}
+  static async cancelOrderbyUser({ userId, productId, }: { userId: string; productId: Types.ObjectId; }) { 
+
+  }
+
   /*
         ? 4. Query update Status [Shop/admin]
     */
-  static async updateOrderStatusbyShop() {}
+  static async updateOrderStatusbyShop() { }
 }

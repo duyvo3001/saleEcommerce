@@ -18,6 +18,14 @@ export class cartController {
         }).send(res)
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static updateToCart = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "",
@@ -25,6 +33,14 @@ export class cartController {
         }).send(res)
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static deleteToCart = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "",
@@ -32,6 +48,14 @@ export class cartController {
         }).send(res)
     }
 
+    /*
+        * @desc add to cart user
+        * @param {int} userId 
+        * @param {*} res
+        * @param {*} next
+        * @method POST
+        * @url /v1/api/cart/user
+    */
     static listToCart = async (req: Request, res: Response, next: NextFunction) => {
         new SuccessResponse({
             message: "get list success",
