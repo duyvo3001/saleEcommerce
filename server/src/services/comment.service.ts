@@ -1,8 +1,9 @@
+import { CommentModel } from './../models/comment.model';
+import { findProductRepo } from './../models/repositories/product.repo';
 import { query } from 'express';
 import { Types } from "mongoose";
 import { NotFoundError } from "../core/error.response";
-import { CommentModel } from "../models/comment.model";
-import { Icomment, IGetComment } from "./interface/Icomment";
+import { Icomment, IDeleteComment, IGetComment } from "./interface/Icomment";
 
 
 /*
@@ -13,11 +14,8 @@ import { Icomment, IGetComment } from "./interface/Icomment";
 */
 export class CommentService {
 
-    static async createComment({
-        productId, userId, content, parentCommentId
-    }: Icomment) {
+    static async createComment({ productId, userId, content, parentCommentId }: Icomment) {
 
-        console.log(productId, userId, content, parentCommentId)
         const comment = new CommentModel({
             comment_productId: productId,
             comment_userId: userId,
@@ -57,10 +55,14 @@ export class CommentService {
                 comment_productId: productId
             }, 'commnet_right', { sort: { commnet_right: -1 } })
 
+            console.log("maxRightValue:::::", maxRightValue)
+
             if (maxRightValue) {
                 rightValue = maxRightValue.comment_right + 1
             }
             else rightValue = 1
+
+            console.log("rightvalue:::::::", rightValue)
         }
 
         //insert to comment 
@@ -73,26 +75,70 @@ export class CommentService {
 
     static async getCommentByParentId({ productId, parentCommentId, limit, offset }: IGetComment) {
 
-
         if (parentCommentId) {
             const parent = await CommentModel.findById(parentCommentId)
             if (!parent) throw new NotFoundError('not found comment for product')
 
-            return comments({
+            return queryComments({
                 comment_productId: productId,
                 comment_left: { $gt: parent.comment_left },
                 comment_right: { $lte: parent.comment_right }
             })
         }
 
-        return comments({
+        return queryComments({
             comment_productId: productId,
             comment_parentId: parentCommentId
         })
     }
+
+    static async deleteComment({ commentId, productId }: IDeleteComment) {
+        // console.log(commentId, productId)
+        const foundProduct = await findProductRepo({
+            product_id: productId,
+            unSelect: []
+        })
+
+        if (!foundProduct) throw new NotFoundError(`Could not find product`)
+
+        //1. determine value left and right values
+        const comment = await CommentModel.findById(commentId)
+
+        if (!comment) throw new NotFoundError(`Could not find comment`)
+
+        const leftValue = comment.comment_left
+        const rightValue = comment.comment_right
+
+        //2. count width
+        const width = rightValue - leftValue + 1
+
+        //3. delete all comment children
+        await CommentModel.deleteMany({
+            comment_productId: new Types.ObjectId(productId),
+            comment_left: { $gte: leftValue, $lte: rightValue }
+        })
+        //4. update remaining comment
+
+        await CommentModel.updateMany({ // check right value
+            comment_productId: productId,
+            comment_right: { $gt: rightValue } 
+        }, {
+            $inc: { comment_right: -width }
+        })
+
+        await CommentModel.updateMany({// check left value
+            comment_productId: productId,
+            comment_left: { $gt: rightValue } 
+        }, {
+            $inc: { comment_left: -width }
+        })
+
+    }
+
 }
 
-async function comments(query: {}) {
+
+async function queryComments(query: {}) {
     const comments = await CommentModel.find(query)
         .select({
             comment_left: 1,

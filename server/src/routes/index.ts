@@ -7,6 +7,7 @@ import { routerCart } from './cart';
 import { routerCheckout } from './checkout';
 import { routerInventory } from './intventory';
 import { routerComment } from './comment';
+import { routerNotification } from './notification';
 
 const router: Router = express.Router();
 
@@ -22,6 +23,7 @@ router.use('/v1/api/discount', routerDiscount)
 router.use('/v1/api/inventory', routerInventory)
 router.use('/v1/api', routerShop)
 router.use('/v1/api/comment', routerComment )
+router.use('/v1/api/notification', routerNotification )
 
 
 export default router

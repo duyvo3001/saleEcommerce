@@ -12,7 +12,7 @@ export class commentControler {
      * @param {*} next
      * @method POST
      * @url /v1/api/commnet/
- */
+    */
     static createComment = async (req: Request, res: Response, next: NextFunction) => {
         new CREATED({
             message: "Create comment successfully",
@@ -27,7 +27,7 @@ export class commentControler {
      * @param {*} next
      * @method GET
      * @url /v1/api/commnet/
- */
+    */
     static getComment = async (req: Request, res: Response, next: NextFunction) => {
         const { productId, parentCommentId, limit, offset } = req.query
 
@@ -41,6 +41,22 @@ export class commentControler {
         new SuccessResponse({
             message: "Get comment successfully",
             metadata: await CommentService.getCommentByParentId(payload)
+        }).send(res)
+    }
+
+    /*
+     * @delete comment
+     * @param {*} req
+     * @param {*} res
+     * @param {*} next
+     * @method DELETE
+     * @url /v1/api/commnet/
+    */
+    static deleteComment = async (req: Request, res: Response, next: NextFunction) => {
+        
+        new SuccessResponse({
+            message: "Delete comment successfully",
+            metadata: await CommentService.deleteComment(req.body)
         }).send(res)
     }
 }

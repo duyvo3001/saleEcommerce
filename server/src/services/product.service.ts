@@ -5,7 +5,7 @@ import { BadRequestError } from "../core/error.response";
 import { findAllDraftsForShopRepo, findAllProductRepo, findAllPublishForShopRepo, findProductRepo, publishProductByShopRepo, searchProductByUserRepo, updateProductById } from "../models/repositories/product.repo";
 import { insertInventory } from '../models/repositories/inventory.repo';
 import { IProduct, InterfaceFindProduct, IpublishProductShop } from './interface/IProduct';
-
+import { notificationService } from './notification.service';
 export class ProductFactory {
 
     /*
@@ -116,6 +116,19 @@ class Product {
                 location: 'unKnown'
             })
         }
+
+        notificationService.pushNotiToSystem({
+            type :'SHOP-001',
+            revicedId :"1",
+            senderId : this.product_shop ,
+            options : {
+                product_name : this.product_name,
+                shop_name : this.product_shop
+            }
+        }).then(rs => console.log(rs))
+        .catch(err => console.error(err))
+
+
         return newProduct
 
     }
