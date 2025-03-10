@@ -1,5 +1,5 @@
 interface User {
-    userID: string;
+    userID: any;
     publicKey: string;
     privateKey: string;
     refreshToken: string;

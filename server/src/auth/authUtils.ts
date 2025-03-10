@@ -82,7 +82,7 @@ export const authentication = asyncHandler(async (req: Request, res: Response, n
 
         if (userIdREQ !== User.userID) throw new AuthFailedError('invalid userId')//#5
 
-        req.headers[HEADER.keyStore] = keyStore?._id
+        req.headers[HEADER.keyStore] = keyStore?.id
         return next()//#6
     } catch (error) {
         throw error

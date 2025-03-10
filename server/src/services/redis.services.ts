@@ -1,15 +1,9 @@
-import { promisify } from "util";
-// import { getRedis } from '../dbs/init.redis';
+
 import { client } from "../dbs/init.redisBasic";
 import { reservationInventory } from "../models/repositories/inventory.repo";
 import { IreservationInventory } from "../models/repositories/interface/Iinventory";
 
 const redisClient = client;
-
-// const pexpire = promisify(redisClient.pExpire).bind(redisClient);
-// const setnxAsync = promisify(redisClient.setEx).bind(redisClient);
-
-// console.log("pexpire_________", pexpire);
 
 // khoa bi quan
 const acquireLock = async ({
@@ -28,7 +22,7 @@ const acquireLock = async ({
 
   const serializedObject = JSON.stringify(value);
   for (let i = 0; i < retryTimes; i++) {
-    // const result = await setnxAsync(key, exprieTime,value);
+  
     const result = await redisClient.setEx(key, exprieTime, serializedObject);
 
     console.log(`result::: ${result}`);

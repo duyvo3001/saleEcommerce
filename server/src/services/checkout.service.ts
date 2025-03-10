@@ -224,7 +224,7 @@ export class checkOutService {
   /*
         ? 3. Query  Cancel Order [user]
     */
-  static async cancelOrderbyUser({ userId, productId, }: { userId: string; productId: Types.ObjectId; }) { 
+  static async cancelOrderbyUser({ userId, productId, }: { userId: string; productId: Types.ObjectId; }) {
 
   }
 
