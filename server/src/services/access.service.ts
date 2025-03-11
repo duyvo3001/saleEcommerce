@@ -7,6 +7,7 @@ import { AuthFailedError, BadRequestError, ForbiddenError } from "../core/error.
 import { findByEmail } from "./shop.service";
 import { Request } from "express"
 import { handlerTokenParams, HEADER, LoginParams, SignUpParams, RoleShop } from "./interface/Iaccess";
+import { logger } from "../utils/Logger";
 
 export class AccessService {
     /*
@@ -17,18 +18,25 @@ export class AccessService {
         const { userID, email } = JSON.parse(user)
         const _KeyStore = JSON.parse(keyStore)
 
+        logger.info(`Attempting to refresh token for user: ${userID}`); // Log the attempt
+
         if (_KeyStore.refreshTokensUsed.includes(refreshToken)) {
             await KeyTokenService.deleteKeyById(userID)
+            logger.warn(`Refresh token already used for user: ${userID}`); // Log the warning
             throw new ForbiddenError('Something went wrong ! Please relogin')
         }
 
         if (_KeyStore.refreshToken !== refreshToken) {
+            logger.error(`Invalid refresh token for user: ${userID}`); // Log the error
             throw new AuthFailedError('Shop not Registered 1')
         }
 
         let select = {}
         const foundShop = await findByEmail({ email, select })
-        if (!foundShop) throw new AuthFailedError('Shop not Registered 2')
+        if (!foundShop){
+            logger.error(`Shop not found for email: ${email}`); // Log the error
+            throw new AuthFailedError('Shop not Registered 2')
+        } 
 
         /*
             * create new token  
@@ -42,6 +50,8 @@ export class AccessService {
         await KeyTokenService.updateRefreshToken(
             { refreshToken: tokens.refreshToken, refreshTokensUsed: refreshToken, userID }
         )
+
+        logger.info(`Successfully refreshed token for user: ${userID}`); // Log the success
 
         return {
             user: { userID, email },
@@ -96,6 +106,7 @@ export class AccessService {
             refreshToken: tokens.refreshToken
         })
 
+        logger.info(`Attempting to refresh token for user: ${foundShop._id}`); // Log the attempt
         return {
             shop: foundShop, tokens
         }

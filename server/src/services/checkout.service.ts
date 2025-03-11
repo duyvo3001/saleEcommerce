@@ -166,7 +166,6 @@ export class checkOutService {
     /*
      * create a new order in ORDER
      */
-
     const newOrder = await orderModel.create({
       order_userId: userId,
       order_checkout: checkout_order,

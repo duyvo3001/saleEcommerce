@@ -46,7 +46,6 @@ const acquireLock = async ({
 
 // khoa lac quan
 const releaseLock = async (keyLock: any) => {
-  // const delAsyncKey = promisify(redisClient.del).bind(redisClient);
   const delAsyncKey = await redisClient.del(keyLock);
   return delAsyncKey;
 };
