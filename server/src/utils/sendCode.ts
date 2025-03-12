@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import twilio from 'twilio';
+import 'dotenv/config'
 /*
             TODO: use new email for twilio
 */
@@ -39,7 +40,7 @@ const sendUnlockCode = async (email: string, phone: string) => {
     });
 
     // Send the unlock code via SMS
-    await client.verify.v2.services("VAb57ce881c3668960db6ff6c71b1e499a")
+    await client.verify.v2.services(process.env.TWILIO!)
         .verifications
         .create({ to: phone, channel: 'sms' })
         .then(verification => console.log(verification.sid));
