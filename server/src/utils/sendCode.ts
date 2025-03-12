@@ -4,8 +4,8 @@ import 'dotenv/config'
 /*
             TODO: use new email for twilio
 */
-const accountSid = 'ACa8a793af586c81043d8625f1745c69db';
-const authToken = 'VBXQXP51LX19KXF1GBT3TVQ2';
+const accountSid = process.env.accountSidTWILIO;
+const authToken = process.env.authTokenTWILIO;
 const client = twilio(accountSid, authToken);
 
 const transporter = nodemailer.createTransport({
