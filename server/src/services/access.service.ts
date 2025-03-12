@@ -6,8 +6,13 @@ import { createTokenPair, verifyJWT } from "../auth/authUtils";
 import { AuthFailedError, BadRequestError, ForbiddenError } from "../core/error.response";
 import { findByEmail } from "./shop.service";
 import { Request } from "express"
-import { handlerTokenParams, HEADER, LoginParams, SignUpParams, RoleShop } from "./interface/Iaccess";
+import { handlerTokenParams, HEADER, LoginParams, SignUpParams, RoleShop, Iaccount_lock } from "./interface/Iaccess";
 import { logger } from "../utils/Logger";
+import nodemailer from 'nodemailer';
+import twilio from 'twilio';
+import { OAuth2Client } from 'google-auth-library';
+
+const client = new OAuth2Client('YOUR_GOOGLE_CLIENT_ID');
 
 export class AccessService {
     /*
@@ -33,10 +38,10 @@ export class AccessService {
 
         let select = {}
         const foundShop = await findByEmail({ email, select })
-        if (!foundShop){
+        if (!foundShop) {
             logger.error(`Shop not found for email: ${email}`); // Log the error
             throw new AuthFailedError('Shop not Registered 2')
-        } 
+        }
 
         /*
             * create new token  
@@ -71,14 +76,24 @@ export class AccessService {
     }
 
     static login = async ({ email, password, refreshToken }: LoginParams) => {
+
+        logger.info(`Login attempt for email: ${email}`); // Log the login attempt
         let select = {}
 
         const foundShop = await findByEmail({ email, select })//1
-        if (!foundShop) throw new BadRequestError(`shop not Registered`)
+        if (!foundShop) {
+            logger.warn(`Login failed for email: ${email} - Shop not registered`); // Log the failure  
+            throw new BadRequestError(`shop not Registered`)
+        }
+
+        if (foundShop.isLocked == true) {
+            logger.warn(`Login attempt for locked account: ${email}`); // Log the locked account attempt
+            throw new ForbiddenError(`Account is locked due to multiple failed login attempts`)
+        }
 
         const match = await bcrypt.compare(password, foundShop.password)//2
 
-        if (match == false || !match) throw new AuthFailedError(`Authentication Failed`)
+        AccessService.account_lock({ foundShop, match, email })
 
         const { privateKey, publicKey } = generateKeyPairSync('rsa', {//3
             modulusLength: 4096,
@@ -106,10 +121,128 @@ export class AccessService {
             refreshToken: tokens.refreshToken
         })
 
-        logger.info(`Attempting to refresh token for user: ${foundShop._id}`); // Log the attempt
+        logger.info(`Login successful for user: ${foundShop._id}`); // Log the success
         return {
             shop: foundShop, tokens
         }
+    }
+
+    static loginTwo_factor_authentication = async () => {
+        return {}
+    }
+
+    static account_lock = async ({ foundShop, match, email }: Iaccount_lock) => {
+        if (!match) {
+            foundShop.failedLoginAttempts += 1;
+            if (foundShop.failedLoginAttempts >= 3) {
+                foundShop.isLocked = true;
+                logger.warn(`Account locked due to multiple failed login attempts: ${email}`); // Log the account lock
+            }
+            await foundShop.save();
+            logger.warn(`Login failed for email: ${email} - Authentication failed`); // Log the failure
+            throw new AuthFailedError(`Authentication Failed`)
+        }
+
+        // Reset failed login attempts on successful login
+        foundShop.failedLoginAttempts = 0;
+        await foundShop.save();
+    }
+
+    static account_unlock = async () => {
+
+    }
+
+    static forgot_password = async () => { }
+
+    static signUp_third_party = async (idToken: string) => {
+        const ticket = await client.verifyIdToken({
+            idToken,
+            audience: 'YOUR_GOOGLE_CLIENT_ID',
+        });
+
+        const payload = ticket.getPayload();
+        if (!payload) {
+            throw new AuthFailedError('Invalid Google token');
+        }
+
+        const { email, name, sub: googleId } = payload;
+
+        let foundShop = await shopModel.findOne({ email }).lean();
+        if (foundShop) {
+            // If the user already exists, return the existing user
+            const tokens = await createTokenPair(
+                { userID: foundShop._id, email },
+                foundShop.publicKey,
+                foundShop.privateKey
+            );
+
+            return {
+                code: 200,
+                metadata: {
+                    shop: foundShop,
+                    tokens
+                }
+            };
+        }
+        // If the user does not exist, create a new user
+        const newShop = await shopModel.create({
+            name,
+            email,
+            password: '', // No password for third-party sign-up
+            roles: [RoleShop.SHOP],
+            googleId
+        });
+
+        if (newShop) {
+            const { privateKey, publicKey } = generateKeyPairSync('rsa', {
+                modulusLength: 4096,
+                publicKeyEncoding: {
+                    type: 'spki',
+                    format: 'pem'
+                },
+                privateKeyEncoding: {
+                    type: 'pkcs8',
+                    format: 'pem'
+                }
+            });
+            const publicKeyString = await KeyTokenService.createKeyToken({
+                userID: newShop.id.toString(),
+                publicKey: publicKey.toString(),
+                privateKey: privateKey.toString(),
+                refreshToken: ""
+            });
+
+            if (!publicKeyString) {
+                return {
+                    code: 'xxxx',
+                    message: 'publicKeyString error'
+                };
+            }
+
+            const tokens = await createTokenPair(
+                { userID: newShop._id, email },
+                publicKeyString.toString(),
+                privateKey.toString()
+            );
+            if (!tokens) {
+                return {
+                    code: 'xxxx',
+                    message: 'tokens error'
+                };
+            }
+
+            return {
+                code: 201,
+                metadata: {
+                    shop: newShop,
+                    tokens
+                }
+            }
+        }
+        return {
+            code: 202,
+            metadata: null
+        };
     }
 
     static signUp = async ({ name, email, password, roles }: SignUpParams) => {
@@ -180,5 +313,3 @@ export class AccessService {
         }
     }
 }
-
-// export default new AccessService()

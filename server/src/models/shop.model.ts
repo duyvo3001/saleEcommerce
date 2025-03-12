@@ -9,7 +9,11 @@ interface IShop extends Document {
     password: string;
     status: string;
     verrify: Schema.Types.Boolean;
-    roles : [String]
+    roles : [String];
+    phone: string;
+    failedLoginAttempts:number;
+    isLocked:Boolean;
+    unlockCode :string;
 }
 // Declare the Schema of the Mongo model
 var shopSchema = new mongoose.Schema({
@@ -27,6 +31,10 @@ var shopSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    phone: {
+        type: String,
+        required: true,
+    },
     status: {
         type: String,
         enum: ['active', 'inactive'],
@@ -40,6 +48,18 @@ var shopSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
+    failedLoginAttempts: {
+        type: Number,
+        default: 0
+    },
+    isLocked: {
+        type: Boolean,
+        default: false
+    },
+    unlockCode: {
+        type: String,
+        default: null
+    }
 },
     {
         timestamps: true,

@@ -12,6 +12,11 @@ interface handlerTokenParams {
     user: string;
     keyStore: string;
 }
+interface Iaccount_lock {
+    foundShop : any ;
+    match: boolean;
+    email: string;
+}
 const RoleShop = {
     SHOP: 'SHOP',
     WRITER: 'WRITER',
@@ -26,6 +31,7 @@ const HEADER = {
 };
 
 export {
+    Iaccount_lock,
     SignUpParams,
     LoginParams,
     handlerTokenParams,

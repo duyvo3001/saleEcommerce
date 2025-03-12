@@ -4,7 +4,7 @@ interface IfindEmail {
     select: {}
 }
 export const findByEmail = async ({ email, select = {
-    email: 1, password: 2, name: 1, roles: 1
+    email: 1, password: 2, name: 1, roles: 1 , isLocked : 1 , failedLoginAttempts:1
 } }: IfindEmail) => {
     return await shopModel.findOne({ email }).select(select).lean()
 }
