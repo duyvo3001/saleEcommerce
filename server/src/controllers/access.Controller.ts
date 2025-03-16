@@ -49,8 +49,8 @@ export class AccessController {
     */
     static login = async (req: Request, res: Response, next: NextFunction) => {
         const { email, password, refreshToken } = req.body
-        console.log( email, password, refreshToken );
-        
+        console.log(email, password, refreshToken);
+
         new SuccessResponse({
             metadata: await AccessService.login({ email, password, refreshToken })
         }).send(res)
@@ -72,6 +72,16 @@ export class AccessController {
             options: {
                 limit: 10
             }
+        }).send(res)
+    }
+
+    static signUpThirdParty = async (req: Request, res: Response, next: NextFunction) => {
+        console.log('req', req.body);
+
+        const { idToken } = req.body;
+        new SuccessResponse({
+            message: 'Registed OK!',
+            metadata: await AccessService.signUp_third_party(idToken)
         }).send(res)
     }
 }

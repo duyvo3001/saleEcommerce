@@ -12,6 +12,7 @@ import { routerNotification } from './notification';
 const router: Router = express.Router();
 
 //check apiKey
+router.use('/v1/api', routerShop)
 router.use(apiKey)
 //check permissions
 router.use('/v1/api/cart', routerCart)
@@ -21,7 +22,6 @@ router.use('/v1/api/product', routerProduct)
 router.use('/v1/api/checkout', routerCheckout)
 router.use('/v1/api/discount', routerDiscount)
 router.use('/v1/api/inventory', routerInventory)
-router.use('/v1/api', routerShop)
 router.use('/v1/api/comment', routerComment )
 router.use('/v1/api/notification', routerNotification )
 

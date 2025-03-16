@@ -45,7 +45,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     const statusCode = 500
-
+    console.log(error.stack);
+    console.log(error.message);
+    
     return res.status(statusCode).json({
         status: 'error',
         code: statusCode,

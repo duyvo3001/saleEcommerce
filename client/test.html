@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sign-In</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <h1>Sign Up with Google</h1>
+    <div id="g_id_onload"
+         data-client_id="220054696236-nsgi4ko2m05vd2ie0t8qjg5nts7ajage.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse">
+    </div>
+    <div class="g_id_signin" data-type="standard"></div>
+
+    <script>
+        function handleCredentialResponse(response) {
+          console.log(response);
+            const idToken = response.credential;
+            console.log("ID Token: " + idToken);
+
+            // Send the ID token to your backend
+            fetch('http://localhost:8000/v1/api/shop/signup/third-party', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ idToken })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Handle successful sign-up (e.g., redirect to dashboard)
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Handle sign-up error
+            });
+        }
+    </script>
+</body>
+</html>

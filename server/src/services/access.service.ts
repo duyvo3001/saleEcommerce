@@ -138,29 +138,32 @@ export class AccessService {
                 foundShop.isLocked = true;
                 logger.warn(`Account locked due to multiple failed login attempts: ${email}`); // Log the account lock
             }
-            await foundShop.save();
+            shopModel.updateOne({ email }, { failedLoginAttempts : foundShop.failedLoginAttempts }).exec();
+
             logger.warn(`Login failed for email: ${email} - Authentication failed`); // Log the failure
             throw new AuthFailedError(`Authentication Failed`)
         }
 
         // Reset failed login attempts on successful login
-        foundShop.failedLoginAttempts = 0;
-        await foundShop.save();
+        shopModel.updateOne({ email }, { failedLoginAttempts: 0 }).exec();
+
     }
 
     static account_unlock = async () => {
 
     }
-
     static forgot_password = async () => { }
 
     static signUp_third_party = async (idToken: string) => {
+        console.log('idToken', idToken);
+        
         const ticket = await client.verifyIdToken({
             idToken,
             audience: 'YOUR_GOOGLE_CLIENT_ID',
         });
 
         const payload = ticket.getPayload();
+
         if (!payload) {
             throw new AuthFailedError('Invalid Google token');
         }
@@ -168,22 +171,11 @@ export class AccessService {
         const { email, name, sub: googleId } = payload;
 
         let foundShop = await shopModel.findOne({ email }).lean();
+        
         if (foundShop) {
-            // If the user already exists, return the existing user
-            const tokens = await createTokenPair(
-                { userID: foundShop._id, email },
-                foundShop.publicKey,
-                foundShop.privateKey
-            );
-
-            return {
-                code: 200,
-                metadata: {
-                    shop: foundShop,
-                    tokens
-                }
-            };
+            throw new BadRequestError('Error: Shop already Registered')
         }
+
         // If the user does not exist, create a new user
         const newShop = await shopModel.create({
             name,
@@ -205,6 +197,7 @@ export class AccessService {
                     format: 'pem'
                 }
             });
+
             const publicKeyString = await KeyTokenService.createKeyToken({
                 userID: newShop.id.toString(),
                 publicKey: publicKey.toString(),
@@ -224,6 +217,7 @@ export class AccessService {
                 publicKeyString.toString(),
                 privateKey.toString()
             );
+
             if (!tokens) {
                 return {
                     code: 'xxxx',
@@ -237,8 +231,9 @@ export class AccessService {
                     shop: newShop,
                     tokens
                 }
-            }
+            };
         }
+
         return {
             code: 202,
             metadata: null
