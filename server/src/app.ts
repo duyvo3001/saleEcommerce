@@ -4,6 +4,7 @@ import helmet from "helmet";
 import compression from "compression";
 import connectMongodb from "./dbs/init.mongodb"
 import router from "./routes";
+import cors from "cors"; // Import the cors package
 import { checkOverload } from "./helpers/check.connect";
 import { HttpError } from "./utils/errorhandling";
 
@@ -16,6 +17,13 @@ app.use(helmet())
 app.use(compression())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cors({
+    origin: 'http://127.0.0.1:5500',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Authorization'
+}));
+
 //init db .
 try {
     connectMongodb
@@ -39,7 +47,6 @@ app.use('/', router)
 app.use((req: Request, res: Response, next: NextFunction) => {
     const error = new HttpError('Not Found', 404)
     console.log(error);
-
     next(error)
 })
 

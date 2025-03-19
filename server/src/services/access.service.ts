@@ -138,7 +138,7 @@ export class AccessService {
                 foundShop.isLocked = true;
                 logger.warn(`Account locked due to multiple failed login attempts: ${email}`); // Log the account lock
             }
-            shopModel.updateOne({ email }, { failedLoginAttempts : foundShop.failedLoginAttempts }).exec();
+            shopModel.updateOne({ email }, { failedLoginAttempts: foundShop.failedLoginAttempts }).exec();
 
             logger.warn(`Login failed for email: ${email} - Authentication failed`); // Log the failure
             throw new AuthFailedError(`Authentication Failed`)
@@ -155,11 +155,10 @@ export class AccessService {
     static forgot_password = async () => { }
 
     static signUp_third_party = async (idToken: string) => {
-        console.log('idToken', idToken);
-        
+  
         const ticket = await client.verifyIdToken({
             idToken,
-            audience: 'YOUR_GOOGLE_CLIENT_ID',
+            audience: '220054696236-nsgi4ko2m05vd2ie0t8qjg5nts7ajage.apps.googleusercontent.com',
         });
 
         const payload = ticket.getPayload();
@@ -171,7 +170,7 @@ export class AccessService {
         const { email, name, sub: googleId } = payload;
 
         let foundShop = await shopModel.findOne({ email }).lean();
-        
+
         if (foundShop) {
             throw new BadRequestError('Error: Shop already Registered')
         }

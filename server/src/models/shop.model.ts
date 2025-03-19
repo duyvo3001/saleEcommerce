@@ -29,11 +29,9 @@ var shopSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
     },
     phone: {
         type: String,
-        required: true,
     },
     status: {
         type: String,

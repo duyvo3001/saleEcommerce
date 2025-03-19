@@ -4,3 +4,5 @@
 {"level":"info","message":"Login attempt for email: duyvo3001@gmail.com","service":"user-service","timestamp":"2025-03-16T07:06:32.969Z"}
 {"level":"info","message":"Login attempt for email: duyvo3001@gmail.com","service":"user-service","timestamp":"2025-03-16T15:29:19.878Z"}
 {"level":"info","message":"Login successful for user: 662212f0cac8454f2e483566","service":"user-service","timestamp":"2025-03-16T15:29:23.398Z"}
+{"level":"info","message":"Login attempt for email: duyvo3001@gmail.com","service":"user-service","timestamp":"2025-03-19T03:57:02.941Z"}
+{"level":"info","message":"Login successful for user: 662212f0cac8454f2e483566","service":"user-service","timestamp":"2025-03-19T03:57:05.469Z"}

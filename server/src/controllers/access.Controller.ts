@@ -76,12 +76,13 @@ export class AccessController {
     }
 
     static signUpThirdParty = async (req: Request, res: Response, next: NextFunction) => {
-        console.log('req', req.body);
 
         const { idToken } = req.body;
-        new SuccessResponse({
+        new CREATED({
             message: 'Registed OK!',
             metadata: await AccessService.signUp_third_party(idToken)
         }).send(res)
+
+
     }
 }
