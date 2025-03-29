@@ -21,7 +21,7 @@
             console.log("ID Token: " + idToken);
 
             // Send the ID token to your backend
-            fetch('http://localhost:8000/v1/api/shop/signup/third-party', {
+            fetch('http://localhost:8000/v1/api/shop/login/google', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -76,13 +76,50 @@ export class AccessController {
     }
 
     static signUpThirdParty = async (req: Request, res: Response, next: NextFunction) => {
-
         const { idToken } = req.body;
         new CREATED({
             message: 'Registed OK!',
             metadata: await AccessService.signUp_third_party(idToken)
         }).send(res)
+    }
 
+    static loginGoogle = async (req: Request, res: Response, next: NextFunction) => {
+        const { idToken } = req.body;
+        new SuccessResponse({
+            message: 'Google login successful',
+            metadata: await AccessService.login_third_party(idToken)
+        }).send(res)
+    }
 
+    static unlockAccount = async (req: Request, res: Response, next: NextFunction) => {
+        const { email, unlockCode } = req.body;
+        new SuccessResponse({
+            message: 'Account unlocked successfully',
+            metadata: await AccessService.account_unlock({ email, unlockCode })
+        }).send(res)
+    }
+
+    static forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+        const { email, phone } = req.body;
+        new SuccessResponse({
+            message: 'Reset code sent successfully',
+            metadata: await AccessService.forgot_password({ email, phone })
+        }).send(res)
+    }
+
+    static verifyResetCode = async (req: Request, res: Response, next: NextFunction) => {
+        const { email, resetCode } = req.body;
+        new SuccessResponse({
+            message: 'Reset code verified successfully',
+            metadata: await AccessService.verify_reset_code({ email, resetCode })
+        }).send(res)
+    }
+
+    static resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+        const { email, resetCode, newPassword } = req.body;
+        new SuccessResponse({
+            message: 'Password reset successful',
+            metadata: await AccessService.reset_password({ email, resetCode, newPassword })
+        }).send(res)
     }
 }

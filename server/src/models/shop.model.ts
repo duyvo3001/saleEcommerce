@@ -14,6 +14,8 @@ interface IShop extends Document {
     failedLoginAttempts:number;
     isLocked:Boolean;
     unlockCode :string;
+    googleId?: string;
+    authProvider?: 'local' | 'google';
 }
 // Declare the Schema of the Mongo model
 var shopSchema = new mongoose.Schema({
@@ -57,6 +59,16 @@ var shopSchema = new mongoose.Schema({
     unlockCode: {
         type: String,
         default: null
+    },
+    googleId: {
+        type: String,
+        sparse: true,
+        unique: true
+    },
+    authProvider: {
+        type: String,
+        enum: ['local', 'google'],
+        default: 'local'
     }
 },
     {

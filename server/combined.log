@@ -6,3 +6,5 @@
 {"level":"info","message":"Login successful for user: 662212f0cac8454f2e483566","service":"user-service","timestamp":"2025-03-16T15:29:23.398Z"}
 {"level":"info","message":"Login attempt for email: duyvo3001@gmail.com","service":"user-service","timestamp":"2025-03-19T03:57:02.941Z"}
 {"level":"info","message":"Login successful for user: 662212f0cac8454f2e483566","service":"user-service","timestamp":"2025-03-19T03:57:05.469Z"}
+{"level":"info","message":"Attempting Google OAuth2 login","service":"user-service","timestamp":"2025-03-29T11:02:47.134Z"}
+{"level":"info","message":"Google login successful for user: 662212f0cac8454f2e483566","service":"user-service","timestamp":"2025-03-29T11:02:49.449Z"}
