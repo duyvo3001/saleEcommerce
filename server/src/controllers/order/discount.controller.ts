@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
-import { CREATED, SuccessResponse } from "../core/success.response";
-import { DiscountService } from "../services/discount.services";
+import { CREATED, SuccessResponse } from "../../core/success.response";
+import { DiscountService } from "../../services/discount.services";
 import { NextFunction, Request, Response } from "express"
 
 export class DiscountController {

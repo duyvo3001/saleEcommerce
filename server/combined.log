@@ -8,3 +8,5 @@
 {"level":"info","message":"Login successful for user: 662212f0cac8454f2e483566","service":"user-service","timestamp":"2025-03-19T03:57:05.469Z"}
 {"level":"info","message":"Attempting Google OAuth2 login","service":"user-service","timestamp":"2025-03-29T11:02:47.134Z"}
 {"level":"info","message":"Google login successful for user: 662212f0cac8454f2e483566","service":"user-service","timestamp":"2025-03-29T11:02:49.449Z"}
+{"level":"info","message":"Attempting Google OAuth2 login","service":"user-service","timestamp":"2025-03-31T05:24:52.271Z"}
+{"level":"info","message":"Google login successful for user: 67e3b408220c62b3afca72d1","service":"user-service","timestamp":"2025-03-31T05:24:54.778Z"}

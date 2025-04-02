@@ -1,5 +1,5 @@
 import express from 'express';
-import { AccessController } from '../../controllers/access.Controller';
+import { AccessController } from '../../controllers/auth/access.controller';
 import { asyncHandler } from '../../helpers/asyncHandler';
 import { authentication } from '../../auth/authUtils';
 const routerShop = express.Router();
@@ -15,7 +15,7 @@ routerShop.post('/shop/verify-reset-code', asyncHandler(AccessController.verifyR
 routerShop.post('/shop/reset-password', asyncHandler(AccessController.resetPassword))
 
 // authentication //
-// routerShop.use(authentication)
+routerShop.use(authentication)
 routerShop.post('/shop/logout', asyncHandler(AccessController.logout))
 routerShop.post('/shop/handlerRefreshToken', asyncHandler(AccessController.handlerRefreshToken))
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import { asyncHandler } from '../../helpers/asyncHandler';
 import { authentication } from '../../auth/authUtils';
-import { NotificationController } from '../../controllers/notification.controller';
+import { NotificationController } from '../../controllers/notification/notification.controller';
 
 export const routerNotification = express.Router();
 

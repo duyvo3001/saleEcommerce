@@ -1,6 +1,6 @@
 import express from 'express';
 import { asyncHandler } from '../../helpers/asyncHandler';
-import { commentControler } from '../../controllers/commnet.Controller';
+import { commentControler } from '../../controllers/notification/commnet.Controller';
 import { authentication } from '../../auth/authUtils';
 
 export const routerComment = express.Router();

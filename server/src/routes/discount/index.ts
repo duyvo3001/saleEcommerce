@@ -1,7 +1,7 @@
 import express from 'express';
 import { asyncHandler } from '../../helpers/asyncHandler';
 import { authentication } from '../../auth/authUtils';
-import { DiscountController } from '../../controllers/dicount.Controller';
+import { DiscountController } from '../../controllers/order/discount.controller';
 export const routerDiscount = express.Router();
 routerDiscount.post('/amount',asyncHandler(DiscountController.getDiscountAmount))
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import { asyncHandler } from '../../helpers/asyncHandler';
 import { authentication } from '../../auth/authUtils';
-import { ProductController } from '../../controllers/product.controller';
+import { ProductController } from '../../controllers/product/product.controller';
 const routerProduct = express.Router();
 
 

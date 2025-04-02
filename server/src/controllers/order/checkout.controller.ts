@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
-import { SuccessResponse } from "../core/success.response"
-import { checkOutService } from "../services/checkout.service"
+import { SuccessResponse } from "../../core/success.response"
+import { checkOutService } from "../../services/checkout.service"
 
 export class checkoutController {
     /*

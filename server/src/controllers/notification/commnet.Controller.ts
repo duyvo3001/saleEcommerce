@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
-import { CREATED, SuccessResponse } from "../core/success.response";
-import { CommentService } from "../services/comment.service";
+import { CREATED, SuccessResponse } from "../../core/success.response";
+import { CommentService } from "../../services/comment.service";
 import { Types } from "mongoose";
 
 export class commentControler {

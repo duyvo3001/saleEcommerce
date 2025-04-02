@@ -1,7 +1,7 @@
-import { updateProductById } from '../models/repositories/product.repo';
+import { updateProductById } from '../../models/repositories/product.repo';
 import { NextFunction, Request, Response } from "express"
-import { SuccessResponse } from "../core/success.response";
-import { ProductFactory } from "../services/product.service";
+import { SuccessResponse } from "../../core/success.response";
+import { ProductFactory } from "../../services/product.service";
 import { Types } from "mongoose";
 
 export class ProductController {

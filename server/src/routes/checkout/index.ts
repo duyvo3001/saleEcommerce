@@ -1,5 +1,5 @@
 import express from 'express';
-import { checkoutController } from '../../controllers/checkout.Controller';
+import { checkoutController } from '../../controllers/order/checkout.controller';
 import { asyncHandler } from '../../helpers/asyncHandler';
 
 export const routerCheckout = express.Router();

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 
-import { SuccessResponse } from "../core/success.response"
-import { InventoryService } from "../services/inventory.services"
+import { SuccessResponse } from "../../core/success.response"
+import { InventoryService } from "../../services/inventory.services"
 
 export class inventoryController {
 

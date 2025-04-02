@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
-import { AccessService } from "../services/access.service"
-import { CREATED, SuccessResponse } from "../core/success.response";
+import { AccessService } from "../../services/access.service"
+import { CREATED, SuccessResponse } from "../../core/success.response";
 
 export class AccessController {
 
